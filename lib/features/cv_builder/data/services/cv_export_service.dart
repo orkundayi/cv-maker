@@ -10,8 +10,8 @@ import '../../domain/cv_data.dart';
 class CVExportService {
   const CVExportService._();
 
-  /// Generate and download a professional CV PDF
-  static Future<void> exportToPDF(CVData cvData, [String? fileName]) async {
+  /// Generate PDF document for CV (used by both export and preview)
+  static Future<pw.Document> generatePDF(CVData cvData) async {
     final pdf = pw.Document();
 
     // Load fonts
@@ -60,6 +60,13 @@ class CVExportService {
         ],
       ),
     );
+
+    return pdf;
+  }
+
+  /// Generate and download a professional CV PDF
+  static Future<void> exportToPDF(CVData cvData, [String? fileName]) async {
+    final pdf = await generatePDF(cvData);
 
     // Save PDF
     await Printing.layoutPdf(
@@ -275,31 +282,6 @@ class CVExportService {
               fontSize: 10,
               color: const PdfColor.fromInt(0xB3FFFFFF),
             ), // 70% opacity white
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Bullet point item
-  static pw.Widget _bulletPoint(String text, pw.Font font) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 5),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Container(
-            margin: const pw.EdgeInsets.only(top: 5),
-            width: 3,
-            height: 3,
-            decoration: const pw.BoxDecoration(color: PdfColors.white, shape: pw.BoxShape.circle),
-          ),
-          pw.SizedBox(width: 8),
-          pw.Expanded(
-            child: pw.Text(
-              text,
-              style: pw.TextStyle(font: font, fontSize: 9, color: PdfColors.white),
-            ),
           ),
         ],
       ),
