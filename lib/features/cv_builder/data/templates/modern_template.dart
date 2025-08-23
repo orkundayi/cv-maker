@@ -1,0 +1,422 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+
+import 'cv_template.dart';
+import '../../domain/cv_data.dart';
+
+/// Modern CV template with sidebar design
+class ModernTemplate extends CVTemplate {
+  @override
+  String get id => 'modern_sidebar';
+
+  @override
+  String get name => 'Modern Sidebar';
+
+  @override
+  String get description => 'Professional modern CV with colored sidebar for personal info and skills';
+
+  @override
+  String get previewImage => 'assets/templates/modern_sidebar_preview.png';
+
+  // Template specific colors
+  static const _colors = TemplateColors(
+    primary: PdfColor.fromInt(0xFF2C3E50), // Dark blue-gray for sidebar
+    secondary: PdfColor.fromInt(0xFF34495E), // Darker shade for headings
+    accent: PdfColor.fromInt(0xFF34495E),
+    text: PdfColor.fromInt(0xFF2C3E50),
+    textLight: PdfColor.fromInt(0xB3FFFFFF), // 70% opacity white
+    background: PdfColor.fromInt(0x4DFFFFFF), // 30% opacity white
+  );
+
+  @override
+  Future<TemplateFonts> loadFonts() async {
+    return TemplateFonts(
+      regularFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf')),
+      boldFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Bold.ttf')),
+      mediumFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Medium.ttf')),
+    );
+  }
+
+  @override
+  Future<pw.Document> generatePDF(CVData cvData) async {
+    final pdf = pw.Document();
+    final fonts = await loadFonts();
+    final profileImage = await _tryLoadProfileImage(cvData.personalInfo.profileImagePath);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: pw.EdgeInsets.zero,
+        build: (context) => [
+          pw.Container(
+            height: PdfPageFormat.a4.height,
+            child: pw.Row(
+              children: [
+                // Left sidebar
+                pw.Container(
+                  width: 200,
+                  height: PdfPageFormat.a4.height,
+                  color: _colors.primary,
+                  padding: const pw.EdgeInsets.all(20),
+                  child: _buildSidebar(cvData, fonts, profileImage),
+                ),
+                // Right content area
+                pw.Expanded(
+                  child: pw.Container(
+                    padding: const pw.EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+                    child: _buildMainContent(cvData, fonts),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return pdf;
+  }
+
+  /// Build left sidebar content
+  pw.Widget _buildSidebar(CVData cvData, TemplateFonts fonts, pw.ImageProvider? profileImage) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        // Profile photo
+        if (profileImage != null)
+          pw.Center(
+            child: pw.Container(
+              width: 120,
+              height: 120,
+              margin: const pw.EdgeInsets.only(bottom: 20),
+              decoration: pw.BoxDecoration(
+                shape: pw.BoxShape.circle,
+                border: pw.Border.all(color: PdfColors.white, width: 3),
+              ),
+              child: pw.ClipOval(child: pw.Image(profileImage, fit: pw.BoxFit.cover)),
+            ),
+          ),
+
+        // Personal section
+        _sidebarSection('Personal', fonts.boldFont!),
+        pw.SizedBox(height: 15),
+
+        _sidebarItem(
+          'Address',
+          '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
+          fonts.regularFont!,
+          _colors.textLight,
+        ),
+        _sidebarItem('Phone number', cvData.personalInfo.phone, fonts.regularFont!, _colors.textLight),
+        _sidebarItem('Email', cvData.personalInfo.email, fonts.regularFont!, _colors.textLight),
+        _sidebarItem(
+          'Location',
+          '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
+          fonts.regularFont!,
+          _colors.textLight,
+        ),
+        if (cvData.personalInfo.github != null)
+          _sidebarItem('GitHub', cvData.personalInfo.github!, fonts.regularFont!, _colors.textLight),
+        if (cvData.personalInfo.linkedIn != null)
+          _sidebarItem('LinkedIn', cvData.personalInfo.linkedIn!, fonts.regularFont!, _colors.textLight),
+        if (cvData.personalInfo.website != null)
+          _sidebarItem('Website', cvData.personalInfo.website!, fonts.regularFont!, _colors.textLight),
+
+        pw.SizedBox(height: 25),
+
+        // Languages section
+        if (cvData.languages.isNotEmpty) ...[
+          _sidebarSection('Languages', fonts.boldFont!),
+          pw.SizedBox(height: 10),
+          ...cvData.languages.map((lang) => _sidebarLanguageItem(lang, fonts.regularFont!)),
+        ],
+
+        // Skills section
+        if (cvData.skills.isNotEmpty) ...[
+          pw.SizedBox(height: 25),
+          _sidebarSection('Skills', fonts.boldFont!),
+          pw.SizedBox(height: 10),
+          ...cvData.skills.map((skill) => _sidebarSkillItem(skill, fonts.regularFont!)),
+        ],
+      ],
+    );
+  }
+
+  /// Build right main content area
+  pw.Widget _buildMainContent(CVData cvData, TemplateFonts fonts) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        // Name header
+        pw.Container(
+          margin: const pw.EdgeInsets.only(bottom: 20),
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                cvData.personalInfo.fullName.toUpperCase(),
+                style: pw.TextStyle(font: fonts.boldFont, fontSize: 32, color: _colors.text, letterSpacing: 2),
+              ),
+              pw.Container(
+                margin: const pw.EdgeInsets.only(top: 4),
+                height: 3,
+                width: double.infinity,
+                color: _colors.accent,
+              ),
+            ],
+          ),
+        ),
+
+        // Professional summary
+        if (cvData.summary != null && cvData.summary!.isNotEmpty) ...[
+          pw.Text(
+            cvData.summary!,
+            style: pw.TextStyle(font: fonts.regularFont, fontSize: 11, color: _colors.text, lineSpacing: 1.5),
+          ),
+          pw.SizedBox(height: 25),
+        ],
+
+        // Work experience
+        if (cvData.workExperiences.isNotEmpty) ...[
+          _mainSection('Work experience', fonts.boldFont!, _colors.accent),
+          pw.SizedBox(height: 15),
+          ...cvData.workExperiences.map(
+            (exp) => _workExperienceItem(exp, fonts.regularFont!, fonts.mediumFont!, _colors.text),
+          ),
+        ],
+
+        // Education
+        if (cvData.educations.isNotEmpty) ...[
+          _mainSection('Education and Qualifications', fonts.boldFont!, _colors.accent),
+          pw.SizedBox(height: 15),
+          ...cvData.educations.map((edu) => _educationItem(edu, fonts.regularFont!, fonts.mediumFont!, _colors.text)),
+        ],
+      ],
+    );
+  }
+
+  /// Sidebar section title
+  pw.Widget _sidebarSection(String title, pw.Font boldFont) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.only(bottom: 5),
+      decoration: const pw.BoxDecoration(
+        border: pw.Border(bottom: pw.BorderSide(color: PdfColors.white, width: 1)),
+      ),
+      child: pw.Text(
+        title,
+        style: pw.TextStyle(font: boldFont, fontSize: 14, color: PdfColors.white, letterSpacing: 0.5),
+      ),
+    );
+  }
+
+  /// Sidebar key-value item
+  pw.Widget _sidebarItem(String label, String value, pw.Font font, PdfColor labelColor) {
+    if (value.isEmpty) return pw.SizedBox();
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            label,
+            style: pw.TextStyle(font: font, fontSize: 9, color: labelColor),
+          ),
+          pw.SizedBox(height: 2),
+          pw.Text(
+            value,
+            style: pw.TextStyle(font: font, fontSize: 10, color: PdfColors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Sidebar language item
+  pw.Widget _sidebarLanguageItem(Language lang, pw.Font regularFont) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            lang.name,
+            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+          ),
+          pw.SizedBox(height: 2),
+          pw.Text(
+            lang.level.displayName,
+            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Sidebar skill item with level text
+  pw.Widget _sidebarSkillItem(Skill skill, pw.Font regularFont) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            skill.name,
+            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+          ),
+          pw.SizedBox(height: 2),
+          pw.Text(
+            skill.level.displayName,
+            style: pw.TextStyle(font: regularFont, fontSize: 10, color: _colors.textLight),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Main content section title
+  pw.Widget _mainSection(String title, pw.Font boldFont, PdfColor color) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(top: 20),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            title,
+            style: pw.TextStyle(font: boldFont, fontSize: 16, color: color, letterSpacing: 0.5),
+          ),
+          pw.Container(margin: const pw.EdgeInsets.only(top: 5), height: 1.5, width: 50, color: color),
+        ],
+      ),
+    );
+  }
+
+  /// Work experience item
+  pw.Widget _workExperienceItem(WorkExperience exp, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(bottom: 20),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                exp.jobTitle,
+                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+              ),
+              pw.Text(
+                _formatDateRange(exp.startDate, exp.endDate, exp.isCurrentJob),
+                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 3),
+          pw.Text(
+            '${exp.company}${exp.location != null ? ", ${exp.location}" : ""}',
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: textDark.shade(0.2),
+              fontStyle: pw.FontStyle.italic,
+            ),
+          ),
+          if (exp.description != null && exp.description!.isNotEmpty) ...[
+            pw.SizedBox(height: 8),
+            pw.Text(
+              exp.description!,
+              style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark, lineSpacing: 1.3),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Education item
+  pw.Widget _educationItem(Education edu, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(bottom: 20),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                edu.degree,
+                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+              ),
+              pw.Text(
+                _formatDateRange(edu.startDate, edu.endDate, edu.isCurrentStudy),
+                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 3),
+          pw.Text(
+            '${edu.institution}${edu.location != null ? ", ${edu.location}" : ""}',
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: textDark.shade(0.2),
+              fontStyle: pw.FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Try to load a profile image from base64 data URL or asset path
+  Future<pw.ImageProvider?> _tryLoadProfileImage(String? profileImagePath) async {
+    if (profileImagePath == null || profileImagePath.isEmpty) return null;
+    try {
+      // Case 1: data URL (with prefix)
+      if (profileImagePath.startsWith('data:image/')) {
+        final base64Data = profileImagePath.split(',').last;
+        final bytes = base64Decode(base64Data);
+        return pw.MemoryImage(bytes);
+      }
+
+      // Case 2: plain base64 without prefix
+      // Heuristic: contains only base64 chars and is long enough
+      final base64Like = RegExp(r'^[A-Za-z0-9+/=]+$');
+      if (profileImagePath.length > 100 && base64Like.hasMatch(profileImagePath)) {
+        final bytes = base64Decode(profileImagePath);
+        return pw.MemoryImage(bytes);
+      }
+
+      // Case 3: http/https or blob URL (web) – fetch via network
+      if (profileImagePath.startsWith('http') || profileImagePath.startsWith('blob:')) {
+        try {
+          final img = await networkImage(profileImagePath);
+          return img;
+        } catch (_) {
+          // fall through to next attempts
+        }
+      }
+
+      // Case 4: treat as asset path bundled in app
+      final asset = await rootBundle.load(profileImagePath);
+      return pw.MemoryImage(asset.buffer.asUint8List());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Utilities
+  String _formatMonthYear(DateTime date) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${months[date.month - 1]} ${date.year}';
+  }
+
+  String _formatDateRange(DateTime start, DateTime? end, bool isCurrent) {
+    final startStr = _formatMonthYear(start);
+    if (isCurrent) return '$startStr - Present';
+    if (end != null) return '$startStr - ${_formatMonthYear(end)}';
+    return startStr;
+  }
+}

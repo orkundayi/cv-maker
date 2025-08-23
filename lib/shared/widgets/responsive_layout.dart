@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../core/utils/responsive_utils.dart';
 import '../../core/constants/app_constants.dart';
 
 /// Responsive layout wrapper that adjusts content based on screen size
 class ResponsiveLayout extends StatelessWidget {
-  const ResponsiveLayout({super.key, required this.child, this.maxWidth, this.padding});
+  const ResponsiveLayout({
+    super.key,
+    required this.child,
+    this.maxWidth,
+    this.padding,
+    this.scroll = true,
+    this.showScrollbar,
+  });
 
   final Widget child;
   final double? maxWidth;
   final EdgeInsets? padding;
+  final bool scroll; // Whether to allow scrolling
+  final bool? showScrollbar; // Force show/hide scrollbar (defaults to visible on web)
 
   @override
   Widget build(BuildContext context) {
     final screenMaxWidth = maxWidth ?? ResponsiveUtils.getMaxContentWidth(context);
     final screenPadding = padding ?? ResponsiveUtils.responsivePadding(context);
 
-    return Center(
-      child: Container(
-        width: screenMaxWidth == double.infinity ? null : screenMaxWidth,
-        padding: screenPadding,
-        child: SingleChildScrollView(child: child),
+    // Content constrained to a max width and centered
+    final constrainedContent = Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          // Stretch to full width on mobile, cap on larger screens
+          maxWidth: screenMaxWidth == double.infinity ? double.infinity : screenMaxWidth,
+        ),
+        child: Padding(padding: screenPadding, child: child),
       ),
     );
+
+    if (!scroll) {
+      return SafeArea(child: constrainedContent);
+    }
+
+    final scrollable = SafeArea(
+      child: SingleChildScrollView(physics: const ClampingScrollPhysics(), child: constrainedContent),
+    );
+
+    final shouldShowScrollbar = showScrollbar ?? kIsWeb;
+    if (shouldShowScrollbar) {
+      return Scrollbar(thumbVisibility: true, child: scrollable);
+    }
+
+    return scrollable;
   }
 }
 
