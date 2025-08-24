@@ -290,20 +290,11 @@ class ModernTemplate extends CVTemplate {
   /// Sidebar skill item with level text
   pw.Widget _sidebarSkillItem(Skill skill, pw.Font regularFont) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 8),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            skill.name,
-            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
-          ),
-          pw.SizedBox(height: 2),
-          pw.Text(
-            skill.level.displayName,
-            style: pw.TextStyle(font: regularFont, fontSize: 10, color: _colors.textLight),
-          ),
-        ],
+      padding: const pw.EdgeInsets.only(bottom: 6),
+      child: pw.Text(
+        skill.name,
+        style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+        overflow: pw.TextOverflow.clip,
       ),
     );
   }
