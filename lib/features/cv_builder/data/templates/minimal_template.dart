@@ -37,6 +37,7 @@ class MinimalTemplate extends CVTemplate {
       regularFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf')),
       boldFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Bold.ttf')),
       lightFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Light.ttf')),
+      mediumFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Medium.ttf')),
     );
   }
 
@@ -49,50 +50,69 @@ class MinimalTemplate extends CVTemplate {
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(40),
+        margin: const pw.EdgeInsets.all(36),
         build: (context) => [
           // Header with name and contact
           _buildHeader(cvData, fonts, profileImage),
-          pw.SizedBox(height: 30),
+          pw.SizedBox(height: 16),
 
           // Professional summary
           if (cvData.summary != null && cvData.summary!.isNotEmpty) ...[
             _buildSection('PROFESSIONAL SUMMARY', fonts.boldFont!),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 8),
             pw.Text(
               cvData.summary!,
-              style: pw.TextStyle(font: fonts.regularFont, fontSize: 11, color: _colors.text, lineSpacing: 1.5),
+              style: pw.TextStyle(
+                font: fonts.regularFont,
+                fontSize: _adaptFontSize(cvData.summary!, 10),
+                color: _colors.text,
+                lineSpacing: 1.5,
+              ),
             ),
-            pw.SizedBox(height: 25),
+            pw.SizedBox(height: 16),
           ],
 
           // Work experience
           if (cvData.workExperiences.isNotEmpty) ...[
             _buildSection('WORK EXPERIENCE', fonts.boldFont!),
-            pw.SizedBox(height: 15),
+            pw.SizedBox(height: 10),
             ...cvData.workExperiences.map((exp) => _buildWorkExperience(exp, fonts)),
           ],
 
           // Education
           if (cvData.educations.isNotEmpty) ...[
             _buildSection('EDUCATION', fonts.boldFont!),
-            pw.SizedBox(height: 15),
+            pw.SizedBox(height: 10),
             ...cvData.educations.map((edu) => _buildEducation(edu, fonts)),
           ],
 
           // Skills
           if (cvData.skills.isNotEmpty) ...[
             _buildSection('SKILLS', fonts.boldFont!),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 8),
             _buildSkillsGrid(cvData.skills, fonts),
-            pw.SizedBox(height: 25),
+            pw.SizedBox(height: 16),
           ],
 
           // Languages
           if (cvData.languages.isNotEmpty) ...[
             _buildSection('LANGUAGES', fonts.boldFont!),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 8),
             _buildLanguages(cvData.languages, fonts),
+          ],
+
+          // Projects
+          if (cvData.projects.isNotEmpty) ...[
+            _buildSection('PROJECTS', fonts.boldFont!),
+            pw.SizedBox(height: 10),
+            ...cvData.projects.map((proj) => _buildProject(proj, fonts)),
+          ],
+
+          // Certificates
+          if (cvData.certificates.isNotEmpty) ...[
+            _buildSection('CERTIFICATES', fonts.boldFont!),
+            pw.SizedBox(height: 10),
+            ...cvData.certificates.map((cert) => _buildCertificate(cert, fonts)),
           ],
         ],
       ),
@@ -112,9 +132,13 @@ class MinimalTemplate extends CVTemplate {
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text(
-                cvData.personalInfo.fullName,
-                style: pw.TextStyle(font: fonts.boldFont, fontSize: 28, color: _colors.primary),
+              pw.FittedBox(
+                fit: pw.BoxFit.scaleDown,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  cvData.personalInfo.fullName,
+                  style: pw.TextStyle(font: fonts.boldFont, fontSize: 28, color: _colors.primary),
+                ),
               ),
               pw.SizedBox(height: 10),
               // Contact info
@@ -160,7 +184,7 @@ class MinimalTemplate extends CVTemplate {
   /// Section title
   pw.Widget _buildSection(String title, pw.Font boldFont) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 20),
+      margin: const pw.EdgeInsets.only(top: 14),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -169,7 +193,7 @@ class MinimalTemplate extends CVTemplate {
             style: pw.TextStyle(font: boldFont, fontSize: 13, color: _colors.accent, letterSpacing: 1),
           ),
           pw.Container(
-            margin: const pw.EdgeInsets.only(top: 5),
+            margin: const pw.EdgeInsets.only(top: 4),
             height: 1,
             width: double.infinity,
             color: _colors.accent.shade(0.3),
@@ -182,7 +206,7 @@ class MinimalTemplate extends CVTemplate {
   /// Work experience item
   pw.Widget _buildWorkExperience(WorkExperience exp, TemplateFonts fonts) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 20),
+      margin: const pw.EdgeInsets.only(bottom: 14),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -191,7 +215,7 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 '${exp.jobTitle} at ${exp.company}',
-                style: pw.TextStyle(font: fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
               ),
               pw.Text(
                 _formatDateRange(exp.startDate, exp.endDate, exp.isCurrentJob),
@@ -210,10 +234,15 @@ class MinimalTemplate extends CVTemplate {
               ),
             ),
           if (exp.description != null && exp.description!.isNotEmpty) ...[
-            pw.SizedBox(height: 5),
+            pw.SizedBox(height: 6),
             pw.Text(
               exp.description!,
-              style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.text, lineSpacing: 1.3),
+              style: pw.TextStyle(
+                font: fonts.regularFont,
+                fontSize: _adaptFontSize(exp.description!, 10),
+                color: _colors.text,
+                lineSpacing: 1.3,
+              ),
             ),
           ],
         ],
@@ -224,7 +253,7 @@ class MinimalTemplate extends CVTemplate {
   /// Education item
   pw.Widget _buildEducation(Education edu, TemplateFonts fonts) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 15),
+      margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -233,7 +262,7 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 edu.degree,
-                style: pw.TextStyle(font: fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
               ),
               pw.Text(
                 _formatDateRange(edu.startDate, edu.endDate, edu.isCurrentStudy),
@@ -296,6 +325,118 @@ class MinimalTemplate extends CVTemplate {
     );
   }
 
+  /// Project item
+  pw.Widget _buildProject(Project project, TemplateFonts fonts) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(bottom: 12),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                project.name,
+                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+              ),
+              pw.Text(
+                _formatDateRange(project.startDate, project.endDate, project.isOngoing),
+                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+              ),
+            ],
+          ),
+          if (project.technologies.isNotEmpty)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 2),
+              child: pw.Text(
+                project.technologies.join(', '),
+                style: pw.TextStyle(
+                  font: fonts.lightFont,
+                  fontSize: 9,
+                  color: _colors.textLight,
+                  fontStyle: pw.FontStyle.italic,
+                ),
+              ),
+            ),
+          if (project.description.isNotEmpty) ...[
+            pw.SizedBox(height: 6),
+            pw.Text(
+              project.description,
+              style: pw.TextStyle(
+                font: fonts.regularFont,
+                fontSize: _adaptFontSize(project.description, 10),
+                color: _colors.text,
+                lineSpacing: 1.3,
+              ),
+            ),
+          ],
+          if (project.url != null || project.githubUrl != null) ...[
+            pw.SizedBox(height: 6),
+            pw.Row(
+              children: [
+                if (project.url != null)
+                  pw.Text(
+                    'Live: ${project.url}',
+                    style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.accent),
+                  ),
+                if (project.url != null && project.githubUrl != null) pw.SizedBox(width: 12),
+                if (project.githubUrl != null)
+                  pw.Text(
+                    'GitHub: ${project.githubUrl}',
+                    style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.secondary),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Certificate item
+  pw.Widget _buildCertificate(Certificate cert, TemplateFonts fonts) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(bottom: 12),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                cert.name,
+                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+              ),
+              pw.Text(
+                _formatMonthYear(cert.issueDate),
+                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+              ),
+            ],
+          ),
+          pw.Text(
+            cert.issuer,
+            style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.text),
+          ),
+          if (cert.expiryDate != null)
+            pw.Text(
+              'Expires: ${_formatMonthYear(cert.expiryDate!)}',
+              style: pw.TextStyle(font: fonts.lightFont, fontSize: 9, color: _colors.textLight),
+            ),
+          if (cert.credentialId != null)
+            pw.Text(
+              'ID: ${cert.credentialId}',
+              style: pw.TextStyle(font: fonts.lightFont, fontSize: 9, color: _colors.textLight),
+            ),
+          if (cert.url != null)
+            pw.Text(
+              cert.url!,
+              style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.accent),
+            ),
+        ],
+      ),
+    );
+  }
+
   /// Try to load a profile image
   Future<pw.ImageProvider?> _tryLoadProfileImage(String? profileImagePath) async {
     if (profileImagePath == null || profileImagePath.isEmpty) return null;
@@ -337,5 +478,15 @@ class MinimalTemplate extends CVTemplate {
     if (isCurrent) return '$startStr - Present';
     if (end != null) return '$startStr - ${_formatMonthYear(end)}';
     return startStr;
+  }
+
+  /// Adapt font size by crude heuristic based on text length
+  double _adaptFontSize(String text, double base) {
+    final length = text.length;
+    if (length > 600) return base - 2.5;
+    if (length > 400) return base - 2.0;
+    if (length > 250) return base - 1.5;
+    if (length > 150) return base - 1.0;
+    return base;
   }
 }
