@@ -107,6 +107,133 @@ class CVData {
   factory CVData.empty() {
     return CVData(personalInfo: PersonalInfo.empty());
   }
+
+  /// Create a demo CV with sample data
+  factory CVData.demo() {
+    return CVData(
+      personalInfo: PersonalInfo.demo(),
+      summary:
+          'Experienced software developer with 5+ years of expertise in full-stack development. Passionate about creating scalable solutions and leading development teams. Strong background in modern web technologies and agile methodologies.',
+      workExperiences: [
+        WorkExperience(
+          id: 'exp1',
+          jobTitle: 'Senior Software Developer',
+          company: 'Tech Solutions Inc.',
+          startDate: DateTime(2021, 1),
+          endDate: null,
+          isCurrentJob: true,
+          description: 'Leading a team of 5 developers in building scalable web applications.',
+          responsibilities: [
+            'Architect and develop modern web applications using React and Node.js',
+            'Lead technical discussions and code reviews',
+            'Mentor junior developers and establish best practices',
+          ],
+          location: 'Istanbul, Turkey',
+        ),
+        WorkExperience(
+          id: 'exp2',
+          jobTitle: 'Software Developer',
+          company: 'Digital Agency Ltd.',
+          startDate: DateTime(2019, 6),
+          endDate: DateTime(2020, 12),
+          isCurrentJob: false,
+          description: 'Developed responsive web applications and mobile apps.',
+          responsibilities: [
+            'Built responsive web applications using modern frameworks',
+            'Collaborated with design team to implement pixel-perfect UIs',
+            'Optimized application performance and user experience',
+          ],
+          location: 'Ankara, Turkey',
+        ),
+      ],
+      educations: [
+        Education(
+          id: 'edu1',
+          institution: 'Istanbul Technical University',
+          degree: 'Bachelor of Science in Computer Engineering',
+          startDate: DateTime(2015, 9),
+          endDate: DateTime(2019, 6),
+          gpa: 3.45,
+          description: 'Focused on software engineering and data structures.',
+        ),
+      ],
+      skills: [
+        Skill(id: 'skill1', name: 'Flutter', level: SkillLevel.expert, category: SkillCategory.technical),
+        Skill(id: 'skill2', name: 'React', level: SkillLevel.advanced, category: SkillCategory.technical),
+        Skill(id: 'skill3', name: 'Node.js', level: SkillLevel.advanced, category: SkillCategory.technical),
+        Skill(id: 'skill4', name: 'Leadership', level: SkillLevel.intermediate, category: SkillCategory.soft),
+        Skill(id: 'skill5', name: 'English', level: SkillLevel.expert, category: SkillCategory.language),
+      ],
+      projects: [
+        Project(
+          id: 'proj1',
+          name: 'E-Commerce Platform',
+          description:
+              'A modern e-commerce platform built with React and Node.js, featuring real-time inventory management and payment processing.',
+          technologies: ['React', 'Node.js', 'MongoDB', 'Stripe API'],
+          startDate: DateTime(2023, 3),
+          endDate: DateTime(2023, 8),
+          isOngoing: false,
+          url: 'https://example.com',
+          githubUrl: 'https://github.com/example/ecommerce',
+        ),
+        Project(
+          id: 'proj2',
+          name: 'Task Management App',
+          description:
+              'A collaborative task management application with real-time updates and team collaboration features.',
+          technologies: ['Flutter', 'Firebase', 'Riverpod'],
+          startDate: DateTime(2023, 9),
+          endDate: null,
+          isOngoing: true,
+          githubUrl: 'https://github.com/example/taskapp',
+        ),
+      ],
+      languages: [
+        Language(id: 'lang1', name: 'Turkish', level: LanguageLevel.native),
+        Language(id: 'lang2', name: 'English', level: LanguageLevel.advanced),
+        Language(id: 'lang3', name: 'German', level: LanguageLevel.intermediate),
+      ],
+      certificates: [
+        Certificate(
+          id: 'cert1',
+          name: 'AWS Certified Solutions Architect',
+          issuer: 'Amazon Web Services',
+          issueDate: DateTime(2023, 4),
+          expiryDate: DateTime(2026, 4),
+          credentialId: 'AWS-12345',
+          url: 'https://aws.amazon.com/certification/',
+        ),
+        Certificate(
+          id: 'cert2',
+          name: 'Google Flutter Certified Developer',
+          issuer: 'Google',
+          issueDate: DateTime(2022, 11),
+          expiryDate: null,
+          credentialId: 'FLUTTER-67890',
+        ),
+      ],
+    );
+  }
+
+  /// Check if CV has meaningful content
+  bool get hasContent {
+    // Check if personal info has basic required fields
+    final hasBasicInfo =
+        personalInfo.firstName.isNotEmpty && personalInfo.lastName.isNotEmpty && personalInfo.email.isNotEmpty;
+
+    // Check if any other section has content
+    final hasOtherContent =
+        workExperiences.isNotEmpty ||
+        educations.isNotEmpty ||
+        skills.isNotEmpty ||
+        projects.isNotEmpty ||
+        languages.isNotEmpty ||
+        certificates.isNotEmpty ||
+        (summary != null && summary!.isNotEmpty);
+
+    return hasBasicInfo && hasOtherContent;
+  }
 }
 
 /// Personal information model
@@ -115,7 +242,7 @@ class PersonalInfo {
   final String lastName;
   final String email;
   final String phone;
-  final String? address;
+
   final String? city;
   final String? country;
   final String? linkedIn;
@@ -128,7 +255,7 @@ class PersonalInfo {
     required this.lastName,
     required this.email,
     required this.phone,
-    this.address,
+
     this.city,
     this.country,
     this.linkedIn,
@@ -142,7 +269,7 @@ class PersonalInfo {
     String? lastName,
     String? email,
     String? phone,
-    String? address,
+
     String? city,
     String? country,
     String? linkedIn,
@@ -155,7 +282,7 @@ class PersonalInfo {
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       phone: phone ?? this.phone,
-      address: address ?? this.address,
+
       city: city ?? this.city,
       country: country ?? this.country,
       linkedIn: linkedIn ?? this.linkedIn,
@@ -173,7 +300,7 @@ class PersonalInfo {
       'lastName': lastName,
       'email': email,
       'phone': phone,
-      'address': address,
+
       'city': city,
       'country': country,
       'linkedIn': linkedIn,
@@ -189,7 +316,7 @@ class PersonalInfo {
       lastName: (json['lastName'] as String?) ?? '',
       email: (json['email'] as String?) ?? '',
       phone: (json['phone'] as String?) ?? '',
-      address: json['address'] as String?,
+
       city: json['city'] as String?,
       country: json['country'] as String?,
       linkedIn: json['linkedIn'] as String?,
@@ -201,6 +328,22 @@ class PersonalInfo {
 
   factory PersonalInfo.empty() {
     return const PersonalInfo(firstName: '', lastName: '', email: '', phone: '');
+  }
+
+  /// Create demo personal info
+  factory PersonalInfo.demo() {
+    return const PersonalInfo(
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phone: '+90 555 123 4567',
+
+      city: 'Istanbul',
+      country: 'Turkey',
+      linkedIn: 'linkedin.com/in/johndoe',
+      github: 'github.com/johndoe',
+      website: 'johndoe.dev',
+    );
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -66,20 +67,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
     if (_editingSkill != null) {
       ref.read(cvDataProvider.notifier).updateSkill(skill);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Skill updated successfully!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Skill updated successfully!'), backgroundColor: AppColors.success));
     } else {
       ref.read(cvDataProvider.notifier).addSkill(skill);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Skill added successfully!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Skill added successfully!'), backgroundColor: AppColors.success));
     }
 
     _resetForm();
@@ -88,10 +83,25 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
   @override
   Widget build(BuildContext context) {
     final skills = ref.watch(cvDataProvider).skills;
+    final isMobile = ResponsiveUtils.isMobile(context);
 
     return ResponsiveCard(
-      title: 'Skills',
-      subtitle: 'Highlight your technical and soft skills',
+      title: 'Skills & Expertise',
+      subtitle: 'Showcase your technical and professional capabilities',
+      actions: skills.isNotEmpty
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear All Skills',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,9 +115,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   : AppColors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingSkill != null
-                    ? AppColors.primary
-                    : AppColors.border,
+                color: _editingSkill != null ? AppColors.primary : AppColors.border,
                 width: _editingSkill != null ? 2 : 1,
               ),
             ),
@@ -122,22 +130,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       Row(
                         children: [
                           if (_editingSkill != null) ...[
-                            Icon(
-                              PhosphorIcons.pencilSimple(),
-                              color: AppColors.primary,
-                              size: 20,
-                            ),
+                            Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
-                            _editingSkill != null
-                                ? 'Edit Skill'
-                                : 'Add New Skill',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
-                                ),
+                            _editingSkill != null ? 'Edit Skill' : 'Add New Skill',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
                           ),
                         ],
                       ),
@@ -146,9 +146,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
                           label: const Text('Cancel'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: AppColors.error,
-                          ),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.error),
                         ),
                     ],
                   ),
@@ -171,77 +169,106 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   ),
                   const SizedBox(height: AppConstants.spacingL),
 
-                  // Skill Level and Category
-                  ResponsiveGrid(
-                    children: [
-                      ResponsiveFormField(
-                        label: 'Skill Level',
-                        isRequired: true,
-                        child: DropdownButtonFormField<SkillLevel>(
-                          value: _selectedLevel,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                          ),
-                          items: SkillLevel.values.map((level) {
-                            return DropdownMenuItem(
-                              value: level,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: _getLevelColor(level),
-                                      shape: BoxShape.circle,
-                                    ),
+                  // Skill Level (Visual Selector)
+                  ResponsiveFormField(
+                    label: 'Skill Level',
+                    isRequired: true,
+                    child: Column(
+                      children: [
+                        Wrap(
+                          spacing: isMobile ? 8 : 12,
+                          runSpacing: 8,
+                          children: SkillLevel.values.map((level) {
+                            final isSelected = level == _selectedLevel;
+                            return GestureDetector(
+                              onTap: () => setState(() => _selectedLevel = level),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isMobile ? 12 : 16,
+                                  vertical: isMobile ? 8 : 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelected ? _getLevelColor(level).withOpacity(0.15) : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: isSelected ? _getLevelColor(level) : Theme.of(context).dividerColor,
+                                    width: isSelected ? 2 : 1,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(level.displayName),
-                                ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    _buildLevelIndicator(level, isSelected),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      level.displayName,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: isSelected
+                                            ? _getLevelColor(level)
+                                            : Theme.of(context).textTheme.bodyMedium?.color,
+                                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }).toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _selectedLevel = value;
-                              });
-                            }
-                          },
                         ),
-                      ),
-                      ResponsiveFormField(
-                        label: 'Category',
-                        isRequired: true,
-                        child: DropdownButtonFormField<SkillCategory>(
-                          value: _selectedCategory,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppConstants.spacingL),
+
+                  // Category Selector (Visual)
+                  ResponsiveFormField(
+                    label: 'Category',
+                    isRequired: true,
+                    child: Wrap(
+                      spacing: isMobile ? 6 : 8,
+                      runSpacing: 6,
+                      children: SkillCategory.values.map((category) {
+                        final isSelected = category == _selectedCategory;
+                        return GestureDetector(
+                          onTap: () => setState(() => _selectedCategory = category),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 12, vertical: isMobile ? 6 : 8),
+                            decoration: BoxDecoration(
+                              color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.15) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).dividerColor,
+                                width: isSelected ? 2 : 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  _getCategoryIcon(category),
+                                  size: 16,
+                                  color: isSelected
+                                      ? Theme.of(context).primaryColor
+                                      : Theme.of(context).iconTheme.color?.withOpacity(0.7),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  category.displayName,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: isSelected
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context).textTheme.bodySmall?.color,
+                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          items: SkillCategory.values.map((category) {
-                            return DropdownMenuItem(
-                              value: category,
-                              child: Text(category.displayName),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _selectedCategory = value;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+                        );
+                      }).toList(),
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingL),
 
@@ -250,21 +277,11 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: _saveSkill,
-                      icon: Icon(
-                        _editingSkill != null
-                            ? PhosphorIcons.check()
-                            : PhosphorIcons.plus(),
-                      ),
-                      label: Text(
-                        _editingSkill != null ? 'Update Skill' : 'Add Skill',
-                      ),
+                      icon: Icon(_editingSkill != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
+                      label: Text(_editingSkill != null ? 'Update Skill' : 'Add Skill'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppConstants.spacingM,
-                        ),
-                        backgroundColor: _editingSkill != null
-                            ? AppColors.success
-                            : null,
+                        padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
+                        backgroundColor: _editingSkill != null ? AppColors.success : null,
                       ),
                     ),
                   ),
@@ -277,122 +294,51 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
           // Skills List
           if (skills.isNotEmpty) ...[
-            Text(
-              'Your Skills (${skills.length})',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Your Skills (${skills.length})',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${skills.length} skills',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppConstants.spacingM),
-            ...skills.map(_buildSkillCard),
+            // Skills Grid for better organization
+            _buildSkillsGrid(skills),
           ] else ...[
             Center(
               child: Column(
                 children: [
-                  Icon(
-                    PhosphorIcons.lightning(),
-                    size: 64,
-                    color: AppColors.grey400,
-                  ),
+                  Icon(PhosphorIcons.lightning(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     'No skills added yet',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     'Add your first skill above',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
               ),
             ),
           ],
         ],
-      ),
-    );
-  }
-
-  Widget _buildSkillCard(Skill skill) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppConstants.spacingM),
-      child: Padding(
-        padding: const EdgeInsets.all(AppConstants.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        skill.name,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
-                            ),
-                      ),
-                      const SizedBox(height: AppConstants.spacingXs),
-                      Row(
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: _getLevelColor(skill.level),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '${skill.level.displayName} • ${skill.category.displayName}',
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(
-                                  color: AppColors.textSecondary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => _editSkill(skill),
-                      icon: Icon(
-                        PhosphorIcons.pencilSimple(),
-                        color: AppColors.primary,
-                      ),
-                      tooltip: 'Edit',
-                    ),
-                    IconButton(
-                      onPressed: () => _deleteSkill(skill.id),
-                      icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
-                      tooltip: 'Delete',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: AppConstants.spacingS),
-            LinearProgressIndicator(
-              value: skill.level.percentage / 100,
-              backgroundColor: AppColors.grey200,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                _getLevelColor(skill.level),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -408,5 +354,262 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
       case SkillLevel.expert:
         return AppColors.success;
     }
+  }
+
+  Widget _buildLevelIndicator(SkillLevel level, bool isSelected) {
+    final dots = _getLevelDots(level);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return Container(
+          width: 4,
+          height: 4,
+          margin: const EdgeInsets.only(right: 2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: index < dots
+                ? (isSelected ? _getLevelColor(level) : Theme.of(context).primaryColor)
+                : Theme.of(context).dividerColor,
+          ),
+        );
+      }),
+    );
+  }
+
+  int _getLevelDots(SkillLevel level) {
+    switch (level) {
+      case SkillLevel.beginner:
+        return 1;
+      case SkillLevel.intermediate:
+        return 3;
+      case SkillLevel.advanced:
+        return 4;
+      case SkillLevel.expert:
+        return 5;
+    }
+  }
+
+  IconData _getCategoryIcon(SkillCategory category) {
+    switch (category) {
+      case SkillCategory.technical:
+        return PhosphorIcons.code();
+      case SkillCategory.soft:
+        return PhosphorIcons.users();
+      case SkillCategory.language:
+        return PhosphorIcons.translate();
+      case SkillCategory.other:
+        return PhosphorIcons.question();
+    }
+  }
+
+  Widget _buildSkillsGrid(List<Skill> skills) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
+    // Group skills by category
+    final groupedSkills = <SkillCategory, List<Skill>>{};
+    for (final skill in skills) {
+      groupedSkills.putIfAbsent(skill.category, () => []).add(skill);
+    }
+
+    return Column(
+      children: groupedSkills.entries.map((entry) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppConstants.spacingL),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Category Header
+              Row(
+                children: [
+                  Icon(_getCategoryIcon(entry.key), size: 18, color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  Text(
+                    entry.key.displayName,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${entry.value.length}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppConstants.spacingS),
+
+              // Skills in this category
+              if (isMobile)
+                // Mobile: Single column
+                Column(children: entry.value.map(_buildModernSkillCard).toList())
+              else
+                // Desktop: Grid layout
+                Wrap(
+                  spacing: AppConstants.spacingM,
+                  runSpacing: AppConstants.spacingM,
+                  children: entry.value
+                      .map(
+                        (skill) => SizedBox(
+                          width: (MediaQuery.of(context).size.width - 80) / 2 - AppConstants.spacingM,
+                          child: _buildModernSkillCard(skill),
+                        ),
+                      )
+                      .toList(),
+                ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildModernSkillCard(Skill skill) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppConstants.spacingS),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    skill.name,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () => _editSkill(skill),
+                      icon: Icon(PhosphorIcons.pencilSimple(), size: 18),
+                      iconSize: 18,
+                      visualDensity: VisualDensity.compact,
+                      tooltip: 'Edit',
+                    ),
+                    IconButton(
+                      onPressed: () => _deleteSkill(skill.id),
+                      icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
+                      iconSize: 18,
+                      visualDensity: VisualDensity.compact,
+                      tooltip: 'Delete',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppConstants.spacingS),
+
+            // Level indicator
+            Row(
+              children: [
+                Text(
+                  skill.level.displayName,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: _getLevelColor(skill.level), fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).dividerColor.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: _getLevelPercentage(skill.level),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _getLevelColor(skill.level),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '${(_getLevelPercentage(skill.level) * 100).round()}%',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double _getLevelPercentage(SkillLevel level) {
+    switch (level) {
+      case SkillLevel.beginner:
+        return 0.25;
+      case SkillLevel.intermediate:
+        return 0.6;
+      case SkillLevel.advanced:
+        return 0.8;
+      case SkillLevel.expert:
+        return 1;
+    }
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear All Skills'),
+            ],
+          ),
+          content: const Text('Are you sure you want to clear all your skills? This action cannot be undone.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearSkills();
+                Navigator.of(context).pop();
+                _resetForm();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All skills cleared successfully!'), backgroundColor: AppColors.success),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear All'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -321,8 +322,22 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     final educations = ref.watch(cvDataProvider).educations;
 
     return ResponsiveCard(
-      title: 'Education',
-      subtitle: 'Add your educational background',
+      title: 'Academic Background',
+      subtitle: 'Your educational qualifications and achievements',
+      actions: educations.isNotEmpty
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear All Education',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -637,6 +652,42 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear All Education'),
+            ],
+          ),
+          content: const Text('Are you sure you want to clear all education records? This action cannot be undone.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearEducations();
+                Navigator.of(context).pop();
+                _resetForm();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All education records cleared successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear All'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

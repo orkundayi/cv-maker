@@ -114,55 +114,93 @@ class CVBuilderPage extends ConsumerWidget {
     const sections = CVSection.values;
     final currentIndex = sections.indexOf(currentSection);
 
-    return Container(
-      padding: const EdgeInsets.all(AppConstants.spacingM),
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
-      ),
-      child: Row(
-        children: [
-          // Previous Button
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: currentIndex > 0
-                  ? () {
-                      ref.read(currentSectionProvider.notifier).state = sections[currentIndex - 1];
-                    }
-                  : null,
-              icon: Icon(PhosphorIcons.caretLeft()),
-              label: const Text('Previous'),
+    return SafeArea(
+      child: Container(
+        height: 70, // Fixed compact height
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+        ),
+        child: Row(
+          children: [
+            // Previous Button - Compact for mobile
+            SizedBox(
+              width: 70,
+              height: 40,
+              child: OutlinedButton(
+                onPressed: currentIndex > 0
+                    ? () {
+                        ref.read(currentSectionProvider.notifier).state = sections[currentIndex - 1];
+                      }
+                    : null,
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(PhosphorIcons.caretLeft(), size: 14),
+                    const SizedBox(width: 2),
+                    const Text('Prev', style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: AppConstants.spacingM),
-          // Section Indicator
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppConstants.spacingM, vertical: AppConstants.spacingS),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppConstants.radiusM),
+
+            const SizedBox(width: 12),
+
+            // Section Indicator - Expanded to take remaining space
+            Expanded(
+              child: Container(
+                height: 32,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Text(
+                    '${currentIndex + 1} / ${sections.length}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            child: Text(
-              '${currentIndex + 1} / ${sections.length}',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
+
+            const SizedBox(width: 12),
+
+            // Next Button - Compact for mobile
+            SizedBox(
+              width: 70,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: currentIndex < sections.length - 1
+                    ? () {
+                        ref.read(currentSectionProvider.notifier).state = sections[currentIndex + 1];
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Next', style: TextStyle(fontSize: 12)),
+                    const SizedBox(width: 2),
+                    Icon(PhosphorIcons.caretRight(), size: 14),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: AppConstants.spacingM),
-          // Next Button
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: currentIndex < sections.length - 1
-                  ? () {
-                      ref.read(currentSectionProvider.notifier).state = sections[currentIndex + 1];
-                    }
-                  : null,
-              icon: Icon(PhosphorIcons.caretRight()),
-              label: const Text('Next'),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

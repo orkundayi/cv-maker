@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -39,9 +40,25 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
 
   @override
   Widget build(BuildContext context) {
+    final hasSummary = _summaryController.text.trim().isNotEmpty;
+
     return ResponsiveCard(
       title: 'Professional Summary',
       subtitle: 'Write a brief overview of your professional background and career goals',
+      actions: hasSummary
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear Summary',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: FocusTraversalGroup(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,6 +241,41 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear Summary'),
+            ],
+          ),
+          content: const Text(
+            'Are you sure you want to clear your professional summary? This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearSummary();
+                _summaryController.clear();
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Summary cleared successfully!'), backgroundColor: AppColors.success),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

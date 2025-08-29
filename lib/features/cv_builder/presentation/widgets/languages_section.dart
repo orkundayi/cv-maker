@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -82,10 +83,25 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
   @override
   Widget build(BuildContext context) {
     final languages = ref.watch(cvDataProvider).languages;
+    final isMobile = ResponsiveUtils.isMobile(context);
 
     return ResponsiveCard(
-      title: 'Languages',
-      subtitle: 'Add languages you speak',
+      title: 'Languages & Communication',
+      subtitle: 'Showcase your multilingual abilities',
+      actions: languages.isNotEmpty
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear All Languages',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,36 +172,51 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                       ResponsiveFormField(
                         label: 'Proficiency Level',
                         isRequired: true,
-                        child: DropdownButtonFormField<LanguageLevel>(
-                          value: _selectedLevel,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
-                          items: LanguageLevel.values.map((level) {
-                            return DropdownMenuItem(
-                              value: level,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(color: _getLevelColor(level), shape: BoxShape.circle),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Wrap(
+                              spacing: isMobile ? 6 : 8,
+                              runSpacing: 8,
+                              children: LanguageLevel.values.map((level) {
+                                final isSelected = level == _selectedLevel;
+                                return GestureDetector(
+                                  onTap: () => setState(() => _selectedLevel = level),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 10 : 12,
+                                      vertical: isMobile ? 8 : 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? _getLevelColor(level).withOpacity(0.15) : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: isSelected ? _getLevelColor(level) : Theme.of(context).dividerColor,
+                                        width: isSelected ? 2 : 1,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildLevelIndicator(level, isSelected),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          level.displayName,
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            color: isSelected
+                                                ? _getLevelColor(level)
+                                                : Theme.of(context).textTheme.bodyMedium?.color,
+                                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(level.displayName),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _selectedLevel = value;
-                              });
-                            }
-                          },
+                                );
+                              }).toList(),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -345,5 +376,78 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
       case LanguageLevel.native:
         return 1; // C2
     }
+  }
+
+  Widget _buildLevelIndicator(LanguageLevel level, bool isSelected) {
+    final dots = _getLevelDots(level);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(6, (index) {
+        return Container(
+          width: 3,
+          height: 3,
+          margin: const EdgeInsets.only(right: 2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: index < dots
+                ? (isSelected ? _getLevelColor(level) : Theme.of(context).primaryColor)
+                : Theme.of(context).dividerColor,
+          ),
+        );
+      }),
+    );
+  }
+
+  int _getLevelDots(LanguageLevel level) {
+    switch (level) {
+      case LanguageLevel.beginner:
+        return 1;
+      case LanguageLevel.elementary:
+        return 2;
+      case LanguageLevel.intermediate:
+        return 3;
+      case LanguageLevel.upperIntermediate:
+        return 4;
+      case LanguageLevel.advanced:
+        return 5;
+      case LanguageLevel.native:
+        return 6;
+    }
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear All Languages'),
+            ],
+          ),
+          content: const Text('Are you sure you want to clear all languages? This action cannot be undone.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearLanguages();
+                Navigator.of(context).pop();
+                _resetForm();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All languages cleared successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear All'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

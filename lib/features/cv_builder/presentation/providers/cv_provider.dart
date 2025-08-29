@@ -16,7 +16,7 @@ class CVDataNotifier extends StateNotifier<CVData> {
     required String lastName,
     required String email,
     required String phone,
-    String? address,
+
     String? city,
     String? country,
     String? linkedIn,
@@ -29,7 +29,7 @@ class CVDataNotifier extends StateNotifier<CVData> {
       lastName: lastName,
       email: email,
       phone: phone,
-      address: address,
+
       city: city,
       country: country,
       linkedIn: linkedIn,
@@ -184,6 +184,55 @@ class CVDataNotifier extends StateNotifier<CVData> {
   /// Create a copy of current CV
   CVData getCVDataCopy() {
     return state.copyWith();
+  }
+
+  /// Load demo data for preview
+  void loadDemoData() {
+    state = CVData.demo();
+  }
+
+  /// Clear all data
+  void clearAllData() {
+    state = CVData.empty();
+  }
+
+  /// Clear work experiences
+  void clearWorkExperiences() {
+    state = state.copyWith(workExperiences: []);
+  }
+
+  /// Clear educations
+  void clearEducations() {
+    state = state.copyWith(educations: []);
+  }
+
+  /// Clear skills
+  void clearSkills() {
+    state = state.copyWith(skills: []);
+  }
+
+  /// Clear projects
+  void clearProjects() {
+    state = state.copyWith(projects: []);
+  }
+
+  /// Clear languages
+  void clearLanguages() {
+    state = state.copyWith(languages: []);
+  }
+
+  /// Clear certificates
+  void clearCertificates() {
+    state = state.copyWith(certificates: []);
+  }
+
+  /// Clear summary
+  void clearSummary() {
+    state = state.copyWith(summary: null);
+  }
+
+  void clearPersonalInfo() {
+    state = state.copyWith(personalInfo: PersonalInfo.empty());
   }
 }
 

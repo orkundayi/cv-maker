@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -254,8 +255,22 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
     final workExperiences = ref.watch(cvDataProvider).workExperiences;
 
     return ResponsiveCard(
-      title: 'Work Experience',
-      subtitle: 'Add your professional work experience',
+      title: 'Professional Experience',
+      subtitle: 'Showcase your career journey and achievements',
+      actions: workExperiences.isNotEmpty
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear All Experiences',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,12 +482,40 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
 
           // Experience List
           if (workExperiences.isNotEmpty) ...[
-            Text(
-              'Your Experience (${workExperiences.length})',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      PhosphorIcons.briefcase(PhosphorIconsStyle.bold),
+                      color: Theme.of(context).primaryColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Career Timeline',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${workExperiences.length} positions',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppConstants.spacingM),
-            ...workExperiences.map(_buildExperienceCard),
+            const SizedBox(height: AppConstants.spacingL),
+            _buildExperienceTimeline(workExperiences),
           ] else ...[
             Center(
               child: Column(
@@ -497,64 +540,408 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
     );
   }
 
-  Widget _buildExperienceCard(WorkExperience experience) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppConstants.spacingM),
-      child: Padding(
-        padding: const EdgeInsets.all(AppConstants.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildExperienceTimeline(List<WorkExperience> experiences) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: experiences.length,
+      itemBuilder: (context, index) {
+        final experience = experiences[index];
+        final isLast = index == experiences.length - 1;
+
+        return _buildTimelineItem(experience, isLast, isMobile);
+      },
+    );
+  }
+
+  Widget _buildTimelineItem(WorkExperience experience, bool isLast, bool isMobile) {
+    final duration = _calculateDuration(experience.startDate, experience.endDate);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Timeline indicator
+        Column(
           children: [
-            Row(
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))],
+              ),
+            ),
+            if (!isLast)
+              Container(
+                width: 2,
+                height: isMobile ? 80 : 100,
+                color: Theme.of(context).dividerColor.withOpacity(0.5),
+                margin: const EdgeInsets.symmetric(vertical: 4),
+              ),
+          ],
+        ),
+
+        const SizedBox(width: 16),
+
+        // Experience card
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: isLast ? 0 : AppConstants.spacingL),
+            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2))],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        experience.jobTitle,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
-                      ),
-                      const SizedBox(height: AppConstants.spacingXs),
-                      Text(
-                        experience.company,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ),
+                // Header row
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () => _editExperience(experience),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary),
-                      tooltip: 'Edit',
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            experience.jobTitle,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            experience.company,
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      onPressed: () => _deleteExperience(experience.id),
-                      icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
-                      tooltip: 'Delete',
+
+                    // Action buttons
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => _editExperience(experience),
+                          icon: Icon(PhosphorIcons.pencilSimple(), size: 18),
+                          iconSize: 18,
+                          visualDensity: VisualDensity.compact,
+                          tooltip: 'Edit',
+                        ),
+                        IconButton(
+                          onPressed: () => _deleteExperience(experience.id),
+                          icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
+                          iconSize: 18,
+                          visualDensity: VisualDensity.compact,
+                          tooltip: 'Delete',
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
+                const SizedBox(height: AppConstants.spacingS),
+
+                // Duration and location - responsive layout
+                if (isMobile)
+                  // Mobile: Stack vertically to save space
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Date range
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: experience.isCurrentJob
+                              ? Theme.of(context).primaryColor.withOpacity(0.1)
+                              : AppColors.success.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              PhosphorIcons.calendar(),
+                              size: 14,
+                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                            ),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                _formatDateRange(experience.startDate, experience.endDate),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // Duration and location in a row with wrap
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          // Duration
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              duration,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                            ),
+                          ),
+
+                          // Location
+                          if (experience.location != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    PhosphorIcons.mapPin(),
+                                    size: 14,
+                                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    experience.location!,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  )
+                else
+                  // Desktop: Keep horizontal layout
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: experience.isCurrentJob
+                              ? Theme.of(context).primaryColor.withOpacity(0.1)
+                              : AppColors.success.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              PhosphorIcons.calendar(),
+                              size: 14,
+                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _formatDateRange(experience.startDate, experience.endDate),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          duration,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+
+                      if (experience.location != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                PhosphorIcons.mapPin(),
+                                size: 14,
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                experience.location!,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+
+                if (experience.description != null && experience.description!.isNotEmpty) ...[
+                  const SizedBox(height: AppConstants.spacingM),
+                  Text(experience.description!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5)),
+                ],
+
+                // Responsibilities
+                if (experience.responsibilities.isNotEmpty) ...[
+                  const SizedBox(height: AppConstants.spacingM),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Key Responsibilities:',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: AppConstants.spacingS),
+                      ...experience.responsibilities.map(
+                        (responsibility) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 4,
+                                height: 4,
+                                margin: const EdgeInsets.only(top: 8, right: 8),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  responsibility,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
-            const SizedBox(height: AppConstants.spacingS),
-            Text(
-              '${experience.startDate.year}-${experience.startDate.month.toString().padLeft(2, '0')} - ${experience.endDate != null ? '${experience.endDate!.year}-${experience.endDate!.month.toString().padLeft(2, '0')}' : 'Present'}',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: AppConstants.spacingM),
-            Text(experience.description ?? 'No description provided', style: Theme.of(context).textTheme.bodyMedium),
-          ],
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  String _formatDateRange(DateTime startDate, DateTime? endDate) {
+    final startMonth = _getMonthName(startDate.month);
+    final startYear = startDate.year;
+
+    if (endDate == null) {
+      return '$startMonth $startYear - Present';
+    }
+
+    final endMonth = _getMonthName(endDate.month);
+    final endYear = endDate.year;
+
+    if (startYear == endYear && startDate.month == endDate.month) {
+      return '$startMonth $startYear';
+    } else if (startYear == endYear) {
+      return '$startMonth - $endMonth $startYear';
+    } else {
+      return '$startMonth $startYear - $endMonth $endYear';
+    }
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1];
+  }
+
+  String _calculateDuration(DateTime startDate, DateTime? endDate) {
+    final end = endDate ?? DateTime.now();
+    final difference = end.difference(startDate);
+    final months = (difference.inDays / 30.44).round();
+
+    if (months < 1) {
+      return '1 month';
+    } else if (months < 12) {
+      return '$months months';
+    } else {
+      final years = months ~/ 12;
+      final remainingMonths = months % 12;
+
+      if (remainingMonths == 0) {
+        return years == 1 ? '1 year' : '$years years';
+      } else {
+        return years == 1 ? '1 year $remainingMonths months' : '$years years $remainingMonths months';
+      }
+    }
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear All Experiences'),
+            ],
+          ),
+          content: const Text('Are you sure you want to clear all work experiences? This action cannot be undone.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearWorkExperiences();
+                Navigator.of(context).pop();
+                _resetForm();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All work experiences cleared successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear All'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

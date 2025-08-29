@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -35,6 +37,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
   DateTime? _endDate;
   bool _isOngoing = false;
   Project? _editingProject;
+  bool _isLaunchingUrl = false;
 
   @override
   void dispose() {
@@ -244,8 +247,22 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     final projects = ref.watch(cvDataProvider).projects;
 
     return ResponsiveCard(
-      title: 'Projects',
-      subtitle: 'Showcase your projects and accomplishments',
+      title: 'Portfolio & Projects',
+      subtitle: 'Highlight your best work and achievements',
+      actions: projects.isNotEmpty
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                tooltip: 'Clear All Projects',
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ]
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,12 +485,40 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
           // Projects List
           if (projects.isNotEmpty) ...[
-            Text(
-              'Your Projects (${projects.length})',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      PhosphorIcons.folder(PhosphorIconsStyle.bold),
+                      color: Theme.of(context).primaryColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Project Portfolio',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${projects.length} projects',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppConstants.spacingM),
-            ...projects.map(_buildProjectCard),
+            const SizedBox(height: AppConstants.spacingL),
+            _buildProjectsGrid(projects),
           ] else ...[
             Center(
               child: Column(
@@ -498,117 +543,427 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     );
   }
 
-  Widget _buildProjectCard(Project project) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppConstants.spacingM),
-      child: Padding(
-        padding: const EdgeInsets.all(AppConstants.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+  Widget _buildProjectsGrid(List<Project> projects) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+
+    if (isMobile) {
+      // Mobile: Single column layout
+      return Column(children: projects.map(_buildModernProjectCard).toList());
+    } else {
+      // Desktop: Grid layout
+      return Wrap(
+        spacing: AppConstants.spacingL,
+        runSpacing: AppConstants.spacingL,
+        children: projects
+            .map(
+              (project) => SizedBox(
+                width: (MediaQuery.of(context).size.width - 120) / 2 - AppConstants.spacingL,
+                child: _buildModernProjectCard(project),
+              ),
+            )
+            .toList(),
+      );
+    }
+  }
+
+  Widget _buildModernProjectCard(Project project) {
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final techList = project.technologies;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppConstants.spacingL),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header section
+          Container(
+            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).primaryColor.withOpacity(0.1),
+                  Theme.of(context).primaryColor.withOpacity(0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
                         project.name,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                      if (project.technologies.isNotEmpty) ...[
-                        const SizedBox(height: AppConstants.spacingXs),
-                        Text(
-                          project.technologies.join(', '),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => _editProject(project),
+                          icon: Icon(PhosphorIcons.pencilSimple(), size: 20),
+                          iconSize: 20,
+                          visualDensity: VisualDensity.compact,
+                          tooltip: 'Edit',
+                        ),
+                        IconButton(
+                          onPressed: () => _deleteProject(project.id),
+                          icon: Icon(PhosphorIcons.trash(), size: 20, color: AppColors.error),
+                          iconSize: 20,
+                          visualDensity: VisualDensity.compact,
+                          tooltip: 'Delete',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: AppConstants.spacingS),
+
+                // Project status and duration
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: project.isOngoing ? AppColors.success.withOpacity(0.1) : AppColors.info.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: project.isOngoing
+                              ? AppColors.success.withOpacity(0.3)
+                              : AppColors.info.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: project.isOngoing ? AppColors.success : AppColors.info,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            project.isOngoing ? 'In Progress' : 'Completed',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: project.isOngoing ? AppColors.success : AppColors.info,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              PhosphorIcons.calendar(),
+                              size: 12,
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _formatProjectDate(project.startDate, project.endDate),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Content section
+          Padding(
+            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Description
+                if (project.description.isNotEmpty) ...[
+                  Text(
+                    project.description,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppConstants.spacingM),
+                ],
+
+                // Technologies
+                if (techList.isNotEmpty) ...[
+                  Text(
+                    'Technologies:',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: AppConstants.spacingS),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: techList
+                        .map(
+                          (tech) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                            ),
+                            child: Text(
+                              tech,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  const SizedBox(height: AppConstants.spacingM),
+                ],
+
+                // Links
+                if (project.url != null || project.githubUrl != null) ...[
+                  Row(
+                    children: [
+                      if (project.url != null) ...[
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: _isLaunchingUrl ? null : () => _launchUrl(project.url!),
+                            icon: _isLaunchingUrl
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  )
+                                : Icon(PhosphorIcons.globe(), size: 16),
+                            label: Text(_isLaunchingUrl ? 'Opening...' : 'Live Demo'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12, horizontal: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      if (project.url != null && project.githubUrl != null) const SizedBox(width: 8),
+
+                      if (project.githubUrl != null) ...[
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: _isLaunchingUrl ? null : () => _launchUrl(project.githubUrl!),
+                            icon: _isLaunchingUrl
+                                ? SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                                    ),
+                                  )
+                                : Icon(PhosphorIcons.githubLogo(), size: 16),
+                            label: Text(_isLaunchingUrl ? 'Opening...' : 'GitHub'),
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12, horizontal: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                          ),
                         ),
                       ],
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => _editProject(project),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary),
-                      tooltip: 'Edit',
-                    ),
-                    IconButton(
-                      onPressed: () => _deleteProject(project.id),
-                      icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
-                      tooltip: 'Delete',
-                    ),
-                  ],
-                ),
+                ],
               ],
             ),
-            if (project.description.isNotEmpty) ...[
-              const SizedBox(height: AppConstants.spacingS),
-              Text(project.description, style: Theme.of(context).textTheme.bodyMedium),
-            ],
-            const SizedBox(height: AppConstants.spacingS),
-            Row(
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatProjectDate(DateTime startDate, DateTime? endDate) {
+    final startMonth = _getMonthName(startDate.month);
+    final startYear = startDate.year;
+
+    if (endDate == null) {
+      return '$startMonth $startYear - Present';
+    }
+
+    final endMonth = _getMonthName(endDate.month);
+    final endYear = endDate.year;
+
+    if (startYear == endYear) {
+      return '$startMonth - $endMonth $startYear';
+    } else {
+      return '$startMonth $startYear - $endMonth $endYear';
+    }
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1];
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (_isLaunchingUrl) return; // Prevent multiple launches
+
+    setState(() {
+      _isLaunchingUrl = true;
+    });
+
+    try {
+      // Add https:// if not present
+      String formattedUrl = url;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        formattedUrl = 'https://$url';
+      }
+
+      final Uri uri = Uri.parse(formattedUrl);
+
+      // Try using url_launcher first
+      try {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          throw Exception('canLaunchUrl returned false');
+        }
+      } catch (pluginError) {
+        // If url_launcher fails, provide helpful message
+        throw Exception('Unable to open URL. Please copy and open manually: $formattedUrl');
+      }
+
+      // Show success feedback
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
               children: [
-                Icon(PhosphorIcons.calendar(), size: 16, color: AppColors.textSecondary),
-                const SizedBox(width: 4),
-                Text(
-                  '${project.startDate.year}-${project.startDate.month.toString().padLeft(2, '0')} - ${project.isOngoing ? 'Present' : '${project.endDate!.year}-${project.endDate!.month.toString().padLeft(2, '0')}'}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
-                ),
+                Icon(PhosphorIcons.checkCircle(), color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                const Text('Opening in browser...'),
               ],
             ),
-            if (project.url != null || project.githubUrl != null) ...[
-              const SizedBox(height: AppConstants.spacingS),
-              Row(
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
                 children: [
-                  if (project.url != null) ...[
-                    Icon(PhosphorIcons.link(), size: 16, color: AppColors.primary),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () {
-                        // Open project URL in new tab
-                        // html.window.open(project.url!, '_blank');
-                      },
-                      child: Text(
-                        'Live Demo',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.primary, decoration: TextDecoration.underline),
-                      ),
-                    ),
-                  ],
-                  if (project.url != null && project.githubUrl != null) ...[
-                    const SizedBox(width: AppConstants.spacingL),
-                  ],
-                  if (project.githubUrl != null) ...[
-                    Icon(PhosphorIcons.githubLogo(), size: 16, color: AppColors.textSecondary),
-                    const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () {
-                        // Open GitHub URL in new tab
-                        // html.window.open(project.githubUrl!, '_blank');
-                      },
-                      child: Text(
-                        'GitHub',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
+                  Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text('Could not open: $url')),
                 ],
               ),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Failed to open URL: $e')),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLaunchingUrl = false;
+        });
+      }
+    }
+  }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              const SizedBox(width: 8),
+              const Text('Clear All Projects'),
             ],
+          ),
+          content: const Text('Are you sure you want to clear all projects? This action cannot be undone.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(cvDataProvider.notifier).clearProjects();
+                Navigator.of(context).pop();
+                _resetForm();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All projects cleared successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              child: const Text('Clear All'),
+            ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

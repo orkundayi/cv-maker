@@ -33,7 +33,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   late final TextEditingController _lastNameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
-  late final TextEditingController _addressController;
+
   late final TextEditingController _cityController;
   late final TextEditingController _countryController;
   late final TextEditingController _linkedInController;
@@ -45,7 +45,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   late final FocusNode _lastNameFocusNode;
   late final FocusNode _emailFocusNode;
   late final FocusNode _phoneFocusNode;
-  late final FocusNode _addressFocusNode;
+
   late final FocusNode _cityFocusNode;
   late final FocusNode _countryFocusNode;
   late final FocusNode _linkedInFocusNode;
@@ -65,7 +65,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _lastNameController = TextEditingController(text: personalInfo.lastName);
     _emailController = TextEditingController(text: personalInfo.email);
     _phoneController = TextEditingController(text: personalInfo.phone);
-    _addressController = TextEditingController(text: personalInfo.address ?? '');
+
     _cityController = TextEditingController(text: personalInfo.city ?? '');
     _countryController = TextEditingController(text: personalInfo.country ?? '');
     _linkedInController = TextEditingController(text: personalInfo.linkedIn ?? '');
@@ -77,7 +77,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _lastNameFocusNode = FocusNode();
     _emailFocusNode = FocusNode();
     _phoneFocusNode = FocusNode();
-    _addressFocusNode = FocusNode();
+
     _cityFocusNode = FocusNode();
     _countryFocusNode = FocusNode();
     _linkedInFocusNode = FocusNode();
@@ -95,7 +95,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _addressController.dispose();
+
     _cityController.dispose();
     _countryController.dispose();
     _linkedInController.dispose();
@@ -107,7 +107,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _lastNameFocusNode.dispose();
     _emailFocusNode.dispose();
     _phoneFocusNode.dispose();
-    _addressFocusNode.dispose();
+
     _cityFocusNode.dispose();
     _countryFocusNode.dispose();
     _linkedInFocusNode.dispose();
@@ -122,7 +122,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _lastNameController.addListener(_saveTextFields);
     _emailController.addListener(_saveTextFields);
     _phoneController.addListener(_saveTextFields);
-    _addressController.addListener(_saveTextFields);
+
     _cityController.addListener(_saveTextFields);
     _countryController.addListener(_saveTextFields);
     _linkedInController.addListener(_saveTextFields);
@@ -146,7 +146,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       lastName: currentInfo.lastName,
       email: currentInfo.email,
       phone: currentInfo.phone,
-      address: currentInfo.address,
+
       city: currentInfo.city,
       country: currentInfo.country,
       linkedIn: currentInfo.linkedIn,
@@ -192,7 +192,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               lastName: _lastNameController.text,
               email: _emailController.text,
               phone: _phoneController.text,
-              address: _addressController.text.isEmpty ? null : _addressController.text,
+
               city: _cityController.text.isEmpty ? null : _cityController.text,
               country: _countryController.text.isEmpty ? null : _countryController.text,
               linkedIn: _linkedInController.text.isEmpty ? null : _linkedInController.text,
@@ -217,9 +217,26 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
+    final personalInfo = ref.watch(cvDataProvider).personalInfo;
+    final hasPersonalInfo =
+        personalInfo.firstName.isNotEmpty ||
+        personalInfo.lastName.isNotEmpty ||
+        personalInfo.email.isNotEmpty ||
+        personalInfo.phone.isNotEmpty ||
+        personalInfo.profileImagePath != null;
+
     return ResponsiveCard(
       title: 'Personal Information',
       subtitle: 'Enter your basic contact information',
+      actions: hasPersonalInfo
+          ? [
+              IconButton(
+                onPressed: () => _showClearDialog(context),
+                icon: Icon(PhosphorIcons.trash()),
+                tooltip: 'Clear Personal Information',
+              ),
+            ]
+          : null,
       child: Form(
         key: _formKey,
         child: FocusTraversalGroup(
@@ -395,27 +412,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _addressFocusNode.requestFocus();
+                    _cityFocusNode.requestFocus();
                   });
                 },
               ),
             ),
           ],
-        ),
-        const SizedBox(height: AppConstants.spacingL),
-        ResponsiveFormField(
-          label: 'Address',
-          child: CustomTextFormField(
-            controller: _addressController,
-            focusNode: _addressFocusNode,
-            hint: '123 Main Street, Apt 4B',
-            textInputAction: TextInputAction.next,
-            onFieldSubmitted: (_) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _cityFocusNode.requestFocus();
-              });
-            },
-          ),
         ),
         const SizedBox(height: AppConstants.spacingL),
         ResponsiveGrid(
@@ -579,6 +581,53 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     }
     if (kDebugMode) print('🏁 _selectProfileImage tamamlandı');
   }
+
+  void _showClearDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Personal Information'),
+        content: const Text('Are you sure you want to clear all personal information? This action cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _clearPersonalInfo();
+            },
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _clearPersonalInfo() {
+    // Clear provider
+    ref.read(cvDataProvider.notifier).clearPersonalInfo();
+
+    // Clear all text controllers
+    _firstNameController.clear();
+    _lastNameController.clear();
+    _emailController.clear();
+    _phoneController.clear();
+
+    _cityController.clear();
+    _countryController.clear();
+    _linkedInController.clear();
+    _githubController.clear();
+    _websiteController.clear();
+
+    // Clear profile image in the widget
+    _profileImageKey.currentState?.updateImage('');
+
+    // Show feedback
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Personal information cleared successfully'), backgroundColor: AppColors.success),
+      );
+    }
+  }
 }
 
 /// Separate widget for profile image display and selection
@@ -639,7 +688,7 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
   void updateImage(String base64Image) {
     if (kDebugMode) print('🖼️ _ProfileImageWidget.updateImage çağrıldı: ${base64Image.length} chars');
     setState(() {
-      _localProfileImage = base64Image;
+      _localProfileImage = base64Image.isEmpty ? null : base64Image;
     });
     if (kDebugMode) print('✅ _ProfileImageWidget UI güncellendi');
   }
