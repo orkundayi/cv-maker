@@ -668,57 +668,119 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
 
             const SizedBox(height: AppConstants.spacingL),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () {
-                    ref.read(cvDataProvider.notifier).loadDemoData();
-                    if (mounted) {
-                      final l10n = AppLocalizations.of(context)!;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.demoDataLoaded),
-                          behavior: SnackBarBehavior.floating,
+            // Responsive button layout
+            if (isMobile)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          ref.read(cvDataProvider.notifier).loadDemoData();
+                          if (mounted) {
+                            final l10n = AppLocalizations.of(context)!;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.demoDataLoaded),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        },
+                        icon: Icon(PhosphorIcons.lightbulb()),
+                        label: Text(AppLocalizations.of(context)!.loadDemoData),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      );
-                    }
-                  },
-                  icon: Icon(PhosphorIcons.lightbulb()),
-                  label: Text(AppLocalizations.of(context)!.loadDemoData),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          _showClearAllDialog(context);
+                        },
+                        icon: Icon(PhosphorIcons.trash(), color: Colors.red),
+                        label: Text(
+                          l10n.clearAllData,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    _showClearAllDialog(context);
-                  },
-                  icon: Icon(PhosphorIcons.trash()),
-                  label: Text(
-                    l10n.clearAllData,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      ref.read(cvDataProvider.notifier).loadDemoData();
+                      if (mounted) {
+                        final l10n = AppLocalizations.of(context)!;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.demoDataLoaded),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    },
+                    icon: Icon(PhosphorIcons.lightbulb()),
+                    label: Text(AppLocalizations.of(context)!.loadDemoData),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    side: BorderSide(color: Colors.red.withOpacity(0.5)),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 12),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      _showClearAllDialog(context);
+                    },
+                    icon: Icon(PhosphorIcons.trash(), color: Colors.red),
+                    label: Text(
+                      l10n.clearAllData,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
