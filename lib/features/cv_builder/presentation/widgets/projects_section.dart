@@ -4,7 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
@@ -107,7 +107,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
     _showDateSelector(context, false);
@@ -206,7 +206,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -214,7 +214,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -237,11 +237,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       ref.read(cvDataProvider.notifier).updateProject(project);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.projects), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.projects), backgroundColor: ref.colors.success));
     } else {
       ref.read(cvDataProvider.notifier).addProject(project);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.projects), backgroundColor: AppColors.success),
+        SnackBar(content: Text(AppLocalizations.of(context)!.projects), backgroundColor: ref.colors.success),
       );
     }
 
@@ -260,7 +260,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearAllProjects,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
@@ -279,11 +279,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
             padding: const EdgeInsets.all(AppConstants.spacingL),
             decoration: BoxDecoration(
               color: _editingProject != null
-                  ? AppColors.primary.withOpacity(0.05)
-                  : AppColors.surfaceVariant.withOpacity(0.3),
+                  ? ref.colors.primary.withOpacity(0.05)
+                  : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingProject != null ? AppColors.primary : AppColors.border,
+                color: _editingProject != null ? ref.colors.primary : ref.colors.border,
                 width: _editingProject != null ? 2 : 1,
               ),
             ),
@@ -299,14 +299,14 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                         Row(
                           children: [
                             if (_editingProject != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
+                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
                               _editingProject != null ? l10n.editProject : l10n.addProject,
                               style: Theme.of(
                                 context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                             ),
                           ],
                         ),
@@ -315,7 +315,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
                           ),
                       ],
                     ),
@@ -481,7 +481,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                         label: Text(_editingProject != null ? l10n.editProject : l10n.addProject),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingProject != null ? AppColors.success : null,
+                          backgroundColor: _editingProject != null ? ref.colors.success : null,
                         ),
                       ),
                     ),
@@ -533,16 +533,16 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.folder(), size: 64, color: AppColors.grey400),
+                  Icon(PhosphorIcons.folder(), size: 64, color: ref.colors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.projectsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -631,7 +631,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                         ),
                         IconButton(
                           onPressed: () => _deleteProject(project.id),
-                          icon: Icon(PhosphorIcons.trash(), size: 20, color: AppColors.error),
+                          icon: Icon(PhosphorIcons.trash(), size: 20, color: ref.colors.error),
                           iconSize: 20,
                           visualDensity: VisualDensity.compact,
                           tooltip: AppLocalizations.of(context)!.delete,
@@ -649,12 +649,14 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: project.isOngoing ? AppColors.success.withOpacity(0.1) : AppColors.info.withOpacity(0.1),
+                        color: project.isOngoing
+                            ? ref.colors.success.withOpacity(0.1)
+                            : ref.colors.info.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: project.isOngoing
-                              ? AppColors.success.withOpacity(0.3)
-                              : AppColors.info.withOpacity(0.3),
+                              ? ref.colors.success.withOpacity(0.3)
+                              : ref.colors.info.withOpacity(0.3),
                         ),
                       ),
                       child: Row(
@@ -664,7 +666,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: project.isOngoing ? AppColors.success : AppColors.info,
+                              color: project.isOngoing ? ref.colors.success : ref.colors.info,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -672,7 +674,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           Text(
                             project.isOngoing ? 'In Progress' : 'Completed',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: project.isOngoing ? AppColors.success : AppColors.info,
+                              color: project.isOngoing ? ref.colors.success : ref.colors.info,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -899,7 +901,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 const Text('Opening in browser...'),
               ],
             ),
-            backgroundColor: AppColors.success,
+            backgroundColor: ref.colors.success,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 2),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -916,7 +918,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                   Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
                 ],
               ),
-              backgroundColor: AppColors.error,
+              backgroundColor: ref.colors.error,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
@@ -934,7 +936,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
               ],
             ),
-            backgroundColor: AppColors.error,
+            backgroundColor: ref.colors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
@@ -972,7 +974,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.projectsCleared),
-                    backgroundColor: AppColors.success,
+                    backgroundColor: ref.colors.success,
                   ),
                 );
               },

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
+import '../../../../core/theme/theme_data.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/cv_provider.dart';
 
@@ -12,19 +13,25 @@ class CVSectionNavigation extends ConsumerWidget {
   final CVSection currentSection;
   final Function(CVSection) onSectionChanged;
 
-  const CVSectionNavigation({super.key, required this.currentSection, required this.onSectionChanged});
+  const CVSectionNavigation({
+    super.key,
+    required this.currentSection,
+    required this.onSectionChanged,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = ref.colors;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.spacingM),
       children: [
         Text(
           l10n.cvSections,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: colors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppConstants.spacingL),
         ...CVSection.values.map((section) {
@@ -33,14 +40,26 @@ class CVSectionNavigation extends ConsumerWidget {
 
           return Padding(
             padding: const EdgeInsets.only(bottom: AppConstants.spacingS),
-            child: _buildSectionTile(context, section, isActive, isCompleted),
+            child: _buildSectionTile(
+              context,
+              section,
+              isActive,
+              isCompleted,
+              colors,
+            ),
           );
         }),
       ],
     );
   }
 
-  Widget _buildSectionTile(BuildContext context, CVSection section, bool isActive, bool isCompleted) {
+  Widget _buildSectionTile(
+    BuildContext context,
+    CVSection section,
+    bool isActive,
+    bool isCompleted,
+    AppColorScheme colors,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     String title;
     String description;
@@ -84,7 +103,7 @@ class CVSectionNavigation extends ConsumerWidget {
         break;
     }
     return Material(
-      color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+      color: isActive ? colors.primary.withOpacity(0.1) : Colors.transparent,
       borderRadius: BorderRadius.circular(AppConstants.radiusM),
       child: InkWell(
         onTap: () => onSectionChanged(section),
@@ -92,7 +111,9 @@ class CVSectionNavigation extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.all(AppConstants.spacingM),
           decoration: BoxDecoration(
-            border: isActive ? Border.all(color: AppColors.primary, width: 2) : null,
+            border: isActive
+                ? Border.all(color: colors.primary, width: 2)
+                : null,
             borderRadius: BorderRadius.circular(AppConstants.radiusM),
           ),
           child: Row(
@@ -103,15 +124,17 @@ class CVSectionNavigation extends ConsumerWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: isActive
-                      ? AppColors.primary
+                      ? colors.primary
                       : isCompleted
-                      ? AppColors.success
-                      : AppColors.grey300,
+                      ? colors.success
+                      : colors.grey300,
                   borderRadius: BorderRadius.circular(AppConstants.radiusM),
                 ),
                 child: Icon(
                   _getSectionIcon(section),
-                  color: isActive || isCompleted ? AppColors.white : AppColors.grey600,
+                  color: isActive || isCompleted
+                      ? colors.white
+                      : colors.grey600,
                   size: 20,
                 ),
               ),
@@ -124,14 +147,18 @@ class CVSectionNavigation extends ConsumerWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                        color: isActive ? AppColors.primary : AppColors.textPrimary,
+                        fontWeight: isActive
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                        color: isActive ? colors.primary : colors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: AppConstants.spacingXs),
                     Text(
                       description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colors.textSecondary,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -140,7 +167,11 @@ class CVSectionNavigation extends ConsumerWidget {
               ),
               // Completion Indicator
               if (isCompleted && !isActive)
-                Icon(PhosphorIcons.checkCircle(PhosphorIconsStyle.fill), color: AppColors.success, size: 20),
+                Icon(
+                  PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
+                  color: colors.success,
+                  size: 20,
+                ),
             ],
           ),
         ),
@@ -203,7 +234,8 @@ class CVSectionNavigation extends ConsumerWidget {
         return true; // Optional section
 
       case CVSection.preview:
-        return _isSectionCompleted(CVSection.personalInfo, ref) && _isSectionCompleted(CVSection.summary, ref);
+        return _isSectionCompleted(CVSection.personalInfo, ref) &&
+            _isSectionCompleted(CVSection.summary, ref);
     }
   }
 }

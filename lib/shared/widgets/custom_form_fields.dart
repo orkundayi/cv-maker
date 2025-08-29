@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_constants.dart';
-import '../../core/constants/app_colors.dart';
+import '../../core/extensions/theme_extensions.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Custom text form field with consistent styling
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends ConsumerWidget {
   const CustomTextFormField({
     super.key,
     required this.controller,
@@ -44,7 +45,7 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
@@ -58,13 +59,18 @@ class CustomTextFormField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       inputFormatters: inputFormatters,
       autofocus: autofocus,
-      decoration: InputDecoration(labelText: label, hintText: hint, prefixIcon: prefixIcon, suffixIcon: suffixIcon),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+      ),
     );
   }
 }
 
 /// Custom dropdown form field
-class CustomDropdownFormField<T> extends StatelessWidget {
+class CustomDropdownFormField<T> extends ConsumerWidget {
   const CustomDropdownFormField({
     super.key,
     required this.value,
@@ -85,20 +91,21 @@ class CustomDropdownFormField<T> extends StatelessWidget {
   final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = ref.colors;
     return DropdownButtonFormField<T>(
-      initialValue: value,
+      value: value,
       items: items,
       onChanged: enabled ? onChanged : null,
       validator: validator,
       decoration: InputDecoration(labelText: label, hintText: hint),
-      dropdownColor: AppColors.white,
+      dropdownColor: colors.white,
     );
   }
 }
 
 /// Custom date picker form field
-class CustomDateFormField extends StatelessWidget {
+class CustomDateFormField extends ConsumerWidget {
   const CustomDateFormField({
     super.key,
     required this.controller,
@@ -121,13 +128,17 @@ class CustomDateFormField extends StatelessWidget {
   final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextFormField(
       controller: controller,
       validator: validator,
       enabled: enabled,
       readOnly: true,
-      decoration: InputDecoration(labelText: label, hintText: hint, suffixIcon: const Icon(Icons.calendar_today)),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        suffixIcon: const Icon(Icons.calendar_today),
+      ),
       onTap: enabled ? () => _selectDate(context) : null,
     );
   }
@@ -147,7 +158,7 @@ class CustomDateFormField extends StatelessWidget {
 }
 
 /// Custom checkbox list tile
-class CustomCheckboxListTile extends StatelessWidget {
+class CustomCheckboxListTile extends ConsumerWidget {
   const CustomCheckboxListTile({
     super.key,
     required this.value,
@@ -164,7 +175,8 @@ class CustomCheckboxListTile extends StatelessWidget {
   final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = ref.colors;
     return CheckboxListTile(
       value: value,
       onChanged: enabled ? onChanged : null,
@@ -172,13 +184,13 @@ class CustomCheckboxListTile extends StatelessWidget {
       subtitle: subtitle != null ? Text(subtitle!) : null,
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
-      activeColor: AppColors.primary,
+      activeColor: colors.primary,
     );
   }
 }
 
 /// Custom chip input field for tags/skills
-class CustomChipInputField extends StatefulWidget {
+class CustomChipInputField extends ConsumerStatefulWidget {
   const CustomChipInputField({
     super.key,
     required this.chips,
@@ -195,10 +207,11 @@ class CustomChipInputField extends StatefulWidget {
   final bool enabled;
 
   @override
-  State<CustomChipInputField> createState() => _CustomChipInputFieldState();
+  ConsumerState<CustomChipInputField> createState() =>
+      _CustomChipInputFieldState();
 }
 
-class _CustomChipInputFieldState extends State<CustomChipInputField> {
+class _CustomChipInputFieldState extends ConsumerState<CustomChipInputField> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
@@ -227,6 +240,7 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ref.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -237,7 +251,7 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
         Container(
           padding: const EdgeInsets.all(AppConstants.spacingM),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: colors.border),
             borderRadius: BorderRadius.circular(AppConstants.radiusM),
           ),
           child: Column(
@@ -249,10 +263,12 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
                   children: widget.chips.map((chip) {
                     return Chip(
                       label: Text(chip),
-                      onDeleted: widget.enabled ? () => _removeChip(chip) : null,
-                      backgroundColor: AppColors.primary.withOpacity(0.1),
-                      labelStyle: const TextStyle(color: AppColors.primary),
-                      deleteIconColor: AppColors.primary,
+                      onDeleted: widget.enabled
+                          ? () => _removeChip(chip)
+                          : null,
+                      backgroundColor: colors.primary.withOpacity(0.1),
+                      labelStyle: TextStyle(color: colors.primary),
+                      deleteIconColor: colors.primary,
                     );
                   }).toList(),
                 ),
@@ -263,7 +279,9 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
                 focusNode: _focusNode,
                 enabled: widget.enabled,
                 decoration: InputDecoration(
-                  hintText: widget.hint ?? AppLocalizations.of(context)!.chipInputHint,
+                  hintText:
+                      widget.hint ??
+                      AppLocalizations.of(context)!.chipInputHint,
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
@@ -281,7 +299,7 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
 }
 
 /// Custom slider form field
-class CustomSliderFormField extends StatelessWidget {
+class CustomSliderFormField extends ConsumerWidget {
   const CustomSliderFormField({
     super.key,
     required this.value,
@@ -302,7 +320,8 @@ class CustomSliderFormField extends StatelessWidget {
   final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = ref.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -313,9 +332,10 @@ class CustomSliderFormField extends StatelessWidget {
               Text(label!, style: Theme.of(context).textTheme.labelLarge),
               Text(
                 '${value.round()}%',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -327,8 +347,8 @@ class CustomSliderFormField extends StatelessWidget {
           min: min,
           max: max,
           divisions: divisions,
-          activeColor: AppColors.primary,
-          inactiveColor: AppColors.grey300,
+          activeColor: colors.primary,
+          inactiveColor: colors.grey300,
         ),
       ],
     );

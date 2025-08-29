@@ -7,6 +7,7 @@ import 'l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'core/providers/language_provider.dart';
+import 'core/providers/theme_provider.dart';
 import 'features/cv_builder/presentation/pages/cv_builder_page.dart';
 
 void main() {
@@ -19,10 +20,11 @@ class CVMakerApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(languageProvider);
+    final colorScheme = ref.watch(colorSchemeProvider);
 
     return MaterialApp(
       title: AppConstants.appName,
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.getTheme(colorScheme),
       debugShowCheckedModeBanner: false,
 
       // Internationalization setup

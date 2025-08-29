@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -42,6 +42,7 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = ref.colors;
     final hasSummary = _summaryController.text.trim().isNotEmpty;
 
     return ResponsiveCard(
@@ -51,14 +52,12 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearSummary,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ]
@@ -71,27 +70,22 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
             Container(
               padding: const EdgeInsets.all(AppConstants.spacingM),
               decoration: BoxDecoration(
-                color: AppColors.info.withOpacity(0.1),
+                color: colors.info.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(AppConstants.radiusM),
-                border: Border.all(color: AppColors.info.withOpacity(0.3)),
+                border: Border.all(color: colors.info.withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.lightbulb_outline,
-                        color: AppColors.info,
-                        size: 20,
-                      ),
+                      Icon(Icons.lightbulb_outline, color: colors.info, size: 20),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
                         l10n.writingTips,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: AppColors.info,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleSmall?.copyWith(color: colors.info, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -101,37 +95,27 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                     children: [
                       Text(
                         l10n.keepItConcise,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.highlightKeyStrengths,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.mentionCareerGoals,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.useActionWords,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.tailorToRole,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                     ],
                   ),
@@ -166,27 +150,25 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 Color statusBgColor;
 
                 if (charCount < 100) {
-                  statusColor = AppColors.warning;
+                  statusColor = colors.warning;
                   statusText = l10n.tooShort;
-                  statusBgColor = AppColors.warning.withOpacity(0.1);
+                  statusBgColor = colors.warning.withOpacity(0.1);
                 } else if (charCount > 500) {
-                  statusColor = AppColors.error;
+                  statusColor = colors.error;
                   statusText = l10n.tooLong;
-                  statusBgColor = AppColors.error.withOpacity(0.1);
+                  statusBgColor = colors.error.withOpacity(0.1);
                 } else {
-                  statusColor = AppColors.success;
+                  statusColor = colors.success;
                   statusText = l10n.perfectLength;
-                  statusBgColor = AppColors.success.withOpacity(0.1);
+                  statusBgColor = colors.success.withOpacity(0.1);
                 }
 
                 return Container(
                   padding: const EdgeInsets.all(AppConstants.spacingM),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant.withOpacity(0.3),
+                    color: colors.surfaceVariant.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(AppConstants.radiusS),
-                    border: Border.all(
-                      color: AppColors.border.withOpacity(0.5),
-                    ),
+                    border: Border.all(color: colors.border.withOpacity(0.5)),
                   ),
                   child: Column(
                     children: [
@@ -195,8 +177,7 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                         children: [
                           Text(
                             '${l10n.characterCount}: $charCount/500',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textSecondary),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -205,17 +186,13 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                             ),
                             decoration: BoxDecoration(
                               color: statusBgColor,
-                              borderRadius: BorderRadius.circular(
-                                AppConstants.radiusS,
-                              ),
+                              borderRadius: BorderRadius.circular(AppConstants.radiusS),
                             ),
                             child: Text(
                               statusText,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: statusColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
@@ -223,7 +200,7 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                       const SizedBox(height: AppConstants.spacingS),
                       LinearProgressIndicator(
                         value: progress,
-                        backgroundColor: AppColors.grey300,
+                        backgroundColor: colors.grey300,
                         valueColor: AlwaysStoppedAnimation(statusColor),
                       ),
                     ],
@@ -237,36 +214,29 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
             Container(
               padding: const EdgeInsets.all(AppConstants.spacingM),
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.05),
+                color: colors.success.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(AppConstants.radiusM),
-                border: Border.all(color: AppColors.success.withOpacity(0.2)),
+                border: Border.all(color: colors.success.withOpacity(0.2)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.tips_and_updates_outlined,
-                        color: AppColors.success,
-                        size: 20,
-                      ),
+                      Icon(Icons.tips_and_updates_outlined, color: ref.colors.success, size: 20),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
                         l10n.proTips,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: AppColors.success,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleSmall?.copyWith(color: colors.success, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.summaryGrabAttention,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColors.success),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.success),
                   ),
                 ],
               ),
@@ -292,26 +262,17 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
           ),
           content: Text(l10n.clearSummaryConfirm),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.cancel),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearSummary();
                 _summaryController.clear();
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.summaryCleared),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(l10n.summaryCleared), backgroundColor: ref.colors.success));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
               child: Text(l10n.clear),
             ),
           ],

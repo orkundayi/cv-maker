@@ -77,18 +77,28 @@ class CVData {
   factory CVData.fromJson(Map<String, dynamic> json) {
     return CVData(
       id: json['id'] as String?,
-      personalInfo: PersonalInfo.fromJson(json['personalInfo'] as Map<String, dynamic>),
+      personalInfo: PersonalInfo.fromJson(
+        json['personalInfo'] as Map<String, dynamic>,
+      ),
       workExperiences:
           (json['workExperiences'] as List<dynamic>?)
               ?.map((e) => WorkExperience.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       educations:
-          (json['educations'] as List<dynamic>?)?.map((e) => Education.fromJson(e as Map<String, dynamic>)).toList() ??
+          (json['educations'] as List<dynamic>?)
+              ?.map((e) => Education.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      skills: (json['skills'] as List<dynamic>?)?.map((e) => Skill.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+      skills:
+          (json['skills'] as List<dynamic>?)
+              ?.map((e) => Skill.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       languages:
-          (json['languages'] as List<dynamic>?)?.map((e) => Language.fromJson(e as Map<String, dynamic>)).toList() ??
+          (json['languages'] as List<dynamic>?)
+              ?.map((e) => Language.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
       certificates:
           (json['certificates'] as List<dynamic>?)
@@ -96,7 +106,10 @@ class CVData {
               .toList() ??
           [],
       projects:
-          (json['projects'] as List<dynamic>?)?.map((e) => Project.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+          (json['projects'] as List<dynamic>?)
+              ?.map((e) => Project.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       summary: json['summary'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
@@ -122,7 +135,8 @@ class CVData {
           startDate: DateTime(2021, 1),
           endDate: null,
           isCurrentJob: true,
-          description: 'Leading a team of 5 developers in building scalable web applications.',
+          description:
+              'Leading a team of 5 developers in building scalable web applications.',
           responsibilities: [
             'Architect and develop modern web applications using React and Node.js',
             'Lead technical discussions and code reviews',
@@ -158,11 +172,36 @@ class CVData {
         ),
       ],
       skills: [
-        Skill(id: 'skill1', name: 'Flutter', level: SkillLevel.expert, category: SkillCategory.technical),
-        Skill(id: 'skill2', name: 'React', level: SkillLevel.advanced, category: SkillCategory.technical),
-        Skill(id: 'skill3', name: 'Node.js', level: SkillLevel.advanced, category: SkillCategory.technical),
-        Skill(id: 'skill4', name: 'Leadership', level: SkillLevel.intermediate, category: SkillCategory.soft),
-        Skill(id: 'skill5', name: 'English', level: SkillLevel.expert, category: SkillCategory.language),
+        Skill(
+          id: 'skill1',
+          name: 'Flutter',
+          level: SkillLevel.expert,
+          category: SkillCategory.technical,
+        ),
+        Skill(
+          id: 'skill2',
+          name: 'React',
+          level: SkillLevel.advanced,
+          category: SkillCategory.technical,
+        ),
+        Skill(
+          id: 'skill3',
+          name: 'Node.js',
+          level: SkillLevel.advanced,
+          category: SkillCategory.technical,
+        ),
+        Skill(
+          id: 'skill4',
+          name: 'Leadership',
+          level: SkillLevel.intermediate,
+          category: SkillCategory.soft,
+        ),
+        Skill(
+          id: 'skill5',
+          name: 'English',
+          level: SkillLevel.expert,
+          category: SkillCategory.language,
+        ),
       ],
       projects: [
         Project(
@@ -192,7 +231,11 @@ class CVData {
       languages: [
         Language(id: 'lang1', name: 'Turkish', level: LanguageLevel.native),
         Language(id: 'lang2', name: 'English', level: LanguageLevel.advanced),
-        Language(id: 'lang3', name: 'German', level: LanguageLevel.intermediate),
+        Language(
+          id: 'lang3',
+          name: 'German',
+          level: LanguageLevel.intermediate,
+        ),
       ],
       certificates: [
         Certificate(
@@ -220,7 +263,9 @@ class CVData {
   bool get hasContent {
     // Check if personal info has basic required fields
     final hasBasicInfo =
-        personalInfo.firstName.isNotEmpty && personalInfo.lastName.isNotEmpty && personalInfo.email.isNotEmpty;
+        personalInfo.firstName.isNotEmpty &&
+        personalInfo.lastName.isNotEmpty &&
+        personalInfo.email.isNotEmpty;
 
     // Check if any other section has content
     final hasOtherContent =
@@ -326,7 +371,12 @@ class PersonalInfo {
   }
 
   factory PersonalInfo.empty() {
-    return const PersonalInfo(firstName: '', lastName: '', email: '', phone: '');
+    return const PersonalInfo(
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+    );
   }
 
   /// Create demo personal info
@@ -414,10 +464,14 @@ class WorkExperience {
       company: (json['company'] as String?) ?? '',
       location: json['location'] as String?,
       startDate: DateTime.parse(json['startDate'] as String),
-      endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'] as String)
+          : null,
       isCurrentJob: (json['isCurrentJob'] as bool?) ?? false,
       description: json['description'] as String?,
-      responsibilities: List<String>.from((json['responsibilities'] as List<dynamic>?) ?? []),
+      responsibilities: List<String>.from(
+        (json['responsibilities'] as List<dynamic>?) ?? [],
+      ),
     );
   }
 }
@@ -491,7 +545,9 @@ class Education {
       institution: (json['institution'] as String?) ?? '',
       location: json['location'] as String?,
       startDate: DateTime.parse(json['startDate'] as String),
-      endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'] as String)
+          : null,
       isCurrentStudy: (json['isCurrentStudy'] as bool?) ?? false,
       description: json['description'] as String?,
       gpa: (json['gpa'] as num?)?.toDouble(),
@@ -506,9 +562,19 @@ class Skill {
   final SkillLevel level;
   final SkillCategory category;
 
-  Skill({String? id, required this.name, required this.level, required this.category}) : id = id ?? const Uuid().v4();
+  Skill({
+    String? id,
+    required this.name,
+    required this.level,
+    required this.category,
+  }) : id = id ?? const Uuid().v4();
 
-  Skill copyWith({String? id, String? name, SkillLevel? level, SkillCategory? category}) {
+  Skill copyWith({
+    String? id,
+    String? name,
+    SkillLevel? level,
+    SkillCategory? category,
+  }) {
     return Skill(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -518,7 +584,12 @@ class Skill {
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name, 'level': level.name, 'category': category.name};
+    return {
+      'id': id,
+      'name': name,
+      'level': level.name,
+      'category': category.name,
+    };
   }
 
   factory Skill.fromJson(Map<String, dynamic> json) {
@@ -555,6 +626,29 @@ enum SkillLevel {
       case SkillLevel.expert:
         return 'Expert';
     }
+  }
+
+  String getLocalizedDisplayName(String locale) {
+    final localizationKey = 'skill${name[0].toUpperCase()}${name.substring(1)}';
+    final translations = _getTranslations(locale);
+    return translations[localizationKey] ?? displayName;
+  }
+
+  Map<String, String> _getTranslations(String locale) {
+    if (locale.startsWith('tr')) {
+      return {
+        'skillBeginner': 'Başlangıç',
+        'skillIntermediate': 'Orta',
+        'skillAdvanced': 'İleri',
+        'skillExpert': 'Uzman',
+      };
+    }
+    return {
+      'skillBeginner': 'Beginner',
+      'skillIntermediate': 'Intermediate',
+      'skillAdvanced': 'Advanced',
+      'skillExpert': 'Expert',
+    };
   }
 
   int get percentage {
@@ -598,10 +692,15 @@ class Language {
   final String name;
   final LanguageLevel level;
 
-  Language({String? id, required this.name, required this.level}) : id = id ?? const Uuid().v4();
+  Language({String? id, required this.name, required this.level})
+    : id = id ?? const Uuid().v4();
 
   Language copyWith({String? id, String? name, LanguageLevel? level}) {
-    return Language(id: id ?? this.id, name: name ?? this.name, level: level ?? this.level);
+    return Language(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      level: level ?? this.level,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -644,6 +743,34 @@ enum LanguageLevel {
       case LanguageLevel.native:
         return 'C2 - Native';
     }
+  }
+
+  String getLocalizedDisplayName(String locale) {
+    final localizationKey =
+        'language${name[0].toUpperCase()}${name.substring(1)}';
+    final translations = _getTranslations(locale);
+    return translations[localizationKey] ?? displayName;
+  }
+
+  Map<String, String> _getTranslations(String locale) {
+    if (locale.startsWith('tr')) {
+      return {
+        'languageBeginner': 'A1 - Başlangıç',
+        'languageElementary': 'A2 - Temel',
+        'languageIntermediate': 'B1 - Orta',
+        'languageUpperIntermediate': 'B2 - Orta Üstü',
+        'languageAdvanced': 'C1 - İleri',
+        'languageNative': 'C2 - Ana Dil',
+      };
+    }
+    return {
+      'languageBeginner': 'A1 - Beginner',
+      'languageElementary': 'A2 - Elementary',
+      'languageIntermediate': 'B1 - Intermediate',
+      'languageUpperIntermediate': 'B2 - Upper Intermediate',
+      'languageAdvanced': 'C1 - Advanced',
+      'languageNative': 'C2 - Native',
+    };
   }
 }
 
@@ -705,7 +832,9 @@ class Certificate {
       name: (json['name'] as String?) ?? '',
       issuer: (json['issuer'] as String?) ?? '',
       issueDate: DateTime.parse(json['issueDate'] as String),
-      expiryDate: json['expiryDate'] != null ? DateTime.parse(json['expiryDate'] as String) : null,
+      expiryDate: json['expiryDate'] != null
+          ? DateTime.parse(json['expiryDate'] as String)
+          : null,
       credentialId: json['credentialId'] as String?,
       url: json['url'] as String?,
     );
@@ -780,11 +909,15 @@ class Project {
       name: (json['name'] as String?) ?? '',
       description: (json['description'] as String?) ?? '',
       startDate: DateTime.parse(json['startDate'] as String),
-      endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'] as String)
+          : null,
       isOngoing: (json['isOngoing'] as bool?) ?? false,
       url: json['url'] as String?,
       githubUrl: json['githubUrl'] as String?,
-      technologies: List<String>.from((json['technologies'] as List<dynamic>?) ?? []),
+      technologies: List<String>.from(
+        (json['technologies'] as List<dynamic>?) ?? [],
+      ),
     );
   }
 }

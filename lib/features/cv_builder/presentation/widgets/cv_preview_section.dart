@@ -537,11 +537,7 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
                 const Spacer(),
                 IconButton(
                   onPressed: () => _showClearAllDialog(context),
-                  icon: Icon(
-                    PhosphorIcons.trash(),
-                    color: Colors.red,
-                    size: 18,
-                  ),
+                  icon: Icon(PhosphorIcons.trash(), size: 18),
                   tooltip: l10n.clearAllData,
                   constraints: const BoxConstraints(
                     minWidth: 32,
@@ -592,10 +588,14 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
                 borderRadius: BorderRadius.circular(8),
                 child: PdfPreview(
                   build: (format) async {
-                    // Use the selected template to generate PDF
+                    // Use the selected template to generate PDF with current locale
+                    final currentLocale = Localizations.localeOf(
+                      context,
+                    ).languageCode;
                     final pdf = await CVExportService.generatePDF(
                       cvData,
                       templateId: _selectedTemplateId,
+                      locale: currentLocale,
                     );
                     return pdf.save();
                   },
@@ -701,7 +701,7 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
                   onPressed: () {
                     _showClearAllDialog(context);
                   },
-                  icon: Icon(PhosphorIcons.trash(), color: Colors.red),
+                  icon: Icon(PhosphorIcons.trash()),
                   label: Text(
                     l10n.clearAllData,
                     style: const TextStyle(color: Colors.red),
@@ -742,10 +742,12 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
     try {
       final fileName =
           'cv_${cvData.personalInfo.firstName.toLowerCase()}_${cvData.personalInfo.lastName.toLowerCase()}';
+      final currentLocale = Localizations.localeOf(context).languageCode;
       await CVExportService.exportToPDF(
         cvData,
         fileName: fileName,
         templateId: _selectedTemplateId,
+        locale: currentLocale,
       );
 
       if (context.mounted) {
@@ -806,7 +808,7 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
         return AlertDialog(
           title: Row(
             children: [
-              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              Icon(PhosphorIcons.warning(), size: 24),
               const SizedBox(width: 8),
               Text(l10n.clearAllData),
             ],

@@ -5,7 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
@@ -105,7 +105,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
     _showDateSelector(context, false);
@@ -199,8 +199,12 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
 
   void _saveExperience() {
     if (_formKey.currentState?.validate() ?? false) {
-      if (kDebugMode) print('DEBUG SAVE: Company Controller: ${_companyController.text}');
-      if (kDebugMode) print('DEBUG SAVE: Position Controller: ${_positionController.text}');
+      if (kDebugMode) {
+        print('DEBUG SAVE: Company Controller: ${_companyController.text}');
+      }
+      if (kDebugMode) {
+        print('DEBUG SAVE: Position Controller: ${_positionController.text}');
+      }
 
       final experience = WorkExperience(
         id: const Uuid().v4(),
@@ -222,14 +226,18 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: ref.colors.success));
     }
   }
 
   void _updateExperience() {
     if (_formKey.currentState?.validate() ?? false) {
-      if (kDebugMode) print('DEBUG: Company Controller: ${_companyController.text}');
-      if (kDebugMode) print('DEBUG: Position Controller: ${_positionController.text}');
+      if (kDebugMode) {
+        print('DEBUG: Company Controller: ${_companyController.text}');
+      }
+      if (kDebugMode) {
+        print('DEBUG: Position Controller: ${_positionController.text}');
+      }
 
       final experience = WorkExperience(
         id: _editingExperience!.id,
@@ -251,7 +259,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: ref.colors.success));
     }
   }
 
@@ -267,7 +275,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearAllExperiences,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
@@ -286,11 +294,11 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
             padding: const EdgeInsets.all(AppConstants.spacingL),
             decoration: BoxDecoration(
               color: _editingExperience != null
-                  ? AppColors.primary.withOpacity(0.05)
-                  : AppColors.surfaceVariant.withOpacity(0.3),
+                  ? ref.colors.primary.withOpacity(0.05)
+                  : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingExperience != null ? AppColors.primary : AppColors.border,
+                color: _editingExperience != null ? ref.colors.primary : ref.colors.border,
                 width: _editingExperience != null ? 2 : 1,
               ),
             ),
@@ -306,14 +314,14 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         Row(
                           children: [
                             if (_editingExperience != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
+                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
                               _editingExperience != null ? l10n.editExperience : l10n.addExperience,
                               style: Theme.of(
                                 context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                             ),
                           ],
                         ),
@@ -322,7 +330,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
                           ),
                       ],
                     ),
@@ -474,7 +482,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         label: Text(_editingExperience != null ? l10n.editExperience : l10n.addExperience),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingExperience != null ? AppColors.success : null,
+                          backgroundColor: _editingExperience != null ? ref.colors.success : null,
                         ),
                       ),
                     ),
@@ -526,16 +534,16 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.briefcase(), size: 64, color: AppColors.grey400),
+                  Icon(PhosphorIcons.briefcase(), size: 64, color: ref.colors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     AppLocalizations.of(context)!.workExperienceDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     AppLocalizations.of(context)!.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -575,7 +583,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
                 boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))],
@@ -643,7 +651,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         ),
                         IconButton(
                           onPressed: () => _deleteExperience(experience.id),
-                          icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
+                          icon: Icon(PhosphorIcons.trash(), size: 18, color: ref.colors.error),
                           iconSize: 18,
                           visualDensity: VisualDensity.compact,
                           tooltip: AppLocalizations.of(context)!.delete,
@@ -667,7 +675,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         decoration: BoxDecoration(
                           color: experience.isCurrentJob
                               ? Theme.of(context).primaryColor.withOpacity(0.1)
-                              : AppColors.success.withOpacity(0.1),
+                              : ref.colors.success.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -676,14 +684,14 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             Icon(
                               PhosphorIcons.calendar(),
                               size: 14,
-                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
                             ),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
                                 _formatDateRange(experience.startDate, experience.endDate),
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                                  color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
                                   fontWeight: FontWeight.w500,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -754,7 +762,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         decoration: BoxDecoration(
                           color: experience.isCurrentJob
                               ? Theme.of(context).primaryColor.withOpacity(0.1)
-                              : AppColors.success.withOpacity(0.1),
+                              : ref.colors.success.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -763,13 +771,13 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             Icon(
                               PhosphorIcons.calendar(),
                               size: 14,
-                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               _formatDateRange(experience.startDate, experience.endDate),
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: experience.isCurrentJob ? Theme.of(context).primaryColor : AppColors.success,
+                                color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -938,7 +946,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                 _resetForm();
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text(l10n.experienceCleared), backgroundColor: AppColors.success));
+                ).showSnackBar(SnackBar(content: Text(l10n.experienceCleared), backgroundColor: ref.colors.success));
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
               child: Text(l10n.clear),

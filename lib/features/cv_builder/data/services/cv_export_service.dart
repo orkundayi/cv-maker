@@ -20,7 +20,11 @@ class CVExportService {
 
   /// Generate PDF document for CV using specified template
   /// If templateId is not provided, uses the default template
-  static Future<pw.Document> generatePDF(CVData cvData, {String? templateId}) async {
+  static Future<pw.Document> generatePDF(
+    CVData cvData, {
+    String? templateId,
+    String? locale,
+  }) async {
     _ensureInitialized();
 
     // Get the template
@@ -34,13 +38,22 @@ class CVExportService {
     // Fallback to default template if not found
     template ??= registry.getDefaultTemplate();
 
-    // Generate PDF using the selected template
-    return template.generatePDF(cvData);
+    // Generate PDF using the selected template with locale
+    return template.generatePDF(cvData, locale: locale ?? 'en');
   }
 
   /// Generate and download a professional CV PDF with template support
-  static Future<void> exportToPDF(CVData cvData, {String? fileName, String? templateId}) async {
-    final pdf = await generatePDF(cvData, templateId: templateId);
+  static Future<void> exportToPDF(
+    CVData cvData, {
+    String? fileName,
+    String? templateId,
+    String? locale,
+  }) async {
+    final pdf = await generatePDF(
+      cvData,
+      templateId: templateId,
+      locale: locale,
+    );
 
     // Save PDF
     await Printing.layoutPdf(

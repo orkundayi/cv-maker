@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
@@ -71,7 +71,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.educationUpdatedSuccessfully),
-          backgroundColor: AppColors.success,
+          backgroundColor: ref.colors.success,
         ),
       );
     } else {
@@ -79,7 +79,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.educationAddedSuccessfully),
-          backgroundColor: AppColors.success,
+          backgroundColor: ref.colors.success,
         ),
       );
     }
@@ -100,7 +100,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearAllSkills,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
@@ -119,11 +119,11 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
             padding: const EdgeInsets.all(AppConstants.spacingL),
             decoration: BoxDecoration(
               color: _editingSkill != null
-                  ? AppColors.primary.withOpacity(0.05)
-                  : AppColors.surfaceVariant.withOpacity(0.3),
+                  ? ref.colors.primary.withOpacity(0.05)
+                  : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingSkill != null ? AppColors.primary : AppColors.border,
+                color: _editingSkill != null ? ref.colors.primary : ref.colors.border,
                 width: _editingSkill != null ? 2 : 1,
               ),
             ),
@@ -138,14 +138,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       Row(
                         children: [
                           if (_editingSkill != null) ...[
-                            Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
+                            Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
                             _editingSkill != null ? l10n.editSkill : l10n.addSkill,
                             style: Theme.of(
                               context,
-                            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                           ),
                         ],
                       ),
@@ -154,7 +154,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
                           label: Text(l10n.cancel),
-                          style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                          style: TextButton.styleFrom(foregroundColor: ref.colors.error),
                         ),
                     ],
                   ),
@@ -289,7 +289,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       label: Text(_editingSkill != null ? l10n.editSkill : l10n.addSkill),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                        backgroundColor: _editingSkill != null ? AppColors.success : null,
+                        backgroundColor: _editingSkill != null ? ref.colors.success : null,
                       ),
                     ),
                   ),
@@ -331,16 +331,16 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.lightning(), size: 64, color: AppColors.grey400),
+                  Icon(PhosphorIcons.lightning(), size: 64, color: ref.colors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.skillsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -354,13 +354,13 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
   Color _getLevelColor(SkillLevel level) {
     switch (level) {
       case SkillLevel.beginner:
-        return AppColors.warning;
+        return ref.colors.warning;
       case SkillLevel.intermediate:
-        return AppColors.info;
+        return ref.colors.info;
       case SkillLevel.advanced:
-        return AppColors.primary;
+        return ref.colors.primary;
       case SkillLevel.expert:
-        return AppColors.success;
+        return ref.colors.success;
     }
   }
 
@@ -546,7 +546,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     ),
                     IconButton(
                       onPressed: () => _deleteSkill(skill.id),
-                      icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
+                      icon: Icon(PhosphorIcons.trash(), size: 18, color: ref.colors.error),
                       iconSize: 18,
                       visualDensity: VisualDensity.compact,
                       tooltip: AppLocalizations.of(context)!.delete,
@@ -639,7 +639,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.skillsCleared),
-                    backgroundColor: AppColors.success,
+                    backgroundColor: ref.colors.success,
                   ),
                 );
               },

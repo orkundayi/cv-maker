@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -234,8 +234,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash()),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearPersonalInformation,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
               ),
             ]
           : null,
@@ -295,7 +300,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.optionalPhotoHint,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
                   ),
                 ],
               ),
@@ -476,7 +481,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         const SizedBox(height: AppConstants.spacingS),
         Text(
           l10n.professionalLinksHint,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveFormField(
@@ -571,7 +576,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
           final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(l10n.profilePhotoUploaded), backgroundColor: AppColors.success));
+          ).showSnackBar(SnackBar(content: Text(l10n.profilePhotoUploaded), backgroundColor: ref.colors.success));
           if (kDebugMode) {
             print('🎉 Success message gösterildi');
           }
@@ -587,7 +592,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.imageUploadFailed), backgroundColor: AppColors.error));
+        ).showSnackBar(SnackBar(content: Text(l10n.imageUploadFailed), backgroundColor: ref.colors.error));
       }
     }
     if (kDebugMode) print('🏁 _selectProfileImage tamamlandı');
@@ -638,7 +643,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.personalInfoCleared), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.personalInfoCleared), backgroundColor: ref.colors.success));
     }
   }
 }
@@ -676,9 +681,9 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: AppColors.grey100,
+        color: ref.colors.grey100,
         borderRadius: BorderRadius.circular(AppConstants.radiusL),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: ref.colors.border),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppConstants.radiusL),
@@ -689,17 +694,19 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
                 height: 100,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(PhosphorIcons.user(), size: 40, color: AppColors.grey400);
+                  return Icon(PhosphorIcons.user(), size: 40, color: ref.colors.grey400);
                 },
               )
-            : Icon(PhosphorIcons.user(), size: 40, color: AppColors.grey400),
+            : Icon(PhosphorIcons.user(), size: 40, color: ref.colors.grey400),
       ),
     );
   }
 
   // Method to update image (called from parent)
   void updateImage(String base64Image) {
-    if (kDebugMode) print('🖼️ _ProfileImageWidget.updateImage çağrıldı: ${base64Image.length} chars');
+    if (kDebugMode) {
+      print('🖼️ _ProfileImageWidget.updateImage çağrıldı: ${base64Image.length} chars');
+    }
     setState(() {
       _localProfileImage = base64Image.isEmpty ? null : base64Image;
     });

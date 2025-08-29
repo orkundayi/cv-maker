@@ -17,7 +17,7 @@ abstract class CVTemplate {
   String get previewImage;
 
   /// Generate PDF document using this template
-  Future<pw.Document> generatePDF(CVData cvData);
+  Future<pw.Document> generatePDF(CVData cvData, {String? locale});
 
   /// Get required fonts for this template
   Future<TemplateFonts> loadFonts();
@@ -31,7 +31,13 @@ class TemplateFonts {
   final pw.Font? lightFont;
   final pw.Font? italicFont;
 
-  TemplateFonts({this.regularFont, this.boldFont, this.mediumFont, this.lightFont, this.italicFont});
+  TemplateFonts({
+    this.regularFont,
+    this.boldFont,
+    this.mediumFont,
+    this.lightFont,
+    this.italicFont,
+  });
 }
 
 /// Template color scheme

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../../../shared/widgets/responsive_layout.dart';
@@ -97,7 +97,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
   void _selectExpiryDate() {
     if (_issueDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select issue date first'), backgroundColor: AppColors.warning),
+        SnackBar(content: const Text('Please select issue date first'), backgroundColor: ref.colors.warning),
       );
       return;
     }
@@ -200,14 +200,14 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     if (_issueDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.selectIssueDate), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.selectIssueDate), backgroundColor: ref.colors.error));
       return;
     }
 
     if (_hasExpiryDate && _expiryDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.selectExpiryDate), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.selectExpiryDate), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -216,7 +216,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     if (_expiryDate != null && _expiryDate!.isBefore(_issueDate!)) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.expiryBeforeIssueError), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.expiryBeforeIssueError), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -233,12 +233,12 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     if (_editingCertificate != null) {
       ref.read(cvDataProvider.notifier).updateCertificate(certificate);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Certificate updated successfully!'), backgroundColor: AppColors.success),
+        SnackBar(content: const Text('Certificate updated successfully!'), backgroundColor: ref.colors.success),
       );
     } else {
       ref.read(cvDataProvider.notifier).addCertificate(certificate);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Certificate added successfully!'), backgroundColor: AppColors.success),
+        SnackBar(content: const Text('Certificate added successfully!'), backgroundColor: ref.colors.success),
       );
     }
 
@@ -248,6 +248,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = ref.colors;
     final certificates = ref.watch(cvDataProvider).certificates;
 
     return ResponsiveCard(
@@ -257,7 +258,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearAllCertificates,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
@@ -276,11 +277,11 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
             padding: const EdgeInsets.all(AppConstants.spacingL),
             decoration: BoxDecoration(
               color: _editingCertificate != null
-                  ? AppColors.primary.withOpacity(0.05)
-                  : AppColors.surfaceVariant.withOpacity(0.3),
+                  ? colors.primary.withOpacity(0.05)
+                  : colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingCertificate != null ? AppColors.primary : AppColors.border,
+                color: _editingCertificate != null ? colors.primary : colors.border,
                 width: _editingCertificate != null ? 2 : 1,
               ),
             ),
@@ -296,14 +297,14 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                         Row(
                           children: [
                             if (_editingCertificate != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
+                              Icon(PhosphorIcons.pencilSimple(), color: colors.primary, size: 20),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
                               _editingCertificate != null ? l10n.editCertificate : l10n.addCertificate,
                               style: Theme.of(
                                 context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: colors.primary),
                             ),
                           ],
                         ),
@@ -312,7 +313,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                            style: TextButton.styleFrom(foregroundColor: colors.error),
                           ),
                       ],
                     ),
@@ -470,7 +471,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                         label: Text(_editingCertificate != null ? l10n.editCertificate : l10n.addCertificate),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingCertificate != null ? AppColors.success : null,
+                          backgroundColor: _editingCertificate != null ? colors.success : null,
                         ),
                       ),
                     ),
@@ -494,16 +495,16 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.certificate(), size: 64, color: AppColors.grey400),
+                  Icon(PhosphorIcons.certificate(), size: 64, color: colors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     AppLocalizations.of(context)!.certificationsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     AppLocalizations.of(context)!.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.grey500),
                   ),
                 ],
               ),
@@ -538,14 +539,14 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                         certificate.name,
                         style: Theme.of(
                           context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         certificate.issuer,
                         style: Theme.of(
                           context,
-                        ).textTheme.titleSmall?.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
+                        ).textTheme.titleSmall?.copyWith(color: ref.colors.textSecondary, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -554,12 +555,12 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                   children: [
                     IconButton(
                       onPressed: () => _editCertificate(certificate),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary),
+                      icon: Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary),
                       tooltip: 'Edit',
                     ),
                     IconButton(
                       onPressed: () => _deleteCertificate(certificate.id),
-                      icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
+                      icon: Icon(PhosphorIcons.trash()),
                       tooltip: 'Delete',
                     ),
                   ],
@@ -569,28 +570,30 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
             const SizedBox(height: AppConstants.spacingS),
             Row(
               children: [
-                Icon(PhosphorIcons.calendar(), size: 16, color: AppColors.textSecondary),
+                Icon(PhosphorIcons.calendar(), size: 16, color: ref.colors.textSecondary),
                 const SizedBox(width: 4),
                 Text(
                   '${AppLocalizations.of(context)!.issueDate}: ${certificate.issueDate.year}-${certificate.issueDate.month.toString().padLeft(2, '0')}',
                   style: Theme.of(
                     context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
+                  ).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary, fontStyle: FontStyle.italic),
                 ),
                 if (certificate.expiryDate != null) ...[
                   const SizedBox(width: AppConstants.spacingL),
                   Icon(
                     isExpired ? PhosphorIcons.warning() : PhosphorIcons.clock(),
                     size: 16,
-                    color: isExpired ? AppColors.error : (isExpiringSoon ? AppColors.warning : AppColors.textSecondary),
+                    color: isExpired
+                        ? ref.colors.error
+                        : (isExpiringSoon ? ref.colors.warning : ref.colors.textSecondary),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '${AppLocalizations.of(context)!.expires}: ${certificate.expiryDate!.year}-${certificate.expiryDate!.month.toString().padLeft(2, '0')}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: isExpired
-                          ? AppColors.error
-                          : (isExpiringSoon ? AppColors.warning : AppColors.textSecondary),
+                          ? ref.colors.error
+                          : (isExpiringSoon ? ref.colors.warning : ref.colors.textSecondary),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -601,11 +604,11 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               const SizedBox(height: AppConstants.spacingS),
               Row(
                 children: [
-                  Icon(PhosphorIcons.identificationCard(), size: 16, color: AppColors.textSecondary),
+                  Icon(PhosphorIcons.identificationCard(), size: 16, color: ref.colors.textSecondary),
                   const SizedBox(width: 4),
                   Text(
                     'ID: ${certificate.credentialId}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
                   ),
                 ],
               ),
@@ -614,7 +617,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               const SizedBox(height: AppConstants.spacingS),
               Row(
                 children: [
-                  Icon(PhosphorIcons.link(), size: 16, color: AppColors.primary),
+                  Icon(PhosphorIcons.link(), size: 16, color: ref.colors.primary),
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
@@ -625,7 +628,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                       AppLocalizations.of(context)!.verifyCertificate,
                       style: Theme.of(
                         context,
-                      ).textTheme.bodySmall?.copyWith(color: AppColors.primary, decoration: TextDecoration.underline),
+                      ).textTheme.bodySmall?.copyWith(color: ref.colors.primary, decoration: TextDecoration.underline),
                     ),
                   ),
                 ],
@@ -660,7 +663,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.certificatesCleared),
-                    backgroundColor: AppColors.success,
+                    backgroundColor: ref.colors.success,
                   ),
                 );
               },

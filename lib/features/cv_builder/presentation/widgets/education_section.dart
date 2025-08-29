@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/extensions/theme_extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -140,7 +140,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
     _showDateSelector(context, false);
@@ -153,14 +153,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     if (_startDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
 
     if (!_isCurrentlyStudying && _endDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -180,12 +180,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       ref.read(cvDataProvider.notifier).updateEducation(education);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: ref.colors.success));
     } else {
       ref.read(cvDataProvider.notifier).addEducation(education);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.educationAddedSuccessfully), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.educationAddedSuccessfully), backgroundColor: ref.colors.success));
     }
 
     _resetForm();
@@ -198,7 +198,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -206,7 +206,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
       return;
     }
 
@@ -226,7 +226,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: AppColors.success));
+    ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: ref.colors.success));
 
     _resetForm();
   }
@@ -329,7 +329,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
-                icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
+                icon: Icon(PhosphorIcons.trash(), size: 18),
                 tooltip: l10n.clearAllEducation,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
@@ -348,11 +348,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             padding: const EdgeInsets.all(AppConstants.spacingL),
             decoration: BoxDecoration(
               color: _editingEducation != null
-                  ? AppColors.primary.withOpacity(0.05)
-                  : AppColors.surfaceVariant.withOpacity(0.3),
+                  ? ref.colors.primary.withOpacity(0.05)
+                  : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingEducation != null ? AppColors.primary : AppColors.border,
+                color: _editingEducation != null ? ref.colors.primary : ref.colors.border,
                 width: _editingEducation != null ? 2 : 1,
               ),
             ),
@@ -368,14 +368,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                         Row(
                           children: [
                             if (_editingEducation != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary, size: 20),
+                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
                               _editingEducation != null ? l10n.editEducation : l10n.addNewEducation,
                               style: Theme.of(
                                 context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                             ),
                           ],
                         ),
@@ -384,7 +384,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
                           ),
                       ],
                     ),
@@ -551,7 +551,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                         label: Text(_editingEducation != null ? l10n.editEducation : l10n.addEducation),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingEducation != null ? AppColors.success : null,
+                          backgroundColor: _editingEducation != null ? ref.colors.success : null,
                         ),
                       ),
                     ),
@@ -575,16 +575,16 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.graduationCap(), size: 64, color: AppColors.grey400),
+                  Icon(PhosphorIcons.graduationCap(), size: 64, color: ref.colors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.educationDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -613,14 +613,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                         education.degree,
                         style: Theme.of(
                           context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         education.institution,
                         style: Theme.of(
                           context,
-                        ).textTheme.titleSmall?.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w500),
+                        ).textTheme.titleSmall?.copyWith(color: ref.colors.textSecondary, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -629,12 +629,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   children: [
                     IconButton(
                       onPressed: () => _editEducation(education),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary),
+                      icon: Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary),
                       tooltip: AppLocalizations.of(context)!.edit,
                     ),
                     IconButton(
                       onPressed: () => _deleteEducation(education.id),
-                      icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
+                      icon: Icon(PhosphorIcons.trash(), color: ref.colors.error),
                       tooltip: AppLocalizations.of(context)!.delete,
                     ),
                   ],
@@ -646,7 +646,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               '${education.startDate.year}-${education.startDate.month.toString().padLeft(2, '0')} - ${education.endDate != null ? '${education.endDate!.year}-${education.endDate!.month.toString().padLeft(2, '0')}' : AppLocalizations.of(context)!.currentlyWorking}',
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
+              ).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: AppConstants.spacingM),
             if (education.description != null && education.description!.isNotEmpty)
@@ -664,7 +664,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
         return AlertDialog(
           title: Row(
             children: [
-              Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
+              Icon(PhosphorIcons.warning(), size: 24),
               const SizedBox(width: 8),
               Text(AppLocalizations.of(context)!.clearAllEducation),
             ],
@@ -680,7 +680,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(AppLocalizations.of(context)!.educationCleared),
-                    backgroundColor: AppColors.success,
+                    backgroundColor: ref.colors.success,
                   ),
                 );
               },

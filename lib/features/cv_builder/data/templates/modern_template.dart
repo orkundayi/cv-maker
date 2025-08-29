@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'cv_template.dart';
+import 'template_localizations.dart';
 import '../../domain/cv_data.dart';
 
 /// Modern CV template with sidebar design
@@ -16,7 +17,8 @@ class ModernTemplate extends CVTemplate {
   String get name => 'Modern';
 
   @override
-  String get description => 'Professional modern CV with colored sidebar for personal info and skills';
+  String get description =>
+      'Professional modern CV with colored sidebar for personal info and skills';
 
   @override
   String get previewImage => 'assets/templates/modern_sidebar_preview.png';
@@ -34,17 +36,26 @@ class ModernTemplate extends CVTemplate {
   @override
   Future<TemplateFonts> loadFonts() async {
     return TemplateFonts(
-      regularFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf')),
-      boldFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Bold.ttf')),
-      mediumFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Medium.ttf')),
+      regularFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'),
+      ),
+      boldFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Bold.ttf'),
+      ),
+      mediumFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Medium.ttf'),
+      ),
     );
   }
 
   @override
-  Future<pw.Document> generatePDF(CVData cvData) async {
+  Future<pw.Document> generatePDF(CVData cvData, {String? locale}) async {
     final pdf = pw.Document();
     final fonts = await loadFonts();
-    final profileImage = await _tryLoadProfileImage(cvData.personalInfo.profileImagePath);
+    final profileImage = await _tryLoadProfileImage(
+      cvData.personalInfo.profileImagePath,
+    );
+    final currentLocale = locale ?? 'en';
 
     pdf.addPage(
       pw.MultiPage(
@@ -68,13 +79,23 @@ class ModernTemplate extends CVTemplate {
                 width: 200,
                 child: pw.Container(
                   padding: const pw.EdgeInsets.all(20),
-                  child: _buildSidebar(cvData, fonts, profileImage),
+                  child: _buildSidebar(
+                    cvData,
+                    fonts,
+                    profileImage,
+                    currentLocale,
+                  ),
                 ),
               ),
               pw.Partition(
                 child: pw.Container(
-                  padding: const pw.EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
-                  child: _buildMainContent(cvData, fonts),
+                  padding: const pw.EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 10,
+                    bottom: 20,
+                  ),
+                  child: _buildMainContent(cvData, fonts, currentLocale),
                 ),
               ),
             ],
@@ -87,7 +108,12 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Build left sidebar content
-  pw.Widget _buildSidebar(CVData cvData, TemplateFonts fonts, pw.ImageProvider? profileImage) {
+  pw.Widget _buildSidebar(
+    CVData cvData,
+    TemplateFonts fonts,
+    pw.ImageProvider? profileImage,
+    String locale,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -102,22 +128,37 @@ class ModernTemplate extends CVTemplate {
                 shape: pw.BoxShape.circle,
                 border: pw.Border.all(color: PdfColors.white, width: 3),
               ),
-              child: pw.ClipOval(child: pw.Image(profileImage, fit: pw.BoxFit.cover)),
+              child: pw.ClipOval(
+                child: pw.Image(profileImage, fit: pw.BoxFit.cover),
+              ),
             ),
           ),
 
         // Personal section
-        _sidebarSection('Personal', fonts.boldFont!),
+        _sidebarSection(
+          TemplateLocalizations.translate('personal', locale),
+          fonts.boldFont!,
+        ),
         pw.SizedBox(height: 15),
 
         _sidebarItem(
-          'Address',
+          TemplateLocalizations.translate('address', locale),
           '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
           fonts.regularFont!,
           _colors.textLight,
         ),
-        _sidebarItem('Phone number', cvData.personalInfo.phone, fonts.regularFont!, _colors.textLight),
-        _sidebarItem('Email', cvData.personalInfo.email, fonts.regularFont!, _colors.textLight),
+        _sidebarItem(
+          TemplateLocalizations.translate('phoneNumber', locale),
+          cvData.personalInfo.phone,
+          fonts.regularFont!,
+          _colors.textLight,
+        ),
+        _sidebarItem(
+          TemplateLocalizations.translate('email', locale),
+          cvData.personalInfo.email,
+          fonts.regularFont!,
+          _colors.textLight,
+        ),
         _sidebarItem(
           'Location',
           '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
@@ -125,34 +166,63 @@ class ModernTemplate extends CVTemplate {
           _colors.textLight,
         ),
         if (cvData.personalInfo.github != null)
-          _sidebarItem('GitHub', cvData.personalInfo.github!, fonts.regularFont!, _colors.textLight),
+          _sidebarItem(
+            TemplateLocalizations.translate('github', locale),
+            cvData.personalInfo.github!,
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
         if (cvData.personalInfo.linkedIn != null)
-          _sidebarItem('LinkedIn', cvData.personalInfo.linkedIn!, fonts.regularFont!, _colors.textLight),
+          _sidebarItem(
+            TemplateLocalizations.translate('linkedIn', locale),
+            cvData.personalInfo.linkedIn!,
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
         if (cvData.personalInfo.website != null)
-          _sidebarItem('Website', cvData.personalInfo.website!, fonts.regularFont!, _colors.textLight),
+          _sidebarItem(
+            'Website',
+            cvData.personalInfo.website!,
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
 
         pw.SizedBox(height: 25),
 
         // Languages section
         if (cvData.languages.isNotEmpty) ...[
-          _sidebarSection('Languages', fonts.boldFont!),
+          _sidebarSection(
+            TemplateLocalizations.translate('languages', locale),
+            fonts.boldFont!,
+          ),
           pw.SizedBox(height: 10),
-          ...cvData.languages.map((lang) => _sidebarLanguageItem(lang, fonts.regularFont!)),
+          ...cvData.languages.map(
+            (lang) => _sidebarLanguageItem(lang, fonts.regularFont!, locale),
+          ),
         ],
 
         // Skills section
         if (cvData.skills.isNotEmpty) ...[
           pw.SizedBox(height: 25),
-          _sidebarSection('Skills', fonts.boldFont!),
+          _sidebarSection(
+            TemplateLocalizations.translate('skills', locale),
+            fonts.boldFont!,
+          ),
           pw.SizedBox(height: 10),
-          ...cvData.skills.map((skill) => _sidebarSkillItem(skill, fonts.regularFont!)),
+          ...cvData.skills.map(
+            (skill) => _sidebarSkillItem(skill, fonts.regularFont!, locale),
+          ),
         ],
       ],
     );
   }
 
   /// Build right main content area
-  pw.Widget _buildMainContent(CVData cvData, TemplateFonts fonts) {
+  pw.Widget _buildMainContent(
+    CVData cvData,
+    TemplateFonts fonts,
+    String locale,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -168,7 +238,12 @@ class ModernTemplate extends CVTemplate {
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
                   cvData.personalInfo.fullName.toUpperCase(),
-                  style: pw.TextStyle(font: fonts.boldFont, fontSize: 32, color: _colors.text, letterSpacing: 2),
+                  style: pw.TextStyle(
+                    font: fonts.boldFont,
+                    fontSize: 32,
+                    color: _colors.text,
+                    letterSpacing: 2,
+                  ),
                 ),
               ),
               pw.Container(
@@ -183,6 +258,12 @@ class ModernTemplate extends CVTemplate {
 
         // Professional summary
         if (cvData.summary != null && cvData.summary!.isNotEmpty) ...[
+          _mainSection(
+            TemplateLocalizations.translate('summary', locale),
+            fonts.boldFont!,
+            _colors.accent,
+          ),
+          pw.SizedBox(height: 10),
           pw.Text(
             cvData.summary!,
             style: pw.TextStyle(
@@ -197,33 +278,73 @@ class ModernTemplate extends CVTemplate {
 
         // Work experience
         if (cvData.workExperiences.isNotEmpty) ...[
-          _mainSection('Work experience', fonts.boldFont!, _colors.accent),
+          _mainSection(
+            TemplateLocalizations.translate('workExperience', locale),
+            fonts.boldFont!,
+            _colors.accent,
+          ),
           pw.SizedBox(height: 10),
           ...cvData.workExperiences.map(
-            (exp) => _workExperienceItem(exp, fonts.regularFont!, fonts.mediumFont!, _colors.text),
+            (exp) => _workExperienceItem(
+              exp,
+              fonts.regularFont!,
+              fonts.mediumFont!,
+              _colors.text,
+            ),
           ),
         ],
 
         // Education
         if (cvData.educations.isNotEmpty) ...[
-          _mainSection('Education and Qualifications', fonts.boldFont!, _colors.accent),
+          _mainSection(
+            TemplateLocalizations.translate('education', locale),
+            fonts.boldFont!,
+            _colors.accent,
+          ),
           pw.SizedBox(height: 10),
-          ...cvData.educations.map((edu) => _educationItem(edu, fonts.regularFont!, fonts.mediumFont!, _colors.text)),
+          ...cvData.educations.map(
+            (edu) => _educationItem(
+              edu,
+              fonts.regularFont!,
+              fonts.mediumFont!,
+              _colors.text,
+            ),
+          ),
         ],
 
         // Projects
         if (cvData.projects.isNotEmpty) ...[
-          _mainSection('Projects', fonts.boldFont!, _colors.accent),
+          _mainSection(
+            TemplateLocalizations.translate('projects', locale),
+            fonts.boldFont!,
+            _colors.accent,
+          ),
           pw.SizedBox(height: 10),
-          ...cvData.projects.map((proj) => _projectItem(proj, fonts.regularFont!, fonts.mediumFont!, _colors.text)),
+          ...cvData.projects.map(
+            (proj) => _projectItem(
+              proj,
+              fonts.regularFont!,
+              fonts.mediumFont!,
+              _colors.text,
+            ),
+          ),
         ],
 
         // Certificates
         if (cvData.certificates.isNotEmpty) ...[
-          _mainSection('Certificates', fonts.boldFont!, _colors.accent),
+          _mainSection(
+            TemplateLocalizations.translate('certificates', locale),
+            fonts.boldFont!,
+            _colors.accent,
+          ),
           pw.SizedBox(height: 10),
           ...cvData.certificates.map(
-            (cert) => _certificateItem(cert, fonts.regularFont!, fonts.mediumFont!, _colors.text),
+            (cert) => _certificateItem(
+              cert,
+              fonts.regularFont!,
+              fonts.mediumFont!,
+              _colors.text,
+            ),
           ),
         ],
       ],
@@ -235,17 +356,29 @@ class ModernTemplate extends CVTemplate {
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 5),
       decoration: const pw.BoxDecoration(
-        border: pw.Border(bottom: pw.BorderSide(color: PdfColors.white, width: 1)),
+        border: pw.Border(
+          bottom: pw.BorderSide(color: PdfColors.white, width: 1),
+        ),
       ),
       child: pw.Text(
         title,
-        style: pw.TextStyle(font: boldFont, fontSize: 14, color: PdfColors.white, letterSpacing: 0.5),
+        style: pw.TextStyle(
+          font: boldFont,
+          fontSize: 14,
+          color: PdfColors.white,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
 
   /// Sidebar key-value item
-  pw.Widget _sidebarItem(String label, String value, pw.Font font, PdfColor labelColor) {
+  pw.Widget _sidebarItem(
+    String label,
+    String value,
+    pw.Font font,
+    PdfColor labelColor,
+  ) {
     if (value.isEmpty) return pw.SizedBox();
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 8),
@@ -259,7 +392,11 @@ class ModernTemplate extends CVTemplate {
           pw.SizedBox(height: 2),
           pw.Text(
             value,
-            style: pw.TextStyle(font: font, fontSize: 10, color: PdfColors.white),
+            style: pw.TextStyle(
+              font: font,
+              fontSize: 10,
+              color: PdfColors.white,
+            ),
           ),
         ],
       ),
@@ -267,7 +404,11 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Sidebar language item
-  pw.Widget _sidebarLanguageItem(Language lang, pw.Font regularFont) {
+  pw.Widget _sidebarLanguageItem(
+    Language lang,
+    pw.Font regularFont,
+    String locale,
+  ) {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Column(
@@ -275,12 +416,20 @@ class ModernTemplate extends CVTemplate {
         children: [
           pw.Text(
             lang.name,
-            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: PdfColors.white,
+            ),
           ),
           pw.SizedBox(height: 2),
           pw.Text(
-            lang.level.displayName,
-            style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
+            lang.level.getLocalizedDisplayName(locale),
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: PdfColors.white,
+            ),
           ),
         ],
       ),
@@ -288,13 +437,30 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Sidebar skill item with level text
-  pw.Widget _sidebarSkillItem(Skill skill, pw.Font regularFont) {
+  pw.Widget _sidebarSkillItem(Skill skill, pw.Font regularFont, String locale) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 6),
-      child: pw.Text(
-        skill.name,
-        style: pw.TextStyle(font: regularFont, fontSize: 10, color: PdfColors.white),
-        overflow: pw.TextOverflow.clip,
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            skill.name,
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: PdfColors.white,
+            ),
+          ),
+          pw.SizedBox(height: 2),
+          pw.Text(
+            skill.level.getLocalizedDisplayName(locale),
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 8,
+              color: PdfColors.white.shade(0.7),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -308,16 +474,31 @@ class ModernTemplate extends CVTemplate {
         children: [
           pw.Text(
             title,
-            style: pw.TextStyle(font: boldFont, fontSize: 16, color: color, letterSpacing: 0.5),
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 16,
+              color: color,
+              letterSpacing: 0.5,
+            ),
           ),
-          pw.Container(margin: const pw.EdgeInsets.only(top: 4), height: 1.2, width: 50, color: color),
+          pw.Container(
+            margin: const pw.EdgeInsets.only(top: 4),
+            height: 1.2,
+            width: 50,
+            color: color,
+          ),
         ],
       ),
     );
   }
 
   /// Work experience item
-  pw.Widget _workExperienceItem(WorkExperience exp, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+  pw.Widget _workExperienceItem(
+    WorkExperience exp,
+    pw.Font regularFont,
+    pw.Font mediumFont,
+    PdfColor textDark,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 14),
       child: pw.Column(
@@ -328,11 +509,19 @@ class ModernTemplate extends CVTemplate {
             children: [
               pw.Text(
                 exp.jobTitle,
-                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+                style: pw.TextStyle(
+                  font: mediumFont,
+                  fontSize: 12,
+                  color: textDark,
+                ),
               ),
               pw.Text(
                 _formatDateRange(exp.startDate, exp.endDate, exp.isCurrentJob),
-                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+                style: pw.TextStyle(
+                  font: regularFont,
+                  fontSize: 10,
+                  color: textDark.shade(0.3),
+                ),
               ),
             ],
           ),
@@ -364,7 +553,12 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Education item
-  pw.Widget _educationItem(Education edu, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+  pw.Widget _educationItem(
+    Education edu,
+    pw.Font regularFont,
+    pw.Font mediumFont,
+    PdfColor textDark,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 14),
       child: pw.Column(
@@ -375,11 +569,23 @@ class ModernTemplate extends CVTemplate {
             children: [
               pw.Text(
                 edu.degree,
-                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+                style: pw.TextStyle(
+                  font: mediumFont,
+                  fontSize: 12,
+                  color: textDark,
+                ),
               ),
               pw.Text(
-                _formatDateRange(edu.startDate, edu.endDate, edu.isCurrentStudy),
-                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+                _formatDateRange(
+                  edu.startDate,
+                  edu.endDate,
+                  edu.isCurrentStudy,
+                ),
+                style: pw.TextStyle(
+                  font: regularFont,
+                  fontSize: 10,
+                  color: textDark.shade(0.3),
+                ),
               ),
             ],
           ),
@@ -403,7 +609,12 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Project item in main content
-  pw.Widget _projectItem(Project proj, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+  pw.Widget _projectItem(
+    Project proj,
+    pw.Font regularFont,
+    pw.Font mediumFont,
+    PdfColor textDark,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
@@ -414,11 +625,19 @@ class ModernTemplate extends CVTemplate {
             children: [
               pw.Text(
                 proj.name,
-                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+                style: pw.TextStyle(
+                  font: mediumFont,
+                  fontSize: 12,
+                  color: textDark,
+                ),
               ),
               pw.Text(
                 _formatDateRange(proj.startDate, proj.endDate, proj.isOngoing),
-                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+                style: pw.TextStyle(
+                  font: regularFont,
+                  fontSize: 10,
+                  color: textDark.shade(0.3),
+                ),
               ),
             ],
           ),
@@ -451,9 +670,12 @@ class ModernTemplate extends CVTemplate {
             pw.SizedBox(height: 4),
             pw.Row(
               children: [
-                if (proj.url != null) _linkText('Live', proj.url!, regularFont, textDark),
-                if (proj.url != null && proj.githubUrl != null) pw.SizedBox(width: 12),
-                if (proj.githubUrl != null) _linkText('GitHub', proj.githubUrl!, regularFont, textDark),
+                if (proj.url != null)
+                  _linkText('Live', proj.url!, regularFont, textDark),
+                if (proj.url != null && proj.githubUrl != null)
+                  pw.SizedBox(width: 12),
+                if (proj.githubUrl != null)
+                  _linkText('GitHub', proj.githubUrl!, regularFont, textDark),
               ],
             ),
           ],
@@ -463,7 +685,12 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Certificate item in main content
-  pw.Widget _certificateItem(Certificate cert, pw.Font regularFont, pw.Font mediumFont, PdfColor textDark) {
+  pw.Widget _certificateItem(
+    Certificate cert,
+    pw.Font regularFont,
+    pw.Font mediumFont,
+    PdfColor textDark,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
@@ -474,29 +701,50 @@ class ModernTemplate extends CVTemplate {
             children: [
               pw.Text(
                 cert.name,
-                style: pw.TextStyle(font: mediumFont, fontSize: 12, color: textDark),
+                style: pw.TextStyle(
+                  font: mediumFont,
+                  fontSize: 12,
+                  color: textDark,
+                ),
               ),
               pw.Text(
                 _formatMonthYear(cert.issueDate),
-                style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.3)),
+                style: pw.TextStyle(
+                  font: regularFont,
+                  fontSize: 10,
+                  color: textDark.shade(0.3),
+                ),
               ),
             ],
           ),
           pw.Text(
             cert.issuer,
-            style: pw.TextStyle(font: regularFont, fontSize: 10, color: textDark.shade(0.6)),
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 10,
+              color: textDark.shade(0.6),
+            ),
           ),
           if (cert.expiryDate != null)
             pw.Text(
               'Expires: ${_formatMonthYear(cert.expiryDate!)}',
-              style: pw.TextStyle(font: regularFont, fontSize: 9, color: textDark.shade(0.4)),
+              style: pw.TextStyle(
+                font: regularFont,
+                fontSize: 9,
+                color: textDark.shade(0.4),
+              ),
             ),
           if (cert.credentialId != null)
             pw.Text(
               'ID: ${cert.credentialId}',
-              style: pw.TextStyle(font: regularFont, fontSize: 9, color: textDark.shade(0.4)),
+              style: pw.TextStyle(
+                font: regularFont,
+                fontSize: 9,
+                color: textDark.shade(0.4),
+              ),
             ),
-          if (cert.url != null) _linkText('Verify', cert.url!, regularFont, textDark.shade(0.6)),
+          if (cert.url != null)
+            _linkText('Verify', cert.url!, regularFont, textDark.shade(0.6)),
         ],
       ),
     );
@@ -536,7 +784,9 @@ class ModernTemplate extends CVTemplate {
   }
 
   /// Try to load a profile image from base64 data URL or asset path
-  Future<pw.ImageProvider?> _tryLoadProfileImage(String? profileImagePath) async {
+  Future<pw.ImageProvider?> _tryLoadProfileImage(
+    String? profileImagePath,
+  ) async {
     if (profileImagePath == null || profileImagePath.isEmpty) return null;
     try {
       // Case 1: data URL (with prefix)
@@ -549,13 +799,15 @@ class ModernTemplate extends CVTemplate {
       // Case 2: plain base64 without prefix
       // Heuristic: contains only base64 chars and is long enough
       final base64Like = RegExp(r'^[A-Za-z0-9+/=]+$');
-      if (profileImagePath.length > 100 && base64Like.hasMatch(profileImagePath)) {
+      if (profileImagePath.length > 100 &&
+          base64Like.hasMatch(profileImagePath)) {
         final bytes = base64Decode(profileImagePath);
         return pw.MemoryImage(bytes);
       }
 
       // Case 3: http/https or blob URL (web) – fetch via network
-      if (profileImagePath.startsWith('http') || profileImagePath.startsWith('blob:')) {
+      if (profileImagePath.startsWith('http') ||
+          profileImagePath.startsWith('blob:')) {
         try {
           final img = await networkImage(profileImagePath);
           return img;
@@ -574,7 +826,20 @@ class ModernTemplate extends CVTemplate {
 
   /// Utilities
   String _formatMonthYear(DateTime date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return '${months[date.month - 1]} ${date.year}';
   }
 

@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'cv_template.dart';
+import 'template_localizations.dart';
 import '../../domain/cv_data.dart';
 
 /// Minimal CV template with clean, simple design
@@ -34,18 +35,29 @@ class MinimalTemplate extends CVTemplate {
   @override
   Future<TemplateFonts> loadFonts() async {
     return TemplateFonts(
-      regularFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Regular.ttf')),
-      boldFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Bold.ttf')),
-      lightFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Light.ttf')),
-      mediumFont: pw.Font.ttf(await rootBundle.load('assets/fonts/NotoSans-Medium.ttf')),
+      regularFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Regular.ttf'),
+      ),
+      boldFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Bold.ttf'),
+      ),
+      lightFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Light.ttf'),
+      ),
+      mediumFont: pw.Font.ttf(
+        await rootBundle.load('assets/fonts/NotoSans-Medium.ttf'),
+      ),
     );
   }
 
   @override
-  Future<pw.Document> generatePDF(CVData cvData) async {
+  Future<pw.Document> generatePDF(CVData cvData, {String? locale}) async {
     final pdf = pw.Document();
     final fonts = await loadFonts();
-    final profileImage = await _tryLoadProfileImage(cvData.personalInfo.profileImagePath);
+    final profileImage = await _tryLoadProfileImage(
+      cvData.personalInfo.profileImagePath,
+    );
+    final currentLocale = locale ?? 'en';
 
     pdf.addPage(
       pw.MultiPage(
@@ -53,12 +65,18 @@ class MinimalTemplate extends CVTemplate {
         margin: const pw.EdgeInsets.all(36),
         build: (context) => [
           // Header with name and contact
-          _buildHeader(cvData, fonts, profileImage),
+          _buildHeader(cvData, fonts, profileImage, currentLocale),
           pw.SizedBox(height: 16),
 
           // Professional summary
           if (cvData.summary != null && cvData.summary!.isNotEmpty) ...[
-            _buildSection('PROFESSIONAL SUMMARY', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'summary',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 8),
             pw.Text(
               cvData.summary!,
@@ -74,45 +92,89 @@ class MinimalTemplate extends CVTemplate {
 
           // Work experience
           if (cvData.workExperiences.isNotEmpty) ...[
-            _buildSection('WORK EXPERIENCE', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'workExperience',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 10),
-            ...cvData.workExperiences.map((exp) => _buildWorkExperience(exp, fonts)),
+            ...cvData.workExperiences.map(
+              (exp) => _buildWorkExperience(exp, fonts, currentLocale),
+            ),
           ],
 
           // Education
           if (cvData.educations.isNotEmpty) ...[
-            _buildSection('EDUCATION', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'education',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 10),
-            ...cvData.educations.map((edu) => _buildEducation(edu, fonts)),
+            ...cvData.educations.map(
+              (edu) => _buildEducation(edu, fonts, currentLocale),
+            ),
           ],
 
           // Skills
           if (cvData.skills.isNotEmpty) ...[
-            _buildSection('SKILLS', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'skills',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 8),
-            _buildSkillsGrid(cvData.skills, fonts),
+            _buildSkillsGrid(cvData.skills, fonts, currentLocale),
             pw.SizedBox(height: 16),
           ],
 
           // Languages
           if (cvData.languages.isNotEmpty) ...[
-            _buildSection('LANGUAGES', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'languages',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 8),
-            _buildLanguages(cvData.languages, fonts),
+            _buildLanguages(cvData.languages, fonts, currentLocale),
           ],
 
           // Projects
           if (cvData.projects.isNotEmpty) ...[
-            _buildSection('PROJECTS', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'projects',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 10),
-            ...cvData.projects.map((proj) => _buildProject(proj, fonts)),
+            ...cvData.projects.map(
+              (proj) => _buildProject(proj, fonts, currentLocale),
+            ),
           ],
 
           // Certificates
           if (cvData.certificates.isNotEmpty) ...[
-            _buildSection('CERTIFICATES', fonts.boldFont!),
+            _buildSection(
+              TemplateLocalizations.translate(
+                'certificates',
+                currentLocale,
+              ).toUpperCase(),
+              fonts.boldFont!,
+            ),
             pw.SizedBox(height: 10),
-            ...cvData.certificates.map((cert) => _buildCertificate(cert, fonts)),
+            ...cvData.certificates.map(
+              (cert) => _buildCertificate(cert, fonts, currentLocale),
+            ),
           ],
         ],
       ),
@@ -122,7 +184,12 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Build header section
-  pw.Widget _buildHeader(CVData cvData, TemplateFonts fonts, pw.ImageProvider? profileImage) {
+  pw.Widget _buildHeader(
+    CVData cvData,
+    TemplateFonts fonts,
+    pw.ImageProvider? profileImage,
+    String locale,
+  ) {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -137,7 +204,11 @@ class MinimalTemplate extends CVTemplate {
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
                   cvData.personalInfo.fullName,
-                  style: pw.TextStyle(font: fonts.boldFont, fontSize: 28, color: _colors.primary),
+                  style: pw.TextStyle(
+                    font: fonts.boldFont,
+                    fontSize: 28,
+                    color: _colors.primary,
+                  ),
                 ),
               ),
               pw.SizedBox(height: 10),
@@ -149,10 +220,20 @@ class MinimalTemplate extends CVTemplate {
                   _contactItem(cvData.personalInfo.email, fonts.regularFont!),
                   _contactItem(cvData.personalInfo.phone, fonts.regularFont!),
                   if (cvData.personalInfo.city != null)
-                    _contactItem('${cvData.personalInfo.city}, ${cvData.personalInfo.country}', fonts.regularFont!),
+                    _contactItem(
+                      '${cvData.personalInfo.city}, ${cvData.personalInfo.country}',
+                      fonts.regularFont!,
+                    ),
                   if (cvData.personalInfo.linkedIn != null)
-                    _contactItem(cvData.personalInfo.linkedIn!, fonts.regularFont!),
-                  if (cvData.personalInfo.github != null) _contactItem(cvData.personalInfo.github!, fonts.regularFont!),
+                    _contactItem(
+                      cvData.personalInfo.linkedIn!,
+                      fonts.regularFont!,
+                    ),
+                  if (cvData.personalInfo.github != null)
+                    _contactItem(
+                      cvData.personalInfo.github!,
+                      fonts.regularFont!,
+                    ),
                 ],
               ),
             ],
@@ -167,7 +248,9 @@ class MinimalTemplate extends CVTemplate {
               shape: pw.BoxShape.circle,
               border: pw.Border.all(color: _colors.accent, width: 2),
             ),
-            child: pw.ClipOval(child: pw.Image(profileImage, fit: pw.BoxFit.cover)),
+            child: pw.ClipOval(
+              child: pw.Image(profileImage, fit: pw.BoxFit.cover),
+            ),
           ),
       ],
     );
@@ -190,7 +273,12 @@ class MinimalTemplate extends CVTemplate {
         children: [
           pw.Text(
             title,
-            style: pw.TextStyle(font: boldFont, fontSize: 13, color: _colors.accent, letterSpacing: 1),
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 13,
+              color: _colors.accent,
+              letterSpacing: 1,
+            ),
           ),
           pw.Container(
             margin: const pw.EdgeInsets.only(top: 4),
@@ -204,7 +292,11 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Work experience item
-  pw.Widget _buildWorkExperience(WorkExperience exp, TemplateFonts fonts) {
+  pw.Widget _buildWorkExperience(
+    WorkExperience exp,
+    TemplateFonts fonts,
+    String locale,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 14),
       child: pw.Column(
@@ -215,11 +307,24 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 '${exp.jobTitle} at ${exp.company}',
-                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(
+                  font: fonts.mediumFont ?? fonts.boldFont,
+                  fontSize: 11,
+                  color: _colors.text,
+                ),
               ),
               pw.Text(
-                _formatDateRange(exp.startDate, exp.endDate, exp.isCurrentJob),
-                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+                _formatDateRange(
+                  exp.startDate,
+                  exp.endDate,
+                  exp.isCurrentJob,
+                  locale,
+                ),
+                style: pw.TextStyle(
+                  font: fonts.regularFont,
+                  fontSize: 10,
+                  color: _colors.textLight,
+                ),
               ),
             ],
           ),
@@ -251,7 +356,7 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Education item
-  pw.Widget _buildEducation(Education edu, TemplateFonts fonts) {
+  pw.Widget _buildEducation(Education edu, TemplateFonts fonts, String locale) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
@@ -262,17 +367,34 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 edu.degree,
-                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(
+                  font: fonts.mediumFont ?? fonts.boldFont,
+                  fontSize: 11,
+                  color: _colors.text,
+                ),
               ),
               pw.Text(
-                _formatDateRange(edu.startDate, edu.endDate, edu.isCurrentStudy),
-                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+                _formatDateRange(
+                  edu.startDate,
+                  edu.endDate,
+                  edu.isCurrentStudy,
+                  locale,
+                ),
+                style: pw.TextStyle(
+                  font: fonts.regularFont,
+                  fontSize: 10,
+                  color: _colors.textLight,
+                ),
               ),
             ],
           ),
           pw.Text(
             edu.institution,
-            style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.text),
+            style: pw.TextStyle(
+              font: fonts.regularFont,
+              fontSize: 10,
+              color: _colors.text,
+            ),
           ),
           if (edu.location != null)
             pw.Text(
@@ -290,7 +412,11 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Skills grid
-  pw.Widget _buildSkillsGrid(List<Skill> skills, TemplateFonts fonts) {
+  pw.Widget _buildSkillsGrid(
+    List<Skill> skills,
+    TemplateFonts fonts,
+    String locale,
+  ) {
     return pw.Wrap(
       spacing: 10,
       runSpacing: 8,
@@ -302,8 +428,12 @@ class MinimalTemplate extends CVTemplate {
             borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
           ),
           child: pw.Text(
-            '${skill.name} • ${skill.level.displayName}',
-            style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.text),
+            '${skill.name} • ${skill.level.getLocalizedDisplayName(locale)}',
+            style: pw.TextStyle(
+              font: fonts.regularFont,
+              fontSize: 9,
+              color: _colors.text,
+            ),
           ),
         );
       }).toList(),
@@ -311,14 +441,22 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Languages list
-  pw.Widget _buildLanguages(List<Language> languages, TemplateFonts fonts) {
+  pw.Widget _buildLanguages(
+    List<Language> languages,
+    TemplateFonts fonts,
+    String locale,
+  ) {
     return pw.Row(
       children: languages.map((lang) {
         return pw.Padding(
           padding: const pw.EdgeInsets.only(right: 20),
           child: pw.Text(
-            '${lang.name}: ${lang.level.displayName}',
-            style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.text),
+            '${lang.name}: ${lang.level.getLocalizedDisplayName(locale)}',
+            style: pw.TextStyle(
+              font: fonts.regularFont,
+              fontSize: 10,
+              color: _colors.text,
+            ),
           ),
         );
       }).toList(),
@@ -326,7 +464,7 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Project item
-  pw.Widget _buildProject(Project project, TemplateFonts fonts) {
+  pw.Widget _buildProject(Project project, TemplateFonts fonts, String locale) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
@@ -337,11 +475,24 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 project.name,
-                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(
+                  font: fonts.mediumFont ?? fonts.boldFont,
+                  fontSize: 11,
+                  color: _colors.text,
+                ),
               ),
               pw.Text(
-                _formatDateRange(project.startDate, project.endDate, project.isOngoing),
-                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+                _formatDateRange(
+                  project.startDate,
+                  project.endDate,
+                  project.isOngoing,
+                  locale,
+                ),
+                style: pw.TextStyle(
+                  font: fonts.regularFont,
+                  fontSize: 10,
+                  color: _colors.textLight,
+                ),
               ),
             ],
           ),
@@ -377,13 +528,22 @@ class MinimalTemplate extends CVTemplate {
                 if (project.url != null)
                   pw.Text(
                     'Live: ${project.url}',
-                    style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.accent),
+                    style: pw.TextStyle(
+                      font: fonts.regularFont,
+                      fontSize: 9,
+                      color: _colors.accent,
+                    ),
                   ),
-                if (project.url != null && project.githubUrl != null) pw.SizedBox(width: 12),
+                if (project.url != null && project.githubUrl != null)
+                  pw.SizedBox(width: 12),
                 if (project.githubUrl != null)
                   pw.Text(
                     'GitHub: ${project.githubUrl}',
-                    style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.secondary),
+                    style: pw.TextStyle(
+                      font: fonts.regularFont,
+                      fontSize: 9,
+                      color: _colors.secondary,
+                    ),
                   ),
               ],
             ),
@@ -394,7 +554,11 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Certificate item
-  pw.Widget _buildCertificate(Certificate cert, TemplateFonts fonts) {
+  pw.Widget _buildCertificate(
+    Certificate cert,
+    TemplateFonts fonts,
+    String locale,
+  ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
       child: pw.Column(
@@ -405,32 +569,56 @@ class MinimalTemplate extends CVTemplate {
             children: [
               pw.Text(
                 cert.name,
-                style: pw.TextStyle(font: fonts.mediumFont ?? fonts.boldFont, fontSize: 11, color: _colors.text),
+                style: pw.TextStyle(
+                  font: fonts.mediumFont ?? fonts.boldFont,
+                  fontSize: 11,
+                  color: _colors.text,
+                ),
               ),
               pw.Text(
                 _formatMonthYear(cert.issueDate),
-                style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.textLight),
+                style: pw.TextStyle(
+                  font: fonts.regularFont,
+                  fontSize: 10,
+                  color: _colors.textLight,
+                ),
               ),
             ],
           ),
           pw.Text(
             cert.issuer,
-            style: pw.TextStyle(font: fonts.regularFont, fontSize: 10, color: _colors.text),
+            style: pw.TextStyle(
+              font: fonts.regularFont,
+              fontSize: 10,
+              color: _colors.text,
+            ),
           ),
           if (cert.expiryDate != null)
             pw.Text(
               'Expires: ${_formatMonthYear(cert.expiryDate!)}',
-              style: pw.TextStyle(font: fonts.lightFont, fontSize: 9, color: _colors.textLight),
+              style: pw.TextStyle(
+                font: fonts.lightFont,
+                fontSize: 9,
+                color: _colors.textLight,
+              ),
             ),
           if (cert.credentialId != null)
             pw.Text(
               'ID: ${cert.credentialId}',
-              style: pw.TextStyle(font: fonts.lightFont, fontSize: 9, color: _colors.textLight),
+              style: pw.TextStyle(
+                font: fonts.lightFont,
+                fontSize: 9,
+                color: _colors.textLight,
+              ),
             ),
           if (cert.url != null)
             pw.Text(
               cert.url!,
-              style: pw.TextStyle(font: fonts.regularFont, fontSize: 9, color: _colors.accent),
+              style: pw.TextStyle(
+                font: fonts.regularFont,
+                fontSize: 9,
+                color: _colors.accent,
+              ),
             ),
         ],
       ),
@@ -438,7 +626,9 @@ class MinimalTemplate extends CVTemplate {
   }
 
   /// Try to load a profile image
-  Future<pw.ImageProvider?> _tryLoadProfileImage(String? profileImagePath) async {
+  Future<pw.ImageProvider?> _tryLoadProfileImage(
+    String? profileImagePath,
+  ) async {
     if (profileImagePath == null || profileImagePath.isEmpty) return null;
     try {
       if (profileImagePath.startsWith('data:image/')) {
@@ -448,12 +638,14 @@ class MinimalTemplate extends CVTemplate {
       }
 
       final base64Like = RegExp(r'^[A-Za-z0-9+/=]+$');
-      if (profileImagePath.length > 100 && base64Like.hasMatch(profileImagePath)) {
+      if (profileImagePath.length > 100 &&
+          base64Like.hasMatch(profileImagePath)) {
         final bytes = base64Decode(profileImagePath);
         return pw.MemoryImage(bytes);
       }
 
-      if (profileImagePath.startsWith('http') || profileImagePath.startsWith('blob:')) {
+      if (profileImagePath.startsWith('http') ||
+          profileImagePath.startsWith('blob:')) {
         try {
           final img = await networkImage(profileImagePath);
           return img;
@@ -469,13 +661,33 @@ class MinimalTemplate extends CVTemplate {
 
   /// Format date utilities
   String _formatMonthYear(DateTime date) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return '${months[date.month - 1]} ${date.year}';
   }
 
-  String _formatDateRange(DateTime start, DateTime? end, bool isCurrent) {
+  String _formatDateRange(
+    DateTime start,
+    DateTime? end,
+    bool isCurrent,
+    String locale,
+  ) {
     final startStr = _formatMonthYear(start);
-    if (isCurrent) return '$startStr - Present';
+    if (isCurrent) {
+      return '$startStr - ${TemplateLocalizations.translate('present', locale)}';
+    }
     if (end != null) return '$startStr - ${_formatMonthYear(end)}';
     return startStr;
   }
