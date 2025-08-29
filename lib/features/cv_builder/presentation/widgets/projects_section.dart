@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -103,30 +104,32 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
   void _selectEndDate() {
     if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select start date first'), backgroundColor: AppColors.warning),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
       return;
     }
     _showDateSelector(context, false);
   }
 
   void _showDateSelector(BuildContext context, bool isStartDate) {
+    final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
     final years = List.generate(currentYear - 1949 + 50, (index) => 1950 + index);
     final months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      l10n.january,
+      l10n.february,
+      l10n.march,
+      l10n.april,
+      l10n.may,
+      l10n.june,
+      l10n.july,
+      l10n.august,
+      l10n.september,
+      l10n.october,
+      l10n.november,
+      l10n.december,
     ];
 
     int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
@@ -135,7 +138,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isStartDate ? 'Select Start Date' : 'Select End Date'),
+        title: Text(isStartDate ? l10n.selectStartDate : l10n.selectEndDate),
         content: SizedBox(
           width: 300,
           child: Column(
@@ -144,7 +147,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: const InputDecoration(labelText: 'Year', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
                 items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
@@ -154,7 +157,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: const InputDecoration(labelText: 'Month', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
                 items: months
                     .asMap()
                     .entries
@@ -168,7 +171,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -189,7 +192,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
               Navigator.of(context).pop();
             },
-            child: const Text('Select'),
+            child: Text(l10n.select),
           ),
         ],
       ),
@@ -200,16 +203,18 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a start date'), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
       return;
     }
 
     if (!_isOngoing && _endDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an end date or mark as ongoing'), backgroundColor: AppColors.error),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
       return;
     }
 
@@ -228,15 +233,16 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     );
 
     if (_editingProject != null) {
+      final l10n = AppLocalizations.of(context)!;
       ref.read(cvDataProvider.notifier).updateProject(project);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Project updated successfully!'), backgroundColor: AppColors.success),
-      );
-    } else {
-      ref.read(cvDataProvider.notifier).addProject(project);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Project added successfully!'), backgroundColor: AppColors.success));
+      ).showSnackBar(SnackBar(content: Text(l10n.projects), backgroundColor: AppColors.success));
+    } else {
+      ref.read(cvDataProvider.notifier).addProject(project);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.projects), backgroundColor: AppColors.success),
+      );
     }
 
     _resetForm();
@@ -244,17 +250,18 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final projects = ref.watch(cvDataProvider).projects;
 
     return ResponsiveCard(
-      title: 'Portfolio & Projects',
-      subtitle: 'Highlight your best work and achievements',
+      title: l10n.portfolioProjects,
+      subtitle: l10n.projectsDescription,
       actions: projects.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear All Projects',
+                tooltip: l10n.clearAllProjects,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
@@ -296,7 +303,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingProject != null ? 'Edit Project' : 'Add New Project',
+                              _editingProject != null ? l10n.editProject : l10n.addProject,
                               style: Theme.of(
                                 context,
                               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -307,7 +314,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           TextButton.icon(
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
-                            label: const Text('Cancel'),
+                            label: Text(l10n.cancel),
                             style: TextButton.styleFrom(foregroundColor: AppColors.error),
                           ),
                       ],
@@ -316,15 +323,15 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
                     // Project Title
                     ResponsiveFormField(
-                      label: 'Project Title',
+                      label: l10n.projectName,
                       isRequired: true,
                       child: CustomTextFormField(
                         controller: _nameController,
                         focusNode: _nameFocusNode,
-                        hint: 'e.g., E-commerce Mobile App, Portfolio Website',
+                        hint: l10n.projectNameHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Project title is required';
+                            return l10n.firstNameRequired;
                           }
                           return null;
                         },
@@ -340,11 +347,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
                     // Description
                     ResponsiveFormField(
-                      label: 'Description',
+                      label: l10n.description,
                       child: CustomTextFormField(
                         controller: _descriptionController,
                         focusNode: _descriptionFocusNode,
-                        hint: 'Describe your project, its purpose, and key features...',
+                        hint: l10n.descriptionHint,
                         maxLines: 4,
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
@@ -360,11 +367,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Technologies Used',
+                          label: l10n.technologies,
                           child: CustomTextFormField(
                             controller: _technologiesController,
                             focusNode: _technologiesFocusNode,
-                            hint: 'e.g., Flutter, Firebase, Node.js, React',
+                            hint: l10n.technologiesHint,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -374,11 +381,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'Project URL (Optional)',
+                          label: l10n.projectUrl,
                           child: CustomTextFormField(
                             controller: _urlController,
                             focusNode: _urlFocusNode,
-                            hint: 'https://your-project.com',
+                            hint: l10n.urlHint,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -393,11 +400,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
                     // GitHub URL
                     ResponsiveFormField(
-                      label: 'GitHub Repository (Optional)',
+                      label: l10n.githubUrl,
                       child: CustomTextFormField(
                         controller: _githubUrlController,
                         focusNode: _githubUrlFocusNode,
-                        hint: 'https://github.com/username/repository',
+                        hint: l10n.githubUrlHint,
                         textInputAction: TextInputAction.done,
                       ),
                     ),
@@ -407,7 +414,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Start Date',
+                          label: l10n.startDate,
                           isRequired: true,
                           child: InkWell(
                             onTap: _selectStartDate,
@@ -423,9 +430,12 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'End Date',
+                          label: l10n.endDate,
                           child: _isOngoing
-                              ? CustomTextFormField(controller: TextEditingController(text: 'Ongoing'), enabled: false)
+                              ? CustomTextFormField(
+                                  controller: TextEditingController(text: l10n.currentlyWorking),
+                                  enabled: false,
+                                )
                               : InkWell(
                                   onTap: _selectEndDate,
                                   child: CustomTextFormField(
@@ -457,7 +467,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             });
                           },
                         ),
-                        const Text('This project is ongoing'),
+                        Text(l10n.currentlyWorking),
                       ],
                     ),
                     const SizedBox(height: AppConstants.spacingL),
@@ -468,7 +478,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                       child: ElevatedButton.icon(
                         onPressed: _saveProject,
                         icon: Icon(_editingProject != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingProject != null ? 'Update Project' : 'Add Project'),
+                        label: Text(_editingProject != null ? l10n.editProject : l10n.addProject),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
                           backgroundColor: _editingProject != null ? AppColors.success : null,
@@ -497,7 +507,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Project Portfolio',
+                      l10n.portfolioProjects,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -509,7 +519,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${projects.length} projects',
+                    '${projects.length}',
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
@@ -526,12 +536,12 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                   Icon(PhosphorIcons.folder(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
-                    'No projects added yet',
+                    l10n.projectsDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Add your first project above',
+                    l10n.getStarted,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
@@ -617,14 +627,14 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           icon: Icon(PhosphorIcons.pencilSimple(), size: 20),
                           iconSize: 20,
                           visualDensity: VisualDensity.compact,
-                          tooltip: 'Edit',
+                          tooltip: AppLocalizations.of(context)!.edit,
                         ),
                         IconButton(
                           onPressed: () => _deleteProject(project.id),
                           icon: Icon(PhosphorIcons.trash(), size: 20, color: AppColors.error),
                           iconSize: 20,
                           visualDensity: VisualDensity.compact,
-                          tooltip: 'Delete',
+                          tooltip: AppLocalizations.of(context)!.delete,
                         ),
                       ],
                     ),
@@ -773,7 +783,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                                     ),
                                   )
                                 : Icon(PhosphorIcons.globe(), size: 16),
-                            label: Text(_isLaunchingUrl ? 'Opening...' : 'Live Demo'),
+                            label: Text(
+                              _isLaunchingUrl
+                                  ? AppLocalizations.of(context)!.linkOpened
+                                  : AppLocalizations.of(context)!.liveDemo,
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).primaryColor,
                               foregroundColor: Colors.white,
@@ -800,7 +814,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                                     ),
                                   )
                                 : Icon(PhosphorIcons.githubLogo(), size: 16),
-                            label: Text(_isLaunchingUrl ? 'Opening...' : 'GitHub'),
+                            label: Text(
+                              _isLaunchingUrl
+                                  ? AppLocalizations.of(context)!.linkOpened
+                                  : AppLocalizations.of(context)!.github,
+                            ),
                             style: OutlinedButton.styleFrom(
                               padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12, horizontal: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -895,7 +913,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 children: [
                   Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('Could not open: $url')),
+                  Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
                 ],
               ),
               backgroundColor: AppColors.error,
@@ -913,7 +931,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               children: [
                 Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
                 const SizedBox(width: 8),
-                Expanded(child: Text('Failed to open URL: $e')),
+                Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -940,26 +958,26 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear All Projects'),
+              Text(AppLocalizations.of(context)!.clearAllProjects),
             ],
           ),
-          content: const Text('Are you sure you want to clear all projects? This action cannot be undone.'),
+          content: Text(AppLocalizations.of(context)!.clearProjectsConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearProjects();
                 Navigator.of(context).pop();
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All projects cleared successfully!'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.projectsCleared),
                     backgroundColor: AppColors.success,
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear All'),
+              child: Text(AppLocalizations.of(context)!.clear),
             ),
           ],
         );

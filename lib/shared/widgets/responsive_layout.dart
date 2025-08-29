@@ -42,12 +42,17 @@ class ResponsiveLayout extends StatelessWidget {
     }
 
     final scrollable = SafeArea(
-      child: SingleChildScrollView(physics: const ClampingScrollPhysics(), child: constrainedContent),
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        primary: true, // ensure attachment to PrimaryScrollController
+        child: constrainedContent,
+      ),
     );
 
     final shouldShowScrollbar = showScrollbar ?? kIsWeb;
     if (shouldShowScrollbar) {
-      return Scrollbar(thumbVisibility: true, child: scrollable);
+      // Avoid forcing thumb visibility before a ScrollPosition is attached
+      return Scrollbar(child: scrollable);
     }
 
     return scrollable;

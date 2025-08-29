@@ -13,7 +13,7 @@ class MinimalTemplate extends CVTemplate {
   String get id => 'minimal_clean';
 
   @override
-  String get name => 'Minimal & Clean';
+  String get name => 'Minimal';
 
   @override
   String get description => 'Simple and clean CV design focusing on content';

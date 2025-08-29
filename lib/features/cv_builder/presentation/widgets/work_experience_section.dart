@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/responsive_utils.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -101,30 +102,32 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
 
   void _selectEndDate() {
     if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select start date first'), backgroundColor: AppColors.warning),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
       return;
     }
     _showDateSelector(context, false);
   }
 
   void _showDateSelector(BuildContext context, bool isStartDate) {
+    final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
     final years = List.generate(currentYear - 1949, (index) => currentYear - index);
     final months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      l10n.january,
+      l10n.february,
+      l10n.march,
+      l10n.april,
+      l10n.may,
+      l10n.june,
+      l10n.july,
+      l10n.august,
+      l10n.september,
+      l10n.october,
+      l10n.november,
+      l10n.december,
     ];
 
     int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
@@ -133,7 +136,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isStartDate ? 'Select Start Date' : 'Select End Date'),
+        title: Text(isStartDate ? l10n.selectStartDate : l10n.selectEndDate),
         content: SizedBox(
           width: 300,
           child: Column(
@@ -142,7 +145,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: const InputDecoration(labelText: 'Year', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
                 items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
@@ -152,7 +155,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: const InputDecoration(labelText: 'Month', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
                 items: months
                     .asMap()
                     .entries
@@ -166,7 +169,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -187,7 +190,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
 
               Navigator.of(context).pop();
             },
-            child: const Text('Select'),
+            child: Text(l10n.select),
           ),
         ],
       ),
@@ -216,9 +219,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       ref.read(cvDataProvider.notifier).addWorkExperience(experience);
       _resetForm();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Experience added successfully!'), backgroundColor: AppColors.success),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: AppColors.success));
     }
   }
 
@@ -244,25 +248,27 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       ref.read(cvDataProvider.notifier).updateWorkExperience(experience);
       _resetForm();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Experience updated successfully!'), backgroundColor: AppColors.success),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: AppColors.success));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final workExperiences = ref.watch(cvDataProvider).workExperiences;
 
     return ResponsiveCard(
-      title: 'Professional Experience',
-      subtitle: 'Showcase your career journey and achievements',
+      title: l10n.workExperience,
+      subtitle: l10n.workExperienceDescription,
       actions: workExperiences.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear All Experiences',
+                tooltip: l10n.clearAllExperiences,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
@@ -304,7 +310,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingExperience != null ? 'Edit Experience' : 'Add New Experience',
+                              _editingExperience != null ? l10n.editExperience : l10n.addExperience,
                               style: Theme.of(
                                 context,
                               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -315,7 +321,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                           TextButton.icon(
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
-                            label: const Text('Cancel'),
+                            label: Text(l10n.cancel),
                             style: TextButton.styleFrom(foregroundColor: AppColors.error),
                           ),
                       ],
@@ -326,15 +332,15 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Company Name',
+                          label: l10n.company,
                           isRequired: true,
                           child: CustomTextFormField(
                             controller: _companyController,
                             focusNode: _companyFocusNode,
-                            hint: 'e.g., Google, Microsoft',
+                            hint: l10n.companyHint,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Company name is required';
+                                return l10n.institutionRequired;
                               }
                               return null;
                             },
@@ -347,15 +353,15 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'Job Position',
+                          label: l10n.jobTitle,
                           isRequired: true,
                           child: CustomTextFormField(
                             controller: _positionController,
                             focusNode: _positionFocusNode,
-                            hint: 'e.g., Senior Developer, Project Manager',
+                            hint: l10n.jobTitleHint,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Job position is required';
+                                return l10n.firstNameRequired;
                               }
                               return null;
                             },
@@ -375,7 +381,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Start Date',
+                          label: l10n.startDate,
                           isRequired: true,
                           child: GestureDetector(
                             onTap: _selectStartDate,
@@ -386,7 +392,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                               enabled: false,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Start date is required';
+                                  return l10n.pleaseSelectStartDate;
                                 }
                                 return null;
                               },
@@ -394,12 +400,12 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'End Date',
+                          label: l10n.endDate,
                           child: _isCurrentlyWorking
                               ? CustomTextFormField(
                                   controller: _endDateController,
                                   focusNode: _endDateFocusNode,
-                                  hint: 'Present',
+                                  hint: l10n.currentlyWorking,
                                   enabled: false,
                                 )
                               : GestureDetector(
@@ -431,26 +437,26 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             });
                           },
                         ),
-                        const Text('I currently work here'),
+                        Text(l10n.currentlyWorking),
                       ],
                     ),
                     const SizedBox(height: AppConstants.spacingL),
 
                     // Description
                     ResponsiveFormField(
-                      label: 'Job Description',
+                      label: l10n.description,
                       isRequired: true,
                       child: CustomTextFormField(
                         controller: _descriptionController,
                         focusNode: _descriptionFocusNode,
-                        hint: 'Describe your responsibilities, achievements, and key contributions...',
+                        hint: l10n.descriptionHint,
                         maxLines: 4,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Job description is required';
+                            return l10n.firstNameRequired;
                           }
                           if (value.length < 50) {
-                            return 'Description should be at least 50 characters';
+                            return l10n.firstNameRequired;
                           }
                           return null;
                         },
@@ -465,7 +471,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                       child: ElevatedButton.icon(
                         onPressed: _editingExperience != null ? _updateExperience : _saveExperience,
                         icon: Icon(_editingExperience != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingExperience != null ? 'Update Experience' : 'Add Experience'),
+                        label: Text(_editingExperience != null ? l10n.editExperience : l10n.addExperience),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
                           backgroundColor: _editingExperience != null ? AppColors.success : null,
@@ -494,7 +500,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Career Timeline',
+                      l10n.workExperience,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -506,7 +512,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${workExperiences.length} positions',
+                    '${workExperiences.length}',
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
@@ -523,12 +529,12 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                   Icon(PhosphorIcons.briefcase(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
-                    'No work experience added yet',
+                    AppLocalizations.of(context)!.workExperienceDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Add your first work experience above',
+                    AppLocalizations.of(context)!.getStarted,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
@@ -633,14 +639,14 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                           icon: Icon(PhosphorIcons.pencilSimple(), size: 18),
                           iconSize: 18,
                           visualDensity: VisualDensity.compact,
-                          tooltip: 'Edit',
+                          tooltip: AppLocalizations.of(context)!.edit,
                         ),
                         IconButton(
                           onPressed: () => _deleteExperience(experience.id),
                           icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
                           iconSize: 18,
                           visualDensity: VisualDensity.compact,
-                          tooltip: 'Delete',
+                          tooltip: AppLocalizations.of(context)!.delete,
                         ),
                       ],
                     ),
@@ -913,31 +919,29 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
           title: Row(
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear All Experiences'),
+              Text(l10n.clearAllExperiences),
             ],
           ),
-          content: const Text('Are you sure you want to clear all work experiences? This action cannot be undone.'),
+          content: Text(l10n.clearExperiencesConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearWorkExperiences();
                 Navigator.of(context).pop();
                 _resetForm();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All work experiences cleared successfully!'),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(l10n.experienceCleared), backgroundColor: AppColors.success));
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear All'),
+              child: Text(l10n.clear),
             ),
           ],
         );

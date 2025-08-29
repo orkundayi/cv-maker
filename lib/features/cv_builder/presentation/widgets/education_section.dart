@@ -4,7 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
-
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -137,31 +137,30 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   void _selectEndDate() {
     if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select start date first'), backgroundColor: AppColors.warning),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.warning));
       return;
     }
     _showDateSelector(context, false);
   }
 
   void _saveEducation() {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a start date'), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
       return;
     }
 
     if (!_isCurrentlyStudying && _endDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an end date or mark as current study'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
       return;
     }
 
@@ -179,14 +178,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
     if (_editingEducation != null) {
       ref.read(cvDataProvider.notifier).updateEducation(education);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Education updated successfully!'), backgroundColor: AppColors.success),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: AppColors.success));
     } else {
       ref.read(cvDataProvider.notifier).addEducation(education);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Education added successfully!'), backgroundColor: AppColors.success),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.educationAddedSuccessfully), backgroundColor: AppColors.success));
     }
 
     _resetForm();
@@ -196,19 +195,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a start date'), backgroundColor: AppColors.error));
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: AppColors.error));
       return;
     }
 
     if (!_isCurrentlyStudying && _endDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an end date or mark as current study'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: AppColors.error));
       return;
     }
 
@@ -225,29 +223,31 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     );
 
     ref.read(cvDataProvider.notifier).updateEducation(education);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Education updated successfully!'), backgroundColor: AppColors.success),
-    );
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: AppColors.success));
 
     _resetForm();
   }
 
   void _showDateSelector(BuildContext context, bool isStartDate) {
+    final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
     final years = List.generate(currentYear - 1949, (index) => currentYear - index);
     final months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      l10n.january,
+      l10n.february,
+      l10n.march,
+      l10n.april,
+      l10n.may,
+      l10n.june,
+      l10n.july,
+      l10n.august,
+      l10n.september,
+      l10n.october,
+      l10n.november,
+      l10n.december,
     ];
 
     int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
@@ -256,7 +256,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isStartDate ? 'Select Start Date' : 'Select End Date'),
+        title: Text(isStartDate ? l10n.selectStartDate : l10n.selectEndDate),
         content: SizedBox(
           width: 300,
           child: Column(
@@ -265,7 +265,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: const InputDecoration(labelText: 'Year', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
                 items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
@@ -275,7 +275,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: const InputDecoration(labelText: 'Month', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
                 items: months
                     .asMap()
                     .entries
@@ -289,7 +289,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -310,7 +310,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
               Navigator.of(context).pop();
             },
-            child: const Text('Select'),
+            child: Text(l10n.select),
           ),
         ],
       ),
@@ -319,17 +319,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final educations = ref.watch(cvDataProvider).educations;
 
     return ResponsiveCard(
-      title: 'Academic Background',
-      subtitle: 'Your educational qualifications and achievements',
+      title: l10n.education,
+      subtitle: l10n.educationDescription,
       actions: educations.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear All Education',
+                tooltip: l10n.clearAllEducation,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
@@ -371,7 +372,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingEducation != null ? 'Edit Education' : 'Add New Education',
+                              _editingEducation != null ? l10n.editEducation : l10n.addNewEducation,
                               style: Theme.of(
                                 context,
                               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -382,7 +383,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                           TextButton.icon(
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
-                            label: const Text('Cancel'),
+                            label: Text(l10n.cancel),
                             style: TextButton.styleFrom(foregroundColor: AppColors.error),
                           ),
                       ],
@@ -393,15 +394,15 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Degree/Certificate',
+                          label: l10n.degreeCertificate,
                           isRequired: true,
                           child: CustomTextFormField(
                             controller: _degreeController,
                             focusNode: _degreeFocusNode,
-                            hint: 'e.g., Bachelor of Science in Computer Science',
+                            hint: l10n.degreeHint,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Degree is required';
+                                return l10n.degreeRequired;
                               }
                               return null;
                             },
@@ -414,15 +415,15 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'Institution',
+                          label: l10n.institution,
                           isRequired: true,
                           child: CustomTextFormField(
                             controller: _institutionController,
                             focusNode: _institutionFocusNode,
-                            hint: 'e.g., University of Technology',
+                            hint: l10n.institutionHint,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Institution is required';
+                                return l10n.institutionRequired;
                               }
                               return null;
                             },
@@ -442,11 +443,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Location',
+                          label: l10n.location,
                           child: CustomTextFormField(
                             controller: _locationController,
                             focusNode: _locationFocusNode,
-                            hint: 'e.g., New York, USA',
+                            hint: l10n.locationHint,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -456,11 +457,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'GPA (Optional)',
+                          label: l10n.gpaOptional,
                           child: CustomTextFormField(
                             controller: _gpaController,
                             focusNode: _gpaFocusNode,
-                            hint: 'e.g., 3.8',
+                            hint: l10n.gpaHint,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (_) {
@@ -478,7 +479,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     ResponsiveGrid(
                       children: [
                         ResponsiveFormField(
-                          label: 'Start Date',
+                          label: l10n.startDate,
                           isRequired: true,
                           child: GestureDetector(
                             onTap: _selectStartDate,
@@ -490,11 +491,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                           ),
                         ),
                         ResponsiveFormField(
-                          label: 'End Date',
+                          label: l10n.endDate,
                           child: _isCurrentlyStudying
                               ? CustomTextFormField(
                                   controller: _endDateController,
-                                  hint: 'Currently studying',
+                                  hint: AppLocalizations.of(context)!.currentlyWorking,
                                   enabled: false,
                                 )
                               : GestureDetector(
@@ -525,17 +526,17 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                             });
                           },
                         ),
-                        const Text('I am currently studying here'),
+                        Text(AppLocalizations.of(context)!.currentlyWorking),
                       ],
                     ),
                     const SizedBox(height: AppConstants.spacingL),
 
                     // Description
                     ResponsiveFormField(
-                      label: 'Description (Optional)',
+                      label: l10n.description,
                       child: CustomTextFormField(
                         controller: _descriptionController,
-                        hint: 'Describe your studies, achievements, or relevant coursework...',
+                        hint: l10n.descriptionHint,
                         maxLines: 3,
                       ),
                     ),
@@ -547,7 +548,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                       child: ElevatedButton.icon(
                         onPressed: _editingEducation != null ? _updateEducation : _saveEducation,
                         icon: Icon(_editingEducation != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingEducation != null ? 'Update Education' : 'Add Education'),
+                        label: Text(_editingEducation != null ? l10n.editEducation : l10n.addEducation),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
                           backgroundColor: _editingEducation != null ? AppColors.success : null,
@@ -565,7 +566,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           // Education List
           if (educations.isNotEmpty) ...[
             Text(
-              'Your Education (${educations.length})',
+              '${l10n.education} (${educations.length})',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppConstants.spacingM),
@@ -577,12 +578,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   Icon(PhosphorIcons.graduationCap(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
-                    'No education added yet',
+                    l10n.educationDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Add your first education entry above',
+                    l10n.getStarted,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
@@ -629,12 +630,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     IconButton(
                       onPressed: () => _editEducation(education),
                       icon: Icon(PhosphorIcons.pencilSimple(), color: AppColors.primary),
-                      tooltip: 'Edit',
+                      tooltip: AppLocalizations.of(context)!.edit,
                     ),
                     IconButton(
                       onPressed: () => _deleteEducation(education.id),
                       icon: Icon(PhosphorIcons.trash(), color: AppColors.error),
-                      tooltip: 'Delete',
+                      tooltip: AppLocalizations.of(context)!.delete,
                     ),
                   ],
                 ),
@@ -642,13 +643,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             ),
             const SizedBox(height: AppConstants.spacingS),
             Text(
-              '${education.startDate.year}-${education.startDate.month.toString().padLeft(2, '0')} - ${education.endDate != null ? '${education.endDate!.year}-${education.endDate!.month.toString().padLeft(2, '0')}' : 'Present'}',
+              '${education.startDate.year}-${education.startDate.month.toString().padLeft(2, '0')} - ${education.endDate != null ? '${education.endDate!.year}-${education.endDate!.month.toString().padLeft(2, '0')}' : AppLocalizations.of(context)!.currentlyWorking}',
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: AppConstants.spacingM),
-            Text(education.description ?? 'No description provided', style: Theme.of(context).textTheme.bodyMedium),
+            if (education.description != null && education.description!.isNotEmpty)
+              Text(education.description!, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ),
@@ -664,26 +666,26 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear All Education'),
+              Text(AppLocalizations.of(context)!.clearAllEducation),
             ],
           ),
-          content: const Text('Are you sure you want to clear all education records? This action cannot be undone.'),
+          content: Text(AppLocalizations.of(context)!.clearEducationConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearEducations();
                 Navigator.of(context).pop();
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All education records cleared successfully!'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.educationCleared),
                     backgroundColor: AppColors.success,
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear All'),
+              child: Text(AppLocalizations.of(context)!.clear),
             ),
           ],
         );

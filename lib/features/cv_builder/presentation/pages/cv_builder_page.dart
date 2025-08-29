@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/responsive_utils.dart';
+import '../../../../core/providers/language_provider.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../providers/cv_provider.dart';
 import '../widgets/cv_section_navigation.dart';
@@ -25,9 +27,10 @@ class CVBuilderPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentSection = ref.watch(currentSectionProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(context, ref, l10n),
       body: ResponsiveUtils.isMobile(context)
           ? _buildMobileLayout(context, ref, currentSection)
           : _buildDesktopLayout(context, ref, currentSection),
@@ -37,14 +40,17 @@ class CVBuilderPage extends ConsumerWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final languageNotifier = ref.read(languageProvider.notifier);
+    final currentLocale = ref.watch(languageProvider);
+
     return AppBar(
       title: Row(
         children: [
           Icon(PhosphorIcons.fileText(), color: AppColors.primary, size: 28),
           const SizedBox(width: AppConstants.spacingM),
           Text(
-            AppConstants.appName,
+            l10n.appName,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary),
@@ -52,8 +58,41 @@ class CVBuilderPage extends ConsumerWidget {
         ],
       ),
       actions: [
+        // Language Toggle Button
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: InkWell(
+            onTap: languageNotifier.toggleLanguage,
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(PhosphorIcons.globe(), size: 16, color: AppColors.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    currentLocale.languageCode == 'tr' ? 'TR' : 'EN',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
         if (!ResponsiveUtils.isMobile(context)) ...[
-          IconButton(onPressed: () => _showHelpDialog(context), icon: Icon(PhosphorIcons.question()), tooltip: 'Help'),
+          IconButton(
+            onPressed: () => _showHelpDialog(context, l10n),
+            icon: Icon(PhosphorIcons.question()),
+            tooltip: l10n.help,
+          ),
           const SizedBox(width: AppConstants.spacingS),
         ],
       ],
@@ -113,6 +152,7 @@ class CVBuilderPage extends ConsumerWidget {
   Widget? _buildMobileNavigation(BuildContext context, WidgetRef ref, CVSection currentSection) {
     const sections = CVSection.values;
     final currentIndex = sections.indexOf(currentSection);
+    final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
       child: Container(
@@ -138,13 +178,16 @@ class CVBuilderPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(PhosphorIcons.caretLeft(), size: 14),
-                    const SizedBox(width: 2),
-                    const Text('Prev', style: TextStyle(fontSize: 12)),
-                  ],
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(PhosphorIcons.caretLeft(), size: 14),
+                      const SizedBox(width: 2),
+                      Text(l10n.prev, style: const TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -189,13 +232,16 @@ class CVBuilderPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Next', style: TextStyle(fontSize: 12)),
-                    const SizedBox(width: 2),
-                    Icon(PhosphorIcons.caretRight(), size: 14),
-                  ],
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l10n.next, style: const TextStyle(fontSize: 12)),
+                      const SizedBox(width: 2),
+                      Icon(PhosphorIcons.caretRight(), size: 14),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -205,37 +251,34 @@ class CVBuilderPage extends ConsumerWidget {
     );
   }
 
-  void _showHelpDialog(BuildContext context) {
+  void _showHelpDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('CV Builder Help'),
-        content: const Column(
+        title: Text(l10n.help),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(l10n.helpDescription, style: const TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(height: AppConstants.spacingM),
+            Text(l10n.helpStep1),
+            Text(l10n.helpStep2),
+            Text(l10n.helpStep3),
+            Text(l10n.helpStep4),
+            Text(l10n.helpStep5),
+            Text(l10n.helpStep6),
+            Text(l10n.helpStep7),
+            Text(l10n.helpStep8),
+            Text(l10n.helpStep9),
+            const SizedBox(height: AppConstants.spacingM),
             Text(
-              'Welcome to CV Maker! Follow these steps to create your professional resume:',
-              style: TextStyle(fontWeight: FontWeight.w500),
-            ),
-            SizedBox(height: AppConstants.spacingM),
-            Text('1. Enter your personal information'),
-            Text('2. Write a professional summary'),
-            Text('3. Add your work experiences'),
-            Text('4. List your education'),
-            Text('5. Highlight your skills'),
-            Text('6. Add languages you speak'),
-            Text('7. Include certifications'),
-            Text('8. Showcase your projects'),
-            Text('9. Preview and export your CV'),
-            SizedBox(height: AppConstants.spacingM),
-            Text(
-              'Tip: All fields are automatically saved as you type!',
-              style: TextStyle(fontStyle: FontStyle.italic, color: AppColors.primary),
+              l10n.helpTip,
+              style: const TextStyle(fontStyle: FontStyle.italic, color: AppColors.primary),
             ),
           ],
         ),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Got it!'))],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.gotIt))],
       ),
     );
   }

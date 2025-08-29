@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   # State Management
   flutter_riverpod: ^2.5.1
   
@@ -35,6 +37,7 @@ dependencies:
   # Utilities
   uuid: ^4.4.0
   url_launcher: ^6.3.1
+  shared_preferences: ^2.2.2
   
   # Form validation
   form_validator: ^2.1.1
@@ -47,6 +50,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   
   fonts:
     - family: NotoSans

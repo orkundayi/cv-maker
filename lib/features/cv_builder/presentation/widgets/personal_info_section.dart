@@ -7,6 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -217,6 +218,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final personalInfo = ref.watch(cvDataProvider).personalInfo;
     final hasPersonalInfo =
         personalInfo.firstName.isNotEmpty ||
@@ -226,14 +228,14 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         personalInfo.profileImagePath != null;
 
     return ResponsiveCard(
-      title: 'Personal Information',
-      subtitle: 'Enter your basic contact information',
+      title: l10n.personalInformation,
+      subtitle: l10n.enterBasicContactInfo,
       actions: hasPersonalInfo
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash()),
-                tooltip: 'Clear Personal Information',
+                tooltip: l10n.clearPersonalInformation,
               ),
             ]
           : null,
@@ -266,10 +268,14 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Widget _buildProfileImageSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Profile Picture', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+        Text(
+          l10n.profilePicture,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
         const SizedBox(height: AppConstants.spacingM),
         Row(
           children: [
@@ -284,11 +290,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   ElevatedButton.icon(
                     onPressed: _selectProfileImage,
                     icon: Icon(PhosphorIcons.camera()),
-                    label: const Text('Upload Photo'),
+                    label: Text(l10n.uploadPhoto),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Optional: Add a professional photo (JPG, PNG)',
+                    l10n.optionalPhotoHint,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
                   ),
                 ],
@@ -301,26 +307,27 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Widget _buildBasicInfoSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Basic Information',
+          l10n.basicInformation,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveGrid(
           children: [
             ResponsiveFormField(
-              label: 'First Name',
+              label: l10n.firstName,
               isRequired: true,
               child: CustomTextFormField(
                 controller: _firstNameController,
                 focusNode: _firstNameFocusNode,
-                hint: 'Enter your first name',
+                hint: l10n.firstNameHint,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'First name is required';
+                    return l10n.firstNameRequired;
                   }
                   return null;
                 },
@@ -333,15 +340,15 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               ),
             ),
             ResponsiveFormField(
-              label: 'Last Name',
+              label: l10n.lastName,
               isRequired: true,
               child: CustomTextFormField(
                 controller: _lastNameController,
                 focusNode: _lastNameFocusNode,
-                hint: 'Enter your last name',
+                hint: l10n.lastNameHint,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Last name is required';
+                    return l10n.lastNameRequired;
                   }
                   return null;
                 },
@@ -360,30 +367,31 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Widget _buildContactInfoSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Contact Information',
+          l10n.contactInformation,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveGrid(
           children: [
             ResponsiveFormField(
-              label: 'Email Address',
+              label: l10n.emailAddress,
               isRequired: true,
               child: CustomTextFormField(
                 controller: _emailController,
                 focusNode: _emailFocusNode,
-                hint: 'your.email@example.com',
+                hint: l10n.emailHint,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Email is required';
+                    return l10n.emailRequired;
                   }
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Enter a valid email address';
+                    return l10n.emailInvalid;
                   }
                   return null;
                 },
@@ -396,16 +404,16 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               ),
             ),
             ResponsiveFormField(
-              label: 'Phone Number',
+              label: l10n.phoneNumber,
               isRequired: true,
               child: CustomTextFormField(
                 controller: _phoneController,
                 focusNode: _phoneFocusNode,
-                hint: '+1 (555) 123-4567',
+                hint: l10n.phoneHint,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Phone number is required';
+                    return l10n.phoneRequired;
                   }
                   return null;
                 },
@@ -423,11 +431,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         ResponsiveGrid(
           children: [
             ResponsiveFormField(
-              label: 'City',
+              label: l10n.city,
               child: CustomTextFormField(
                 controller: _cityController,
                 focusNode: _cityFocusNode,
-                hint: 'New York',
+                hint: l10n.cityHint,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -437,11 +445,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               ),
             ),
             ResponsiveFormField(
-              label: 'Country',
+              label: l10n.country,
               child: CustomTextFormField(
                 controller: _countryController,
                 focusNode: _countryFocusNode,
-                hint: 'United States',
+                hint: l10n.countryHint,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -457,25 +465,26 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Widget _buildSocialLinksSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Professional Links',
+          l10n.professionalLinks,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingS),
         Text(
-          'Add links to your professional profiles (optional)',
+          l10n.professionalLinksHint,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveFormField(
-          label: 'LinkedIn Profile',
+          label: l10n.linkedinProfile,
           child: CustomTextFormField(
             controller: _linkedInController,
             focusNode: _linkedInFocusNode,
-            hint: 'https://linkedin.com/in/yourprofile',
+            hint: l10n.linkedinHint,
             keyboardType: TextInputType.url,
             prefixIcon: Icon(PhosphorIcons.linkedinLogo()),
             textInputAction: TextInputAction.next,
@@ -488,11 +497,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         ),
         const SizedBox(height: AppConstants.spacingL),
         ResponsiveFormField(
-          label: 'GitHub Profile',
+          label: l10n.githubProfile,
           child: CustomTextFormField(
             controller: _githubController,
             focusNode: _githubFocusNode,
-            hint: 'https://github.com/yourusername',
+            hint: l10n.githubHint,
             keyboardType: TextInputType.url,
             prefixIcon: Icon(PhosphorIcons.githubLogo()),
             textInputAction: TextInputAction.next,
@@ -505,11 +514,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         ),
         const SizedBox(height: AppConstants.spacingL),
         ResponsiveFormField(
-          label: 'Personal Website',
+          label: l10n.personalWebsite,
           child: CustomTextFormField(
             controller: _websiteController,
             focusNode: _websiteFocusNode,
-            hint: 'https://yourwebsite.com',
+            hint: l10n.websiteHint,
             keyboardType: TextInputType.url,
             prefixIcon: Icon(PhosphorIcons.globe()),
             textInputAction: TextInputAction.done,
@@ -559,9 +568,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         _onImageSelected(base64Image);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile photo uploaded successfully!'), backgroundColor: AppColors.success),
-          );
+          final l10n = AppLocalizations.of(context)!;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.profilePhotoUploaded), backgroundColor: AppColors.success));
           if (kDebugMode) {
             print('🎉 Success message gösterildi');
           }
@@ -574,28 +584,30 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     } catch (e) {
       if (kDebugMode) print('💥 Hata oluştu: $e');
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Failed to upload image: $e'), backgroundColor: AppColors.error));
+        ).showSnackBar(SnackBar(content: Text(l10n.imageUploadFailed), backgroundColor: AppColors.error));
       }
     }
     if (kDebugMode) print('🏁 _selectProfileImage tamamlandı');
   }
 
   void _showClearDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear Personal Information'),
-        content: const Text('Are you sure you want to clear all personal information? This action cannot be undone.'),
+        title: Text(l10n.clearPersonalInformation),
+        content: Text(l10n.clearPersonalInfoConfirm),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
               _clearPersonalInfo();
             },
-            child: const Text('Clear'),
+            child: Text(l10n.clear),
           ),
         ],
       ),
@@ -623,9 +635,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
     // Show feedback
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Personal information cleared successfully'), backgroundColor: AppColors.success),
-      );
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.personalInfoCleared), backgroundColor: AppColors.success));
     }
   }
 }

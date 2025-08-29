@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Custom text form field with consistent styling
 class CustomTextFormField extends StatelessWidget {
@@ -262,7 +263,7 @@ class _CustomChipInputFieldState extends State<CustomChipInputField> {
                 focusNode: _focusNode,
                 enabled: widget.enabled,
                 decoration: InputDecoration(
-                  hintText: widget.hint ?? 'Type and press Enter to add',
+                  hintText: widget.hint ?? AppLocalizations.of(context)!.chipInputHint,
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,

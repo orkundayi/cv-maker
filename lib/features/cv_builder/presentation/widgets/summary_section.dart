@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
 import '../providers/cv_provider.dart';
@@ -40,21 +41,24 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasSummary = _summaryController.text.trim().isNotEmpty;
 
     return ResponsiveCard(
-      title: 'Professional Summary',
-      subtitle: 'Write a brief overview of your professional background and career goals',
+      title: l10n.professionalSummary,
+      subtitle: l10n.summaryDescription,
       actions: hasSummary
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear Summary',
+                tooltip: l10n.clearSummary,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -76,13 +80,18 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.lightbulb_outline, color: AppColors.info, size: 20),
+                      const Icon(
+                        Icons.lightbulb_outline,
+                        color: AppColors.info,
+                        size: 20,
+                      ),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
-                        'Writing Tips',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: AppColors.info, fontWeight: FontWeight.w600),
+                        l10n.writingTips,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.info,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
@@ -91,28 +100,38 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '• Keep it concise (3-5 sentences, 100-500 characters)',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        l10n.keepItConcise,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
-                        '• Highlight your key strengths and experience',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        l10n.highlightKeyStrengths,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
-                        '• Mention your career goals and what you bring',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        l10n.mentionCareerGoals,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
-                        '• Use action words and quantifiable achievements',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        l10n.useActionWords,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
-                        '• Tailor it to the specific role you\'re applying for',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info),
+                        l10n.tailorToRole,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.info),
                       ),
                     ],
                   ),
@@ -126,8 +145,8 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
               constraints: const BoxConstraints(minHeight: 200),
               child: CustomTextFormField(
                 controller: _summaryController,
-                label: 'Professional Summary',
-                hint: 'Experienced software developer with 5+ years of expertise in full-stack development...',
+                label: l10n.professionalSummary,
+                hint: l10n.summaryHint,
                 maxLines: 8,
                 textInputAction: TextInputAction.newline,
               ),
@@ -148,15 +167,15 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
 
                 if (charCount < 100) {
                   statusColor = AppColors.warning;
-                  statusText = 'Too short';
+                  statusText = l10n.tooShort;
                   statusBgColor = AppColors.warning.withOpacity(0.1);
                 } else if (charCount > 500) {
                   statusColor = AppColors.error;
-                  statusText = 'Too long';
+                  statusText = l10n.tooLong;
                   statusBgColor = AppColors.error.withOpacity(0.1);
                 } else {
                   statusColor = AppColors.success;
-                  statusText = 'Perfect length';
+                  statusText = l10n.perfectLength;
                   statusBgColor = AppColors.success.withOpacity(0.1);
                 }
 
@@ -165,7 +184,9 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(AppConstants.radiusS),
-                    border: Border.all(color: AppColors.border.withOpacity(0.5)),
+                    border: Border.all(
+                      color: AppColors.border.withOpacity(0.5),
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -173,8 +194,9 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Character count: $charCount/500',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                            '${l10n.characterCount}: $charCount/500',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: AppColors.textSecondary),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -183,13 +205,17 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                             ),
                             decoration: BoxDecoration(
                               color: statusBgColor,
-                              borderRadius: BorderRadius.circular(AppConstants.radiusS),
+                              borderRadius: BorderRadius.circular(
+                                AppConstants.radiusS,
+                              ),
                             ),
                             child: Text(
                               statusText,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                           ),
                         ],
@@ -220,20 +246,27 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.tips_and_updates_outlined, color: AppColors.success, size: 20),
+                      const Icon(
+                        Icons.tips_and_updates_outlined,
+                        color: AppColors.success,
+                        size: 20,
+                      ),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
-                        'Pro Tips',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: AppColors.success, fontWeight: FontWeight.w600),
+                        l10n.proTips,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Your summary should grab attention immediately. Start with your years of experience or key achievement, then mention 2-3 core skills, and end with what you\'re looking for or can contribute.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.success),
+                    l10n.summaryGrabAttention,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.success),
                   ),
                 ],
               ),
@@ -245,6 +278,7 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
   }
 
   void _showClearDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -253,25 +287,32 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear Summary'),
+              Text(l10n.clearSummary),
             ],
           ),
-          content: const Text(
-            'Are you sure you want to clear your professional summary? This action cannot be undone.',
-          ),
+          content: Text(l10n.clearSummaryConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearSummary();
                 _summaryController.clear();
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Summary cleared successfully!'), backgroundColor: AppColors.success),
+                  SnackBar(
+                    content: Text(l10n.summaryCleared),
+                    backgroundColor: AppColors.success,
+                  ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(l10n.clear),
             ),
           ],
         );

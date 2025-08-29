@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -82,18 +83,19 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final languages = ref.watch(cvDataProvider).languages;
     final isMobile = ResponsiveUtils.isMobile(context);
 
     return ResponsiveCard(
-      title: 'Languages & Communication',
-      subtitle: 'Showcase your multilingual abilities',
+      title: l10n.languagesCommunication,
+      subtitle: l10n.languagesDescription,
       actions: languages.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear All Languages',
+                tooltip: l10n.clearAllLanguages,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
@@ -134,7 +136,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
-                            _editingLanguage != null ? 'Edit Language' : 'Add New Language',
+                            _editingLanguage != null ? l10n.editLanguage : l10n.addLanguage,
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -145,7 +147,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                         TextButton.icon(
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
-                          label: const Text('Cancel'),
+                          label: Text(l10n.cancel),
                           style: TextButton.styleFrom(foregroundColor: AppColors.error),
                         ),
                     ],
@@ -156,21 +158,21 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                   ResponsiveGrid(
                     children: [
                       ResponsiveFormField(
-                        label: 'Language Name',
+                        label: l10n.languageName,
                         isRequired: true,
                         child: CustomTextFormField(
                           controller: _languageNameController,
-                          hint: 'e.g., English, Spanish, French',
+                          hint: l10n.languageNameHint,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Language name is required';
+                              return l10n.firstNameRequired;
                             }
                             return null;
                           },
                         ),
                       ),
                       ResponsiveFormField(
-                        label: 'Proficiency Level',
+                        label: l10n.languageLevel,
                         isRequired: true,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +204,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                                         _buildLevelIndicator(level, isSelected),
                                         const SizedBox(width: 8),
                                         Text(
-                                          level.displayName,
+                                          _localizeLanguageLevel(context, level),
                                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                             color: isSelected
                                                 ? _getLevelColor(level)
@@ -229,7 +231,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                     child: ElevatedButton.icon(
                       onPressed: _saveLanguage,
                       icon: Icon(_editingLanguage != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                      label: Text(_editingLanguage != null ? 'Update Language' : 'Add Language'),
+                      label: Text(_editingLanguage != null ? l10n.editLanguage : l10n.addLanguage),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
                         backgroundColor: _editingLanguage != null ? AppColors.success : null,
@@ -246,7 +248,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
           // Languages List
           if (languages.isNotEmpty) ...[
             Text(
-              'Your Languages (${languages.length})',
+              '${l10n.languages} (${languages.length})',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppConstants.spacingM),
@@ -258,12 +260,12 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                   Icon(PhosphorIcons.translate(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
-                    'No languages added yet',
+                    l10n.languagesDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Add your first language above',
+                    l10n.getStarted,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
@@ -305,7 +307,7 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            language.level.displayName,
+                            _localizeLanguageLevel(context, language.level),
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
@@ -415,7 +417,26 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
     }
   }
 
+  String _localizeLanguageLevel(BuildContext context, LanguageLevel level) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (level) {
+      case LanguageLevel.beginner:
+        return 'A1 - ${l10n.beginner}';
+      case LanguageLevel.elementary:
+        return 'A2 - ${l10n.conversational}';
+      case LanguageLevel.intermediate:
+        return 'B1 - ${l10n.intermediate}';
+      case LanguageLevel.upperIntermediate:
+        return 'B2 - ${l10n.fluent}';
+      case LanguageLevel.advanced:
+        return 'C1 - ${l10n.advanced}';
+      case LanguageLevel.native:
+        return 'C2 - ${l10n.native}';
+    }
+  }
+
   void _showClearDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -424,26 +445,23 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear All Languages'),
+              Text(l10n.clearAllLanguages),
             ],
           ),
-          content: const Text('Are you sure you want to clear all languages? This action cannot be undone.'),
+          content: Text(l10n.clearLanguagesConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearLanguages();
                 Navigator.of(context).pop();
                 _resetForm();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All languages cleared successfully!'),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(l10n.languagesCleared), backgroundColor: AppColors.success));
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear All'),
+              child: Text(l10n.clear),
             ),
           ],
         );

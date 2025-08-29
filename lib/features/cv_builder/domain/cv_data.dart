@@ -300,7 +300,6 @@ class PersonalInfo {
       'lastName': lastName,
       'email': email,
       'phone': phone,
-
       'city': city,
       'country': country,
       'linkedIn': linkedIn,
@@ -337,7 +336,6 @@ class PersonalInfo {
       lastName: 'Doe',
       email: 'john.doe@example.com',
       phone: '+90 555 123 4567',
-
       city: 'Istanbul',
       country: 'Turkey',
       linkedIn: 'linkedin.com/in/johndoe',

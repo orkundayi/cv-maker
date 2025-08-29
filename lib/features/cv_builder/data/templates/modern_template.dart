@@ -13,7 +13,7 @@ class ModernTemplate extends CVTemplate {
   String get id => 'modern_sidebar';
 
   @override
-  String get name => 'Modern Sidebar';
+  String get name => 'Modern';
 
   @override
   String get description => 'Professional modern CV with colored sidebar for personal info and skills';

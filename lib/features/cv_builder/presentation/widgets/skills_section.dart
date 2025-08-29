@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_utils.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/custom_form_fields.dart';
@@ -67,14 +68,20 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
     if (_editingSkill != null) {
       ref.read(cvDataProvider.notifier).updateSkill(skill);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Skill updated successfully!'), backgroundColor: AppColors.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.educationUpdatedSuccessfully),
+          backgroundColor: AppColors.success,
+        ),
+      );
     } else {
       ref.read(cvDataProvider.notifier).addSkill(skill);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Skill added successfully!'), backgroundColor: AppColors.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.educationAddedSuccessfully),
+          backgroundColor: AppColors.success,
+        ),
+      );
     }
 
     _resetForm();
@@ -82,18 +89,19 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final skills = ref.watch(cvDataProvider).skills;
     final isMobile = ResponsiveUtils.isMobile(context);
 
     return ResponsiveCard(
-      title: 'Skills & Expertise',
-      subtitle: 'Showcase your technical and professional capabilities',
+      title: l10n.skillsExpertise,
+      subtitle: l10n.skillsDescription,
       actions: skills.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => _showClearDialog(context),
                 icon: Icon(PhosphorIcons.trash(), color: Colors.red, size: 18),
-                tooltip: 'Clear All Skills',
+                tooltip: l10n.clearAllSkills,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
@@ -134,7 +142,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
-                            _editingSkill != null ? 'Edit Skill' : 'Add New Skill',
+                            _editingSkill != null ? l10n.editSkill : l10n.addSkill,
                             style: Theme.of(
                               context,
                             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -145,7 +153,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                         TextButton.icon(
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
-                          label: const Text('Cancel'),
+                          label: Text(l10n.cancel),
                           style: TextButton.styleFrom(foregroundColor: AppColors.error),
                         ),
                     ],
@@ -154,14 +162,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
                   // Skill Name
                   ResponsiveFormField(
-                    label: 'Skill Name',
+                    label: l10n.skillName,
                     isRequired: true,
                     child: CustomTextFormField(
                       controller: _skillNameController,
-                      hint: 'e.g., Flutter, Project Management, English',
+                      hint: l10n.skillNameHint,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Skill name is required';
+                          return l10n.firstNameRequired;
                         }
                         return null;
                       },
@@ -171,7 +179,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
                   // Skill Level (Visual Selector)
                   ResponsiveFormField(
-                    label: 'Skill Level',
+                    label: l10n.skillLevel,
                     isRequired: true,
                     child: Column(
                       children: [
@@ -202,7 +210,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                     _buildLevelIndicator(level, isSelected),
                                     const SizedBox(width: 8),
                                     Text(
-                                      level.displayName,
+                                      _localizeSkillLevel(context, level),
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         color: isSelected
                                             ? _getLevelColor(level)
@@ -223,7 +231,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
                   // Category Selector (Visual)
                   ResponsiveFormField(
-                    label: 'Category',
+                    label: l10n.skillCategory,
                     isRequired: true,
                     child: Wrap(
                       spacing: isMobile ? 6 : 8,
@@ -255,7 +263,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  category.displayName,
+                                  _localizeSkillCategory(context, category),
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: isSelected
                                         ? Theme.of(context).primaryColor
@@ -278,7 +286,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     child: ElevatedButton.icon(
                       onPressed: _saveSkill,
                       icon: Icon(_editingSkill != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                      label: Text(_editingSkill != null ? 'Update Skill' : 'Add Skill'),
+                      label: Text(_editingSkill != null ? l10n.editSkill : l10n.addSkill),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
                         backgroundColor: _editingSkill != null ? AppColors.success : null,
@@ -298,7 +306,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Your Skills (${skills.length})',
+                  '${l10n.skills} (${skills.length})',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Container(
@@ -308,7 +316,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${skills.length} skills',
+                    '${skills.length} ${AppLocalizations.of(context)!.skills.toLowerCase()}',
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
@@ -326,12 +334,12 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   Icon(PhosphorIcons.lightning(), size: 64, color: AppColors.grey400),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
-                    'No skills added yet',
+                    l10n.skillsDescription,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
-                    'Add your first skill above',
+                    l10n.getStarted,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
                   ),
                 ],
@@ -386,6 +394,34 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
         return 4;
       case SkillLevel.expert:
         return 5;
+    }
+  }
+
+  String _localizeSkillLevel(BuildContext context, SkillLevel level) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (level) {
+      case SkillLevel.beginner:
+        return l10n.beginner;
+      case SkillLevel.intermediate:
+        return l10n.intermediate;
+      case SkillLevel.advanced:
+        return l10n.advanced;
+      case SkillLevel.expert:
+        return l10n.expert;
+    }
+  }
+
+  String _localizeSkillCategory(BuildContext context, SkillCategory category) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (category) {
+      case SkillCategory.technical:
+        return l10n.technical;
+      case SkillCategory.soft:
+        return l10n.soft;
+      case SkillCategory.language:
+        return l10n.languages;
+      case SkillCategory.other:
+        return l10n.other;
     }
   }
 
@@ -506,14 +542,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       icon: Icon(PhosphorIcons.pencilSimple(), size: 18),
                       iconSize: 18,
                       visualDensity: VisualDensity.compact,
-                      tooltip: 'Edit',
+                      tooltip: AppLocalizations.of(context)!.edit,
                     ),
                     IconButton(
                       onPressed: () => _deleteSkill(skill.id),
                       icon: Icon(PhosphorIcons.trash(), size: 18, color: AppColors.error),
                       iconSize: 18,
                       visualDensity: VisualDensity.compact,
-                      tooltip: 'Delete',
+                      tooltip: AppLocalizations.of(context)!.delete,
                     ),
                   ],
                 ),
@@ -526,7 +562,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
             Row(
               children: [
                 Text(
-                  skill.level.displayName,
+                  _localizeSkillLevel(context, skill.level),
                   style: Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(color: _getLevelColor(skill.level), fontWeight: FontWeight.w500),
@@ -589,23 +625,26 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
             children: [
               Icon(PhosphorIcons.warning(), color: Colors.red, size: 24),
               const SizedBox(width: 8),
-              const Text('Clear All Skills'),
+              Text(AppLocalizations.of(context)!.clearAllSkills),
             ],
           ),
-          content: const Text('Are you sure you want to clear all your skills? This action cannot be undone.'),
+          content: Text(AppLocalizations.of(context)!.clearSkillsConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearSkills();
                 Navigator.of(context).pop();
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('All skills cleared successfully!'), backgroundColor: AppColors.success),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.skillsCleared),
+                    backgroundColor: AppColors.success,
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-              child: const Text('Clear All'),
+              child: Text(AppLocalizations.of(context)!.clearAllSkills),
             ),
           ],
         );

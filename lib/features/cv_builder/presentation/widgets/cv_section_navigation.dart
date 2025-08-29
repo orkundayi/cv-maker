@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../providers/cv_provider.dart';
 
 /// Navigation widget for CV sections
@@ -15,11 +16,12 @@ class CVSectionNavigation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(AppConstants.spacingM),
       children: [
         Text(
-          'CV Sections',
+          l10n.cvSections,
           style: Theme.of(
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
@@ -39,6 +41,48 @@ class CVSectionNavigation extends ConsumerWidget {
   }
 
   Widget _buildSectionTile(BuildContext context, CVSection section, bool isActive, bool isCompleted) {
+    final l10n = AppLocalizations.of(context)!;
+    String title;
+    String description;
+
+    switch (section) {
+      case CVSection.personalInfo:
+        title = l10n.personalInformation;
+        description = l10n.enterBasicContactInfo;
+        break;
+      case CVSection.summary:
+        title = l10n.professionalSummary;
+        description = l10n.summaryDescription;
+        break;
+      case CVSection.workExperience:
+        title = l10n.workExperience;
+        description = l10n.workExperienceDescription;
+        break;
+      case CVSection.education:
+        title = l10n.education;
+        description = l10n.educationDescription;
+        break;
+      case CVSection.skills:
+        title = l10n.skills;
+        description = l10n.skillsDescription;
+        break;
+      case CVSection.languages:
+        title = l10n.languages;
+        description = l10n.languagesDescription;
+        break;
+      case CVSection.certificates:
+        title = l10n.certificates;
+        description = l10n.certificatesDescription;
+        break;
+      case CVSection.projects:
+        title = l10n.projects;
+        description = l10n.projectsDescription;
+        break;
+      case CVSection.preview:
+        title = l10n.cvPreview;
+        description = l10n.previewDescription;
+        break;
+    }
     return Material(
       color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
       borderRadius: BorderRadius.circular(AppConstants.radiusM),
@@ -78,7 +122,7 @@ class CVSectionNavigation extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      section.title,
+                      title,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                         color: isActive ? AppColors.primary : AppColors.textPrimary,
@@ -86,7 +130,7 @@ class CVSectionNavigation extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppConstants.spacingXs),
                     Text(
-                      section.description,
+                      description,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
