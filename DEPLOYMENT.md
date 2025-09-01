@@ -2,7 +2,7 @@
 
 ## 🚀 Projeyi Web'e Yayımlama Rehberi
 
-Bu rehber, CV Maker uygulamasını www.flutech.org/CvMaker adresinde yayımlamak için gerekli adımları içerir.
+Bu rehber, CV Maker uygulamasını <www.flutech.org/CvMaker> adresinde yayımlamak için gerekli adımları içerir.
 
 ## 📋 Ön Gereksinimler
 
@@ -19,6 +19,7 @@ flutter build web --base-href="/CvMaker/" --release
 ```
 
 **Komut Açıklaması:**
+
 - `--base-href="/CvMaker/"`: Uygulamanın subdirectory'de çalışmasını sağlar
 - `--release`: Optimized production build oluşturur
 - Build çıktısı: `build/web/` klasöründe oluşur
@@ -27,7 +28,7 @@ flutter build web --base-href="/CvMaker/" --release
 
 Build başarılı olduktan sonra aşağıdaki dosyaların oluştuğunu kontrol edin:
 
-```
+```bash
 build/web/
 ├── index.html
 ├── main.dart.js
@@ -66,7 +67,7 @@ rsync -av build/web/ user@yourserver:/path/to/website/CvMaker/
 
 Sunucudaki son dizin yapısı şöyle olmalı:
 
-```
+```bash
 www.flutech.org/
 ├── (ana site dosyaları)
 └── CvMaker/
@@ -137,6 +138,7 @@ location /CvMaker/ {
 ## ✅ Test İşlemi
 
 1. **Local Test:**
+
    ```bash
    cd build/web
    python -m http.server 8000
@@ -154,15 +156,18 @@ Projeyi güncellemek için:
 
 1. Kod değişikliklerini yapın
 2. Build komutunu tekrar çalıştırın:
+
    ```bash
    flutter build web --base-href="/CvMaker/" --release
    ```
+
 3. Yeni build dosyalarını sunucuya kopyalayın
 4. Browser cache'ini temizleyin (Ctrl+F5)
 
 ## 📱 Mobil Uyumluluk
 
 Uygulama responsive tasarıma sahiptir ve mobil cihazlarda da düzgün çalışır:
+
 - ✅ Mobil dokunmatik kontroller
 - ✅ Responsive layout
 - ✅ PWA (Progressive Web App) desteği
@@ -170,13 +175,14 @@ Uygulama responsive tasarıma sahiptir ve mobil cihazlarda da düzgün çalış�
 ## 🎯 SEO ve Meta Tags
 
 `index.html` dosyasında SEO için uygun meta taglar mevcuttur:
+
 - Open Graph tags
 - Twitter Card support
 - Proper title and description
 
 ## 🐛 Sorun Giderme
 
-### Yaygın Sorunlar:
+### Yaygın Sorunlar
 
 1. **404 Hatası:**
    - `.htaccess` veya nginx konfigürasyonunu kontrol edin
@@ -191,6 +197,7 @@ Uygulama responsive tasarıma sahiptir ve mobil cihazlarda da düzgün çalış�
    - Dosya yollarının doğru olduğundan emin olun
 
 4. **PWA Cache Sorunları:**
+
    ```bash
    # Service Worker'ı temizle
    # Browser Developer Tools > Application > Storage > Clear storage
@@ -199,6 +206,7 @@ Uygulama responsive tasarıma sahiptir ve mobil cihazlarda da düzgün çalış�
 ## 📞 Destek
 
 Sorun yaşarsanız:
+
 1. Browser developer tools console'ı kontrol edin
 2. Network sekmesinde failed request'leri inceleyin
 3. Server error log'larını kontrol edin
@@ -207,4 +215,4 @@ Sorun yaşarsanız:
 
 **Son Güncelleme:** 29 Ağustos 2025  
 **Versiyon:** 1.0.0  
-**Deploy URL:** https://www.flutech.org/CvMaker
+**Deploy URL:** <https://www.flutech.org/CvMaker>
