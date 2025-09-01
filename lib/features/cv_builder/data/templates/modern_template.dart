@@ -139,7 +139,7 @@ class ModernTemplate extends CVTemplate {
           TemplateLocalizations.translate('personal', locale),
           fonts.boldFont!,
         ),
-        pw.SizedBox(height: 15),
+        pw.SizedBox(height: 12),
 
         _sidebarItem(
           TemplateLocalizations.translate('address', locale),
@@ -187,7 +187,7 @@ class ModernTemplate extends CVTemplate {
             _colors.textLight,
           ),
 
-        pw.SizedBox(height: 25),
+        pw.SizedBox(height: 20),
 
         // Languages section
         if (cvData.languages.isNotEmpty) ...[
@@ -195,7 +195,7 @@ class ModernTemplate extends CVTemplate {
             TemplateLocalizations.translate('languages', locale),
             fonts.boldFont!,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 8),
           ...cvData.languages.map(
             (lang) => _sidebarLanguageItem(lang, fonts.regularFont!, locale),
           ),
@@ -203,12 +203,12 @@ class ModernTemplate extends CVTemplate {
 
         // Skills section
         if (cvData.skills.isNotEmpty) ...[
-          pw.SizedBox(height: 25),
+          pw.SizedBox(height: 20),
           _sidebarSection(
             TemplateLocalizations.translate('skills', locale),
             fonts.boldFont!,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 8),
           ...cvData.skills.map(
             (skill) => _sidebarSkillItem(skill, fonts.regularFont!, locale),
           ),
@@ -228,7 +228,7 @@ class ModernTemplate extends CVTemplate {
       children: [
         // Name header
         pw.Container(
-          margin: const pw.EdgeInsets.only(bottom: 14),
+          margin: const pw.EdgeInsets.only(bottom: 12),
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -240,15 +240,15 @@ class ModernTemplate extends CVTemplate {
                   cvData.personalInfo.fullName.toUpperCase(),
                   style: pw.TextStyle(
                     font: fonts.boldFont,
-                    fontSize: 32,
+                    fontSize: 26,
                     color: _colors.text,
-                    letterSpacing: 2,
+                    letterSpacing: 1.5,
                   ),
                 ),
               ),
               pw.Container(
-                margin: const pw.EdgeInsets.only(top: 4),
-                height: 3,
+                margin: const pw.EdgeInsets.only(top: 3),
+                height: 2.5,
                 width: double.infinity,
                 color: _colors.accent,
               ),
@@ -263,17 +263,17 @@ class ModernTemplate extends CVTemplate {
             fonts.boldFont!,
             _colors.accent,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 6),
           pw.Text(
             cvData.summary!,
             style: pw.TextStyle(
               font: fonts.regularFont,
-              fontSize: _adaptFontSize(cvData.summary!, 10),
+              fontSize: _adaptFontSize(cvData.summary!, 8),
               color: _colors.text,
-              lineSpacing: 1.5,
+              lineSpacing: 1.4,
             ),
           ),
-          pw.SizedBox(height: 16),
+          pw.SizedBox(height: 6),
         ],
 
         // Work experience
@@ -283,7 +283,7 @@ class ModernTemplate extends CVTemplate {
             fonts.boldFont!,
             _colors.accent,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 6),
           ...cvData.workExperiences.map(
             (exp) => _workExperienceItem(
               exp,
@@ -301,7 +301,7 @@ class ModernTemplate extends CVTemplate {
             fonts.boldFont!,
             _colors.accent,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 6),
           ...cvData.educations.map(
             (edu) => _educationItem(
               edu,
@@ -319,7 +319,7 @@ class ModernTemplate extends CVTemplate {
             fonts.boldFont!,
             _colors.accent,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 6),
           ...cvData.projects.map(
             (proj) => _projectItem(
               proj,
@@ -337,7 +337,7 @@ class ModernTemplate extends CVTemplate {
             fonts.boldFont!,
             _colors.accent,
           ),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 6),
           ...cvData.certificates.map(
             (cert) => _certificateItem(
               cert,
@@ -354,7 +354,7 @@ class ModernTemplate extends CVTemplate {
   /// Sidebar section title
   pw.Widget _sidebarSection(String title, pw.Font boldFont) {
     return pw.Container(
-      padding: const pw.EdgeInsets.only(bottom: 5),
+      padding: const pw.EdgeInsets.only(bottom: 4),
       decoration: const pw.BoxDecoration(
         border: pw.Border(
           bottom: pw.BorderSide(color: PdfColors.white, width: 1),
@@ -364,9 +364,9 @@ class ModernTemplate extends CVTemplate {
         title,
         style: pw.TextStyle(
           font: boldFont,
-          fontSize: 14,
+          fontSize: 12,
           color: PdfColors.white,
-          letterSpacing: 0.5,
+          letterSpacing: 0.4,
         ),
       ),
     );
@@ -380,24 +380,50 @@ class ModernTemplate extends CVTemplate {
     PdfColor labelColor,
   ) {
     if (value.isEmpty) return pw.SizedBox();
+
+    // Check if value is a URL (contains common URL patterns)
+    final isUrl =
+        value.contains('linkedin.com') ||
+        value.contains('github.com') ||
+        value.contains('.com') ||
+        value.contains('.dev') ||
+        value.contains('.org') ||
+        value.startsWith('http');
+
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 8),
+      padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
             label,
-            style: pw.TextStyle(font: font, fontSize: 9, color: labelColor),
+            style: pw.TextStyle(font: font, fontSize: 8, color: labelColor),
           ),
-          pw.SizedBox(height: 2),
-          pw.Text(
-            value,
-            style: pw.TextStyle(
-              font: font,
-              fontSize: 10,
-              color: PdfColors.white,
+          pw.SizedBox(height: 1),
+          if (isUrl) ...[
+            // Make URLs clickable
+            pw.UrlLink(
+              destination: value.startsWith('http') ? value : 'https://$value',
+              child: pw.Text(
+                value,
+                style: pw.TextStyle(
+                  font: font,
+                  fontSize: 9,
+                  color: PdfColors.white,
+                  decoration: pw.TextDecoration.underline,
+                ),
+              ),
             ),
-          ),
+          ] else ...[
+            pw.Text(
+              value,
+              style: pw.TextStyle(
+                font: font,
+                fontSize: 9,
+                color: PdfColors.white,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -410,7 +436,7 @@ class ModernTemplate extends CVTemplate {
     String locale,
   ) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 8),
+      padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -418,17 +444,17 @@ class ModernTemplate extends CVTemplate {
             lang.name,
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: PdfColors.white,
             ),
           ),
-          pw.SizedBox(height: 2),
+          pw.SizedBox(height: 1),
           pw.Text(
             lang.level.getLocalizedDisplayName(locale),
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 10,
-              color: PdfColors.white,
+              fontSize: 8,
+              color: PdfColors.white.shade(0.8),
             ),
           ),
         ],
@@ -439,7 +465,7 @@ class ModernTemplate extends CVTemplate {
   /// Sidebar skill item with level text
   pw.Widget _sidebarSkillItem(Skill skill, pw.Font regularFont, String locale) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 8),
+      padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -447,16 +473,16 @@ class ModernTemplate extends CVTemplate {
             skill.name,
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: PdfColors.white,
             ),
           ),
-          pw.SizedBox(height: 2),
+          pw.SizedBox(height: 1),
           pw.Text(
             skill.level.getLocalizedDisplayName(locale),
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 8,
+              fontSize: 7,
               color: PdfColors.white.shade(0.7),
             ),
           ),
@@ -468,7 +494,7 @@ class ModernTemplate extends CVTemplate {
   /// Main content section title
   pw.Widget _mainSection(String title, pw.Font boldFont, PdfColor color) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 14),
+      margin: const pw.EdgeInsets.only(top: 5),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -476,15 +502,15 @@ class ModernTemplate extends CVTemplate {
             title,
             style: pw.TextStyle(
               font: boldFont,
-              fontSize: 16,
+              fontSize: 14,
               color: color,
-              letterSpacing: 0.5,
+              letterSpacing: 0.4,
             ),
           ),
           pw.Container(
-            margin: const pw.EdgeInsets.only(top: 4),
-            height: 1.2,
-            width: 50,
+            margin: const pw.EdgeInsets.only(top: 3),
+            height: 1,
+            width: 40,
             color: color,
           ),
         ],
@@ -500,7 +526,7 @@ class ModernTemplate extends CVTemplate {
     PdfColor textDark,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 14),
+      margin: const pw.EdgeInsets.only(bottom: 10),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -511,7 +537,7 @@ class ModernTemplate extends CVTemplate {
                 exp.jobTitle,
                 style: pw.TextStyle(
                   font: mediumFont,
-                  fontSize: 12,
+                  fontSize: 11,
                   color: textDark,
                 ),
               ),
@@ -519,31 +545,31 @@ class ModernTemplate extends CVTemplate {
                 _formatDateRange(exp.startDate, exp.endDate, exp.isCurrentJob),
                 style: pw.TextStyle(
                   font: regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: textDark.shade(0.3),
                 ),
               ),
             ],
           ),
-          pw.SizedBox(height: 3),
+          pw.SizedBox(height: 2),
           pw.Text(
             '${exp.company}${exp.location != null ? ", ${exp.location}" : ""}',
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: textDark.shade(0.2),
               fontStyle: pw.FontStyle.italic,
             ),
           ),
           if (exp.description != null && exp.description!.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: 4),
             pw.Text(
               exp.description!,
               style: pw.TextStyle(
                 font: regularFont,
-                fontSize: _adaptFontSize(exp.description!, 10),
+                fontSize: _adaptFontSize(exp.description!, 8),
                 color: textDark,
-                lineSpacing: 1.3,
+                lineSpacing: 1.2,
               ),
             ),
           ],
@@ -560,7 +586,7 @@ class ModernTemplate extends CVTemplate {
     PdfColor textDark,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 14),
+      margin: const pw.EdgeInsets.only(bottom: 10),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -571,7 +597,7 @@ class ModernTemplate extends CVTemplate {
                 edu.degree,
                 style: pw.TextStyle(
                   font: mediumFont,
-                  fontSize: 12,
+                  fontSize: 11,
                   color: textDark,
                 ),
               ),
@@ -583,13 +609,13 @@ class ModernTemplate extends CVTemplate {
                 ),
                 style: pw.TextStyle(
                   font: regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: textDark.shade(0.3),
                 ),
               ),
             ],
           ),
-          pw.SizedBox(height: 2),
+          pw.SizedBox(height: 1),
           pw.FittedBox(
             fit: pw.BoxFit.scaleDown,
             alignment: pw.Alignment.centerLeft,
@@ -597,7 +623,7 @@ class ModernTemplate extends CVTemplate {
               '${edu.institution}${edu.location != null ? ", ${edu.location}" : ""}',
               style: pw.TextStyle(
                 font: regularFont,
-                fontSize: 10,
+                fontSize: 9,
                 color: textDark.shade(0.2),
                 fontStyle: pw.FontStyle.italic,
               ),
@@ -616,7 +642,7 @@ class ModernTemplate extends CVTemplate {
     PdfColor textDark,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: 9),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -627,7 +653,7 @@ class ModernTemplate extends CVTemplate {
                 proj.name,
                 style: pw.TextStyle(
                   font: mediumFont,
-                  fontSize: 12,
+                  fontSize: 11,
                   color: textDark,
                 ),
               ),
@@ -635,7 +661,7 @@ class ModernTemplate extends CVTemplate {
                 _formatDateRange(proj.startDate, proj.endDate, proj.isOngoing),
                 style: pw.TextStyle(
                   font: regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: textDark.shade(0.3),
                 ),
               ),
@@ -643,39 +669,39 @@ class ModernTemplate extends CVTemplate {
           ),
           if (proj.technologies.isNotEmpty)
             pw.Padding(
-              padding: const pw.EdgeInsets.only(top: 2),
+              padding: const pw.EdgeInsets.only(top: 1),
               child: pw.Text(
                 proj.technologies.join(', '),
                 style: pw.TextStyle(
                   font: regularFont,
-                  fontSize: 9,
+                  fontSize: 8,
                   color: textDark.shade(0.4),
                   fontStyle: pw.FontStyle.italic,
                 ),
               ),
             ),
           if (proj.description.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: 4),
             pw.Text(
               proj.description,
               style: pw.TextStyle(
                 font: regularFont,
-                fontSize: _adaptFontSize(proj.description, 10),
+                fontSize: _adaptFontSize(proj.description, 8),
                 color: textDark,
-                lineSpacing: 1.3,
+                lineSpacing: 1.2,
               ),
             ),
           ],
           if (proj.url != null || proj.githubUrl != null) ...[
-            pw.SizedBox(height: 4),
+            pw.SizedBox(height: 3),
             pw.Row(
               children: [
                 if (proj.url != null)
-                  _linkText('Live', proj.url!, regularFont, textDark),
+                  _linkText(proj.url!, regularFont, textDark),
                 if (proj.url != null && proj.githubUrl != null)
-                  pw.SizedBox(width: 12),
+                  pw.SizedBox(width: 10),
                 if (proj.githubUrl != null)
-                  _linkText('GitHub', proj.githubUrl!, regularFont, textDark),
+                  _linkText(proj.githubUrl!, regularFont, textDark),
               ],
             ),
           ],
@@ -692,7 +718,7 @@ class ModernTemplate extends CVTemplate {
     PdfColor textDark,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: 9),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -703,7 +729,7 @@ class ModernTemplate extends CVTemplate {
                 cert.name,
                 style: pw.TextStyle(
                   font: mediumFont,
-                  fontSize: 12,
+                  fontSize: 11,
                   color: textDark,
                 ),
               ),
@@ -711,7 +737,7 @@ class ModernTemplate extends CVTemplate {
                 _formatMonthYear(cert.issueDate),
                 style: pw.TextStyle(
                   font: regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: textDark.shade(0.3),
                 ),
               ),
@@ -721,7 +747,7 @@ class ModernTemplate extends CVTemplate {
             cert.issuer,
             style: pw.TextStyle(
               font: regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: textDark.shade(0.6),
             ),
           ),
@@ -730,7 +756,7 @@ class ModernTemplate extends CVTemplate {
               'Expires: ${_formatMonthYear(cert.expiryDate!)}',
               style: pw.TextStyle(
                 font: regularFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: textDark.shade(0.4),
               ),
             ),
@@ -739,36 +765,30 @@ class ModernTemplate extends CVTemplate {
               'ID: ${cert.credentialId}',
               style: pw.TextStyle(
                 font: regularFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: textDark.shade(0.4),
               ),
             ),
           if (cert.url != null)
-            _linkText('Verify', cert.url!, regularFont, textDark.shade(0.6)),
+            _linkText(cert.url!, regularFont, textDark.shade(0.6)),
         ],
       ),
     );
   }
 
   /// Short link with label, truncates long URLs
-  pw.Widget _linkText(String label, String url, pw.Font font, PdfColor color) {
+  pw.Widget _linkText(String url, pw.Font font, PdfColor color) {
     final display = url.length > 40 ? '${url.substring(0, 37)}...' : url;
     return pw.RichText(
       text: pw.TextSpan(
-        text: '$label: ',
-        style: pw.TextStyle(font: font, fontSize: 9, color: color),
-        children: [
-          pw.TextSpan(
-            text: display,
-            style: pw.TextStyle(
-              font: font,
-              fontSize: 9,
-              color: _colors.accent,
-              decoration: pw.TextDecoration.underline,
-            ),
-            // Note: printing package clickable annotations handled by Printing.layoutPdf
-          ),
-        ],
+        text: display,
+        style: pw.TextStyle(
+          font: font,
+          fontSize: 8,
+          color: _colors.accent,
+          decoration: pw.TextDecoration.underline,
+        ),
+        // Note: printing package clickable annotations handled by Printing.layoutPdf
       ),
     );
   }
@@ -776,10 +796,10 @@ class ModernTemplate extends CVTemplate {
   /// Adapt font size by crude heuristic based on length
   double _adaptFontSize(String text, double base) {
     final length = text.length;
-    if (length > 600) return base - 2.5;
-    if (length > 400) return base - 2.0;
-    if (length > 250) return base - 1.5;
-    if (length > 150) return base - 1.0;
+    if (length > 600) return base - 2.0;
+    if (length > 400) return base - 1.5;
+    if (length > 250) return base - 1.0;
+    if (length > 150) return base - 0.5;
     return base;
   }
 

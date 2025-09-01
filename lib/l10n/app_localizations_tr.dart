@@ -755,4 +755,13 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get professionalCorporateDescription =>
       'Kurumsal ve klasik görünümlü profesyonel CV';
+
+  @override
+  String get selectTheme => 'Tema Seç';
+
+  @override
+  String get descriptionRequired => 'Açıklama gereklidir';
+
+  @override
+  String get descriptionTooShort => 'Açıklama çok kısa (minimum 50 karakter)';
 }

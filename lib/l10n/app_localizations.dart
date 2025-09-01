@@ -1531,6 +1531,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Professional corporate style with classic layout'**
   String get professionalCorporateDescription;
+
+  /// No description provided for @selectTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Theme'**
+  String get selectTheme;
+
+  /// No description provided for @descriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get descriptionRequired;
+
+  /// No description provided for @descriptionTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is too short (minimum 50 characters)'**
+  String get descriptionTooShort;
 }
 
 class _AppLocalizationsDelegate

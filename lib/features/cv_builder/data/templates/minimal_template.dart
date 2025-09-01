@@ -66,7 +66,7 @@ class MinimalTemplate extends CVTemplate {
         build: (context) => [
           // Header with name and contact
           _buildHeader(cvData, fonts, profileImage, currentLocale),
-          pw.SizedBox(height: 16),
+          pw.SizedBox(height: 12),
 
           // Professional summary
           if (cvData.summary != null && cvData.summary!.isNotEmpty) ...[
@@ -77,17 +77,17 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 6),
             pw.Text(
               cvData.summary!,
               style: pw.TextStyle(
                 font: fonts.regularFont,
-                fontSize: _adaptFontSize(cvData.summary!, 10),
+                fontSize: _adaptFontSize(cvData.summary!, 9),
                 color: _colors.text,
-                lineSpacing: 1.5,
+                lineSpacing: 1.4,
               ),
             ),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: 12),
           ],
 
           // Work experience
@@ -99,7 +99,7 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 6),
             ...cvData.workExperiences.map(
               (exp) => _buildWorkExperience(exp, fonts, currentLocale),
             ),
@@ -114,7 +114,7 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 6),
             ...cvData.educations.map(
               (edu) => _buildEducation(edu, fonts, currentLocale),
             ),
@@ -129,9 +129,9 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 6),
             _buildSkillsGrid(cvData.skills, fonts, currentLocale),
-            pw.SizedBox(height: 16),
+            pw.SizedBox(height: 12),
           ],
 
           // Languages
@@ -143,7 +143,7 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 6),
             _buildLanguages(cvData.languages, fonts, currentLocale),
           ],
 
@@ -156,7 +156,7 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 6),
             ...cvData.projects.map(
               (proj) => _buildProject(proj, fonts, currentLocale),
             ),
@@ -171,7 +171,7 @@ class MinimalTemplate extends CVTemplate {
               ).toUpperCase(),
               fonts.boldFont!,
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 6),
             ...cvData.certificates.map(
               (cert) => _buildCertificate(cert, fonts, currentLocale),
             ),
@@ -206,12 +206,12 @@ class MinimalTemplate extends CVTemplate {
                   cvData.personalInfo.fullName,
                   style: pw.TextStyle(
                     font: fonts.boldFont,
-                    fontSize: 28,
+                    fontSize: 22,
                     color: _colors.primary,
                   ),
                 ),
               ),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 6),
               // Contact info
               pw.Wrap(
                 spacing: 15,
@@ -258,16 +258,43 @@ class MinimalTemplate extends CVTemplate {
 
   /// Contact item widget
   pw.Widget _contactItem(String text, pw.Font font) {
+    // Check if text is a URL (contains common URL patterns)
+    final isUrl =
+        text.contains('linkedin.com') ||
+        text.contains('github.com') ||
+        text.contains('.com') ||
+        text.contains('.dev') ||
+        text.contains('.org') ||
+        text.startsWith('http');
+
+    if (isUrl) {
+      // Ensure URL has protocol
+      final url = text.startsWith('http') ? text : 'https://$text';
+
+      return pw.UrlLink(
+        destination: url,
+        child: pw.Text(
+          text,
+          style: pw.TextStyle(
+            font: font,
+            fontSize: 9,
+            color: _colors.accent,
+            decoration: pw.TextDecoration.underline,
+          ),
+        ),
+      );
+    }
+
     return pw.Text(
       text,
-      style: pw.TextStyle(font: font, fontSize: 10, color: _colors.secondary),
+      style: pw.TextStyle(font: font, fontSize: 9, color: _colors.secondary),
     );
   }
 
   /// Section title
   pw.Widget _buildSection(String title, pw.Font boldFont) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 14),
+      margin: const pw.EdgeInsets.only(top: 10),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -275,13 +302,13 @@ class MinimalTemplate extends CVTemplate {
             title,
             style: pw.TextStyle(
               font: boldFont,
-              fontSize: 13,
+              fontSize: 11,
               color: _colors.accent,
-              letterSpacing: 1,
+              letterSpacing: 0.8,
             ),
           ),
           pw.Container(
-            margin: const pw.EdgeInsets.only(top: 4),
+            margin: const pw.EdgeInsets.only(top: 3),
             height: 1,
             width: double.infinity,
             color: _colors.accent.shade(0.3),
@@ -298,7 +325,7 @@ class MinimalTemplate extends CVTemplate {
     String locale,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 14),
+      margin: const pw.EdgeInsets.only(bottom: 10),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -309,7 +336,7 @@ class MinimalTemplate extends CVTemplate {
                 '${exp.jobTitle} at ${exp.company}',
                 style: pw.TextStyle(
                   font: fonts.mediumFont ?? fonts.boldFont,
-                  fontSize: 11,
+                  fontSize: 10,
                   color: _colors.text,
                 ),
               ),
@@ -322,7 +349,7 @@ class MinimalTemplate extends CVTemplate {
                 ),
                 style: pw.TextStyle(
                   font: fonts.regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: _colors.textLight,
                 ),
               ),
@@ -333,20 +360,20 @@ class MinimalTemplate extends CVTemplate {
               exp.location!,
               style: pw.TextStyle(
                 font: fonts.lightFont,
-                fontSize: 10,
+                fontSize: 9,
                 color: _colors.textLight,
                 fontStyle: pw.FontStyle.italic,
               ),
             ),
           if (exp.description != null && exp.description!.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: 4),
             pw.Text(
               exp.description!,
               style: pw.TextStyle(
                 font: fonts.regularFont,
-                fontSize: _adaptFontSize(exp.description!, 10),
+                fontSize: _adaptFontSize(exp.description!, 9),
                 color: _colors.text,
-                lineSpacing: 1.3,
+                lineSpacing: 1.2,
               ),
             ),
           ],
@@ -358,7 +385,7 @@ class MinimalTemplate extends CVTemplate {
   /// Education item
   pw.Widget _buildEducation(Education edu, TemplateFonts fonts, String locale) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: 9),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -369,7 +396,7 @@ class MinimalTemplate extends CVTemplate {
                 edu.degree,
                 style: pw.TextStyle(
                   font: fonts.mediumFont ?? fonts.boldFont,
-                  fontSize: 11,
+                  fontSize: 10,
                   color: _colors.text,
                 ),
               ),
@@ -382,7 +409,7 @@ class MinimalTemplate extends CVTemplate {
                 ),
                 style: pw.TextStyle(
                   font: fonts.regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: _colors.textLight,
                 ),
               ),
@@ -392,7 +419,7 @@ class MinimalTemplate extends CVTemplate {
             edu.institution,
             style: pw.TextStyle(
               font: fonts.regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: _colors.text,
             ),
           ),
@@ -401,7 +428,7 @@ class MinimalTemplate extends CVTemplate {
               edu.location!,
               style: pw.TextStyle(
                 font: fonts.lightFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: _colors.textLight,
                 fontStyle: pw.FontStyle.italic,
               ),
@@ -418,20 +445,20 @@ class MinimalTemplate extends CVTemplate {
     String locale,
   ) {
     return pw.Wrap(
-      spacing: 10,
-      runSpacing: 8,
+      spacing: 8,
+      runSpacing: 6,
       children: skills.map((skill) {
         return pw.Container(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: pw.BoxDecoration(
             border: pw.Border.all(color: _colors.accent.shade(0.3)),
-            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+            borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
           ),
           child: pw.Text(
             '${skill.name} • ${skill.level.getLocalizedDisplayName(locale)}',
             style: pw.TextStyle(
               font: fonts.regularFont,
-              fontSize: 9,
+              fontSize: 8,
               color: _colors.text,
             ),
           ),
@@ -449,12 +476,12 @@ class MinimalTemplate extends CVTemplate {
     return pw.Row(
       children: languages.map((lang) {
         return pw.Padding(
-          padding: const pw.EdgeInsets.only(right: 20),
+          padding: const pw.EdgeInsets.only(right: 16),
           child: pw.Text(
             '${lang.name}: ${lang.level.getLocalizedDisplayName(locale)}',
             style: pw.TextStyle(
               font: fonts.regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: _colors.text,
             ),
           ),
@@ -466,7 +493,7 @@ class MinimalTemplate extends CVTemplate {
   /// Project item
   pw.Widget _buildProject(Project project, TemplateFonts fonts, String locale) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: 9),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -477,7 +504,7 @@ class MinimalTemplate extends CVTemplate {
                 project.name,
                 style: pw.TextStyle(
                   font: fonts.mediumFont ?? fonts.boldFont,
-                  fontSize: 11,
+                  fontSize: 10,
                   color: _colors.text,
                 ),
               ),
@@ -490,7 +517,7 @@ class MinimalTemplate extends CVTemplate {
                 ),
                 style: pw.TextStyle(
                   font: fonts.regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: _colors.textLight,
                 ),
               ),
@@ -503,45 +530,45 @@ class MinimalTemplate extends CVTemplate {
                 project.technologies.join(', '),
                 style: pw.TextStyle(
                   font: fonts.lightFont,
-                  fontSize: 9,
+                  fontSize: 8,
                   color: _colors.textLight,
                   fontStyle: pw.FontStyle.italic,
                 ),
               ),
             ),
           if (project.description.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: 4),
             pw.Text(
               project.description,
               style: pw.TextStyle(
                 font: fonts.regularFont,
-                fontSize: _adaptFontSize(project.description, 10),
+                fontSize: _adaptFontSize(project.description, 9),
                 color: _colors.text,
-                lineSpacing: 1.3,
+                lineSpacing: 1.2,
               ),
             ),
           ],
           if (project.url != null || project.githubUrl != null) ...[
-            pw.SizedBox(height: 6),
+            pw.SizedBox(height: 4),
             pw.Row(
               children: [
                 if (project.url != null)
                   pw.Text(
-                    'Live: ${project.url}',
+                    '${project.url}',
                     style: pw.TextStyle(
                       font: fonts.regularFont,
-                      fontSize: 9,
+                      fontSize: 8,
                       color: _colors.accent,
                     ),
                   ),
                 if (project.url != null && project.githubUrl != null)
-                  pw.SizedBox(width: 12),
+                  pw.SizedBox(width: 10),
                 if (project.githubUrl != null)
                   pw.Text(
-                    'GitHub: ${project.githubUrl}',
+                    '${project.githubUrl}',
                     style: pw.TextStyle(
                       font: fonts.regularFont,
-                      fontSize: 9,
+                      fontSize: 8,
                       color: _colors.secondary,
                     ),
                   ),
@@ -560,7 +587,7 @@ class MinimalTemplate extends CVTemplate {
     String locale,
   ) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: 9),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -571,7 +598,7 @@ class MinimalTemplate extends CVTemplate {
                 cert.name,
                 style: pw.TextStyle(
                   font: fonts.mediumFont ?? fonts.boldFont,
-                  fontSize: 11,
+                  fontSize: 10,
                   color: _colors.text,
                 ),
               ),
@@ -579,7 +606,7 @@ class MinimalTemplate extends CVTemplate {
                 _formatMonthYear(cert.issueDate),
                 style: pw.TextStyle(
                   font: fonts.regularFont,
-                  fontSize: 10,
+                  fontSize: 9,
                   color: _colors.textLight,
                 ),
               ),
@@ -589,7 +616,7 @@ class MinimalTemplate extends CVTemplate {
             cert.issuer,
             style: pw.TextStyle(
               font: fonts.regularFont,
-              fontSize: 10,
+              fontSize: 9,
               color: _colors.text,
             ),
           ),
@@ -598,7 +625,7 @@ class MinimalTemplate extends CVTemplate {
               'Expires: ${_formatMonthYear(cert.expiryDate!)}',
               style: pw.TextStyle(
                 font: fonts.lightFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: _colors.textLight,
               ),
             ),
@@ -607,7 +634,7 @@ class MinimalTemplate extends CVTemplate {
               'ID: ${cert.credentialId}',
               style: pw.TextStyle(
                 font: fonts.lightFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: _colors.textLight,
               ),
             ),
@@ -616,7 +643,7 @@ class MinimalTemplate extends CVTemplate {
               cert.url!,
               style: pw.TextStyle(
                 font: fonts.regularFont,
-                fontSize: 9,
+                fontSize: 8,
                 color: _colors.accent,
               ),
             ),
@@ -695,10 +722,10 @@ class MinimalTemplate extends CVTemplate {
   /// Adapt font size by crude heuristic based on text length
   double _adaptFontSize(String text, double base) {
     final length = text.length;
-    if (length > 600) return base - 2.5;
-    if (length > 400) return base - 2.0;
-    if (length > 250) return base - 1.5;
-    if (length > 150) return base - 1.0;
+    if (length > 600) return base - 2.0;
+    if (length > 400) return base - 1.5;
+    if (length > 250) return base - 1.0;
+    if (length > 150) return base - 0.5;
     return base;
   }
 }

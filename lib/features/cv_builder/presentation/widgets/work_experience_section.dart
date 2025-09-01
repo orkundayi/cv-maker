@@ -18,7 +18,8 @@ class WorkExperienceSection extends ConsumerStatefulWidget {
   const WorkExperienceSection({super.key});
 
   @override
-  ConsumerState<WorkExperienceSection> createState() => _WorkExperienceSectionState();
+  ConsumerState<WorkExperienceSection> createState() =>
+      _WorkExperienceSectionState();
 }
 
 class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
@@ -103,9 +104,12 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
   void _selectEndDate() {
     if (_startDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
     _showDateSelector(context, false);
@@ -114,7 +118,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
   void _showDateSelector(BuildContext context, bool isStartDate) {
     final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
-    final years = List.generate(currentYear - 1949, (index) => currentYear - index);
+    final years = List.generate(
+      currentYear - 1949,
+      (index) => currentYear - index,
+    );
     final months = [
       l10n.january,
       l10n.february,
@@ -130,8 +137,12 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       l10n.december,
     ];
 
-    int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
-    int selectedMonth = isStartDate ? (_startDate?.month ?? 1) : (_endDate?.month ?? 1);
+    int selectedYear = isStartDate
+        ? (_startDate?.year ?? currentYear)
+        : (_endDate?.year ?? currentYear);
+    int selectedMonth = isStartDate
+        ? (_startDate?.month ?? 1)
+        : (_endDate?.month ?? 1);
 
     showDialog(
       context: context,
@@ -145,8 +156,18 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
-                items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
+                decoration: InputDecoration(
+                  labelText: l10n.year,
+                  border: const OutlineInputBorder(),
+                ),
+                items: years
+                    .map(
+                      (year) => DropdownMenuItem(
+                        value: year,
+                        child: Text(year.toString()),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
                 },
@@ -155,11 +176,19 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: l10n.month,
+                  border: const OutlineInputBorder(),
+                ),
                 items: months
                     .asMap()
                     .entries
-                    .map((entry) => DropdownMenuItem(value: entry.key + 1, child: Text(entry.value)))
+                    .map(
+                      (entry) => DropdownMenuItem(
+                        value: entry.key + 1,
+                        child: Text(entry.value),
+                      ),
+                    )
                     .toList(),
                 onChanged: (month) {
                   if (month != null) selectedMonth = month;
@@ -169,7 +198,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -217,16 +249,21 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       );
 
       if (kDebugMode) {
-        print('DEBUG SAVE: Created Experience - Company: ${experience.company}, JobTitle: ${experience.jobTitle}');
+        print(
+          'DEBUG SAVE: Created Experience - Company: ${experience.company}, JobTitle: ${experience.jobTitle}',
+        );
       }
 
       ref.read(cvDataProvider.notifier).addWorkExperience(experience);
       _resetForm();
 
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: ref.colors.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workExperience),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     }
   }
 
@@ -250,16 +287,21 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       );
 
       if (kDebugMode) {
-        print('DEBUG: Created Experience - Company: ${experience.company}, JobTitle: ${experience.jobTitle}');
+        print(
+          'DEBUG: Created Experience - Company: ${experience.company}, JobTitle: ${experience.jobTitle}',
+        );
       }
 
       ref.read(cvDataProvider.notifier).updateWorkExperience(experience);
       _resetForm();
 
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.workExperience), backgroundColor: ref.colors.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workExperience),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     }
   }
 
@@ -280,7 +322,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -298,7 +342,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                   : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingExperience != null ? ref.colors.primary : ref.colors.border,
+                color: _editingExperience != null
+                    ? ref.colors.primary
+                    : ref.colors.border,
                 width: _editingExperience != null ? 2 : 1,
               ),
             ),
@@ -314,14 +360,22 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         Row(
                           children: [
                             if (_editingExperience != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
+                              Icon(
+                                PhosphorIcons.pencilSimple(),
+                                color: ref.colors.primary,
+                                size: 20,
+                              ),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingExperience != null ? l10n.editExperience : l10n.addExperience,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                              _editingExperience != null
+                                  ? l10n.editExperience
+                                  : l10n.addExperience,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: ref.colors.primary,
+                                  ),
                             ),
                           ],
                         ),
@@ -330,7 +384,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
+                            style: TextButton.styleFrom(
+                              foregroundColor: ref.colors.error,
+                            ),
                           ),
                       ],
                     ),
@@ -461,10 +517,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         maxLines: 4,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return l10n.firstNameRequired;
+                            return l10n.descriptionRequired;
                           }
                           if (value.length < 50) {
-                            return l10n.firstNameRequired;
+                            return l10n.descriptionTooShort;
                           }
                           return null;
                         },
@@ -477,12 +533,26 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: _editingExperience != null ? _updateExperience : _saveExperience,
-                        icon: Icon(_editingExperience != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingExperience != null ? l10n.editExperience : l10n.addExperience),
+                        onPressed: _editingExperience != null
+                            ? _updateExperience
+                            : _saveExperience,
+                        icon: Icon(
+                          _editingExperience != null
+                              ? PhosphorIcons.check()
+                              : PhosphorIcons.plus(),
+                        ),
+                        label: Text(
+                          _editingExperience != null
+                              ? l10n.editExperience
+                              : l10n.addExperience,
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingExperience != null ? ref.colors.success : null,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppConstants.spacingM,
+                          ),
+                          backgroundColor: _editingExperience != null
+                              ? ref.colors.success
+                              : null,
                         ),
                       ),
                     ),
@@ -509,21 +579,27 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     const SizedBox(width: 8),
                     Text(
                       l10n.workExperience,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${workExperiences.length}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -534,16 +610,24 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.briefcase(), size: 64, color: ref.colors.grey400),
+                  Icon(
+                    PhosphorIcons.briefcase(),
+                    size: 64,
+                    color: ref.colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     AppLocalizations.of(context)!.workExperienceDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: ref.colors.grey600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     AppLocalizations.of(context)!.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -570,8 +654,15 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
     );
   }
 
-  Widget _buildTimelineItem(WorkExperience experience, bool isLast, bool isMobile) {
-    final duration = _calculateDuration(experience.startDate, experience.endDate);
+  Widget _buildTimelineItem(
+    WorkExperience experience,
+    bool isLast,
+    bool isMobile,
+  ) {
+    final duration = _calculateDuration(
+      experience.startDate,
+      experience.endDate,
+    );
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -583,10 +674,18 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
+                color: experience.isCurrentJob
+                    ? Theme.of(context).primaryColor
+                    : ref.colors.success,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
             if (!isLast)
@@ -605,12 +704,22 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
         Expanded(
           child: Container(
             margin: EdgeInsets.only(bottom: isLast ? 0 : AppConstants.spacingL),
-            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            padding: EdgeInsets.all(
+              isMobile ? AppConstants.spacingM : AppConstants.spacingL,
+            ),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2))],
+              border: Border.all(
+                color: Theme.of(context).dividerColor.withOpacity(0.5),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -624,15 +733,17 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         children: [
                           Text(
                             experience.jobTitle,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).primaryColor,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColor,
+                                ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             experience.company,
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -651,7 +762,11 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         ),
                         IconButton(
                           onPressed: () => _deleteExperience(experience.id),
-                          icon: Icon(PhosphorIcons.trash(), size: 18, color: ref.colors.error),
+                          icon: Icon(
+                            PhosphorIcons.trash(),
+                            size: 18,
+                            color: ref.colors.error,
+                          ),
                           iconSize: 18,
                           visualDensity: VisualDensity.compact,
                           tooltip: AppLocalizations.of(context)!.delete,
@@ -671,7 +786,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     children: [
                       // Date range
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: experience.isCurrentJob
                               ? Theme.of(context).primaryColor.withOpacity(0.1)
@@ -684,16 +802,24 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             Icon(
                               PhosphorIcons.calendar(),
                               size: 14,
-                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
+                              color: experience.isCurrentJob
+                                  ? Theme.of(context).primaryColor
+                                  : ref.colors.success,
                             ),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
-                                _formatDateRange(experience.startDate, experience.endDate),
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
-                                  fontWeight: FontWeight.w500,
+                                _formatDateRange(
+                                  experience.startDate,
+                                  experience.endDate,
                                 ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: experience.isCurrentJob
+                                          ? Theme.of(context).primaryColor
+                                          : ref.colors.success,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -710,23 +836,34 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                         children: [
                           // Duration
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surfaceVariant.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               duration,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w500),
                             ),
                           ),
 
                           // Location
                           if (experience.location != null)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceVariant.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
@@ -735,14 +872,23 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                                   Icon(
                                     PhosphorIcons.mapPin(),
                                     size: 14,
-                                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     experience.location!,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                                    ),
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.color
+                                              ?.withOpacity(0.7),
+                                        ),
                                   ),
                                 ],
                               ),
@@ -758,7 +904,10 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     runSpacing: 6,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: experience.isCurrentJob
                               ? Theme.of(context).primaryColor.withOpacity(0.1)
@@ -771,37 +920,56 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                             Icon(
                               PhosphorIcons.calendar(),
                               size: 14,
-                              color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
+                              color: experience.isCurrentJob
+                                  ? Theme.of(context).primaryColor
+                                  : ref.colors.success,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              _formatDateRange(experience.startDate, experience.endDate),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: experience.isCurrentJob ? Theme.of(context).primaryColor : ref.colors.success,
-                                fontWeight: FontWeight.w500,
+                              _formatDateRange(
+                                experience.startDate,
+                                experience.endDate,
                               ),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: experience.isCurrentJob
+                                        ? Theme.of(context).primaryColor
+                                        : ref.colors.success,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                             ),
                           ],
                         ),
                       ),
 
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceVariant.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           duration,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w500),
                         ),
                       ),
 
                       if (experience.location != null)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceVariant.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
@@ -810,14 +978,21 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                               Icon(
                                 PhosphorIcons.mapPin(),
                                 size: 14,
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.color?.withOpacity(0.7),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 experience.location!,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.color
+                                          ?.withOpacity(0.7),
+                                    ),
                               ),
                             ],
                           ),
@@ -825,9 +1000,15 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     ],
                   ),
 
-                if (experience.description != null && experience.description!.isNotEmpty) ...[
+                if (experience.description != null &&
+                    experience.description!.isNotEmpty) ...[
                   const SizedBox(height: AppConstants.spacingM),
-                  Text(experience.description!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5)),
+                  Text(
+                    experience.description!,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(height: 1.5),
+                  ),
                 ],
 
                 // Responsibilities
@@ -838,7 +1019,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                     children: [
                       Text(
                         'Key Responsibilities:',
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: AppConstants.spacingS),
                       ...experience.responsibilities.map(
@@ -859,7 +1042,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
                               Expanded(
                                 child: Text(
                                   responsibility,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(height: 1.4),
                                 ),
                               ),
                             ],
@@ -898,7 +1083,20 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
   }
 
   String _getMonthName(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[month - 1];
   }
 
@@ -918,7 +1116,9 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       if (remainingMonths == 0) {
         return years == 1 ? '1 year' : '$years years';
       } else {
-        return years == 1 ? '1 year $remainingMonths months' : '$years years $remainingMonths months';
+        return years == 1
+            ? '1 year $remainingMonths months'
+            : '$years years $remainingMonths months';
       }
     }
   }
@@ -938,17 +1138,26 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
           ),
           content: Text(l10n.clearExperiencesConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearWorkExperiences();
                 Navigator.of(context).pop();
                 _resetForm();
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(l10n.experienceCleared), backgroundColor: ref.colors.success));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.experienceCleared),
+                    backgroundColor: ref.colors.success,
+                  ),
+                );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(l10n.clear),
             ),
           ],

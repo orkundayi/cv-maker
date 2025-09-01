@@ -1,4 +1,5 @@
-### L10n Generate Komutu
+# L10n Generate Komutu
+
 Flutter yerelleştirme dosyalarını ARB’lerden yeniden üretmek için:
 
 ```bash

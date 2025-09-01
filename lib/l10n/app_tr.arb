@@ -241,5 +241,8 @@
     "summaryGrabAttention": "Özetiniz dikkat çekici olmalı. Deneyim süreniz veya önemli bir başarınızla başlayın, ardından 2-3 temel becerinizden bahsedin ve ne aradığınız ya da nasıl katkı sağlayabileceğinizle bitirin.",
     "modernSidebarDescription": "Kişisel bilgiler ve beceriler için renkli yan menüye sahip modern CV",
     "minimalCleanDescription": "İçeriğe odaklanan sade ve temiz CV tasarımı",
-    "professionalCorporateDescription": "Kurumsal ve klasik görünümlü profesyonel CV"
+    "professionalCorporateDescription": "Kurumsal ve klasik görünümlü profesyonel CV",
+    "selectTheme": "Tema Seç",
+    "descriptionRequired": "Açıklama gereklidir",
+    "descriptionTooShort": "Açıklama çok kısa (minimum 50 karakter)"
 }

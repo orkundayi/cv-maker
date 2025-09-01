@@ -388,9 +388,9 @@ class PersonalInfo {
       phone: '+90 555 123 4567',
       city: 'Istanbul',
       country: 'Turkey',
-      linkedIn: 'linkedin.com/in/johndoe',
-      github: 'github.com/johndoe',
-      website: 'johndoe.dev',
+      linkedIn: 'https://linkedin.com/in/johndoe',
+      github: 'https://github.com/johndoe',
+      website: 'https://johndoe.dev',
     );
   }
 }

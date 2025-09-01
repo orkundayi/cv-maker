@@ -97,9 +97,9 @@ class CVBuilderPage extends ConsumerWidget {
 
         // Theme selector button (for both mobile and desktop)
         IconButton(
-          onPressed: () => _showThemeSelector(context),
+          onPressed: () => _showThemeSelector(context, l10n),
           icon: Icon(PhosphorIcons.palette(), color: colors.primary),
-          tooltip: 'Tema Seç',
+          tooltip: l10n.selectTheme,
         ),
 
         // Help button (for both mobile and desktop)
@@ -341,7 +341,7 @@ class CVBuilderPage extends ConsumerWidget {
     );
   }
 
-  void _showThemeSelector(BuildContext context) {
+  void _showThemeSelector(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -352,14 +352,14 @@ class CVBuilderPage extends ConsumerWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(width: AppConstants.spacingS),
-            const Text('Tema Seç'),
+            Text(l10n.selectTheme),
           ],
         ),
         content: const ThemeSelector(),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Tamam'),
+            child: Text(l10n.gotIt),
           ),
         ],
       ),

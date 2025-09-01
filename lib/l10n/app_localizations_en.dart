@@ -755,4 +755,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get professionalCorporateDescription =>
       'Professional corporate style with classic layout';
+
+  @override
+  String get selectTheme => 'Select Theme';
+
+  @override
+  String get descriptionRequired => 'Description is required';
+
+  @override
+  String get descriptionTooShort =>
+      'Description is too short (minimum 50 characters)';
 }

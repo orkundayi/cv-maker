@@ -241,5 +241,8 @@
     "summaryGrabAttention": "Your summary should grab attention immediately. Start with your years of experience or key achievement, then mention 2-3 core skills, and end with what you're looking for or can contribute.",
     "modernSidebarDescription": "Professional modern CV with colored sidebar for personal info and skills",
     "minimalCleanDescription": "Simple and clean CV design focusing on content",
-    "professionalCorporateDescription": "Professional corporate style with classic layout"
+    "professionalCorporateDescription": "Professional corporate style with classic layout",
+    "selectTheme": "Select Theme",
+    "descriptionRequired": "Description is required",
+    "descriptionTooShort": "Description is too short (minimum 50 characters)"
 }
