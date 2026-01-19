@@ -764,4 +764,502 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get descriptionTooShort => 'Açıklama çok kısa (minimum 50 karakter)';
+
+  @override
+  String get myAccount => 'Hesabım';
+
+  @override
+  String get user => 'Kullanıcı';
+
+  @override
+  String get activeMember => 'Aktif Üye';
+
+  @override
+  String get userLoadError => 'Kullanıcı bilgisi yüklenemedi';
+
+  @override
+  String get subscription => 'Abonelik';
+
+  @override
+  String get plan => 'Plan';
+
+  @override
+  String get upgrade => 'Yükselt';
+
+  @override
+  String get cvLimit => 'CV Limiti';
+
+  @override
+  String get unlimited => 'Sınırsız';
+
+  @override
+  String get pdfExport => 'PDF Dışa Aktarma';
+
+  @override
+  String get active => 'Aktif';
+
+  @override
+  String get inactive => 'Pasif';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get customizeAppearance => 'Uygulama görünümünü özelleştirin';
+
+  @override
+  String get selectLanguage => 'Dil tercihini seçin';
+
+  @override
+  String get about => 'Hakkında';
+
+  @override
+  String get version => 'Sürüm';
+
+  @override
+  String get appDescription =>
+      'Profesyonel CV\'ler oluşturmak için tasarlandı.';
+
+  @override
+  String get signOut => 'Çıkış Yap';
+
+  @override
+  String get signOutConfirm => 'Hesabınızdan çıkış yapmak istiyor musunuz?';
+
+  @override
+  String get myCVs => 'CV\'lerim';
+
+  @override
+  String get newCV => 'Yeni CV';
+
+  @override
+  String get createCV => 'CV Oluştur';
+
+  @override
+  String get noCVsYet => 'Henüz CV\'niz yok';
+
+  @override
+  String get startCreatingCV => 'İlk profesyonel CV\'nizi oluşturmaya başlayın';
+
+  @override
+  String get errorOccurred => 'Bir hata oluştu';
+
+  @override
+  String get tryAgain => 'Tekrar Dene';
+
+  @override
+  String get hello => 'Merhaba';
+
+  @override
+  String get cvLimitReached =>
+      'CV oluşturma limitinize ulaştınız. Daha fazla CV oluşturmak için planınızı yükseltin.';
+
+  @override
+  String get viewPlans => 'Planları Gör';
+
+  @override
+  String get deleteCV => 'CV\'yi Sil';
+
+  @override
+  String get deleteCVConfirm =>
+      'Bu CV\'yi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.';
+
+  @override
+  String get cvDeleted => 'CV başarıyla silindi';
+
+  @override
+  String get cvDeleteFailed => 'CV silinemedi';
+
+  @override
+  String get cvCreationFailed => 'CV oluşturulamadı';
+
+  @override
+  String get cvDuplicated => 'CV başarıyla kopyalandı';
+
+  @override
+  String get cvDuplicateFailed => 'CV kopyalanamadı';
+
+  @override
+  String get duplicate => 'Kopyala';
+
+  @override
+  String get plans => 'Planlar';
+
+  @override
+  String get professionalizeYourCVs => 'CV\'lerinizi Profesyonelleştirin';
+
+  @override
+  String get choosePlanForYou => 'İhtiyacınıza uygun planı seçin';
+
+  @override
+  String get mostPopular => 'En Popüler';
+
+  @override
+  String get free => 'Ücretsiz';
+
+  @override
+  String get perMonth => '/ay';
+
+  @override
+  String get currentPlan => 'Mevcut Plan';
+
+  @override
+  String get startFree => 'Ücretsiz Başla';
+
+  @override
+  String get selectPlan => 'Planı Seç';
+
+  @override
+  String get paymentIntegrationSoon =>
+      'Ödeme entegrasyonu yakında eklenecek. Şimdilik tüm özellikler demo amaçlı aktif.';
+
+  @override
+  String get featureComparison => 'Özellik Karşılaştırması';
+
+  @override
+  String get feature => 'Özellik';
+
+  @override
+  String get cvCount => 'CV Sayısı';
+
+  @override
+  String get basicTemplates => 'Temel Şablonlar';
+
+  @override
+  String get premiumTemplates => 'Premium Şablonlar';
+
+  @override
+  String get htmlExport => 'HTML Dışa Aktarma';
+
+  @override
+  String get jsonExport => 'JSON Dışa Aktarma';
+
+  @override
+  String get cloudStorage => 'Bulut Depolama';
+
+  @override
+  String get customTemplates => 'Özel Şablonlar';
+
+  @override
+  String get prioritySupport => 'Öncelikli Destek';
+
+  @override
+  String get editButton => 'Düzenle';
+
+  @override
+  String get copyButton => 'Kopyala';
+
+  @override
+  String get deleteButton => 'Sil';
+
+  @override
+  String get daysAgo => 'gün önce';
+
+  @override
+  String get hoursAgo => 'saat önce';
+
+  @override
+  String get minutesAgo => 'dakika önce';
+
+  @override
+  String get justNow => 'Az önce';
+
+  @override
+  String get loginToAccount => 'Hesabınıza giriş yapın';
+
+  @override
+  String get email => 'E-posta';
+
+  @override
+  String get password => 'Şifre';
+
+  @override
+  String get passwordRequired => 'Şifre gerekli';
+
+  @override
+  String get invalidEmail => 'Geçerli bir e-posta adresi girin';
+
+  @override
+  String get forgotPassword => 'Şifremi Unuttum';
+
+  @override
+  String get login => 'Giriş Yap';
+
+  @override
+  String get noAccount => 'Hesabınız yok mu?';
+
+  @override
+  String get register => 'Kayıt Olun';
+
+  @override
+  String get passwordReset => 'Şifre Sıfırlama';
+
+  @override
+  String get passwordResetDescription =>
+      'E-posta adresinizi girin, size şifre sıfırlama bağlantısı göndereceğiz.';
+
+  @override
+  String get send => 'Gönder';
+
+  @override
+  String get passwordResetSent => 'Şifre sıfırlama e-postası gönderildi';
+
+  @override
+  String get passwordResetFailed => 'E-posta gönderilemedi';
+
+  @override
+  String get createAccount => 'Hesap Oluştur';
+
+  @override
+  String get saveToCloud => 'CV\'lerinizi bulutta saklayın';
+
+  @override
+  String get fullName => 'Ad Soyad';
+
+  @override
+  String get fullNameRequired => 'Ad soyad gerekli';
+
+  @override
+  String get confirmPassword => 'Şifre Tekrar';
+
+  @override
+  String get confirmPasswordRequired => 'Şifre tekrarı gerekli';
+
+  @override
+  String get passwordsDoNotMatch => 'Şifreler eşleşmiyor';
+
+  @override
+  String get passwordTooShort => 'Şifre en az 6 karakter olmalı';
+
+  @override
+  String get passwordStrengthWeak => 'Zayıf';
+
+  @override
+  String get passwordStrengthMedium => 'Orta';
+
+  @override
+  String get passwordStrengthGood => 'İyi';
+
+  @override
+  String get passwordStrengthStrong => 'Güçlü';
+
+  @override
+  String get alreadyHaveAccount => 'Zaten hesabınız var mı?';
+
+  @override
+  String get loginAction => 'Giriş Yapın';
+
+  @override
+  String get joinUs => 'Aramıza Katılın';
+
+  @override
+  String get joinUsDescription =>
+      'Ücretsiz hesap oluşturun ve profesyonel CV\'ler oluşturmaya başlayın.';
+
+  @override
+  String get benefit1 => 'Ücretsiz hesap ile 1 CV oluşturun';
+
+  @override
+  String get benefit2 => 'Profesyonel şablonlara erişin';
+
+  @override
+  String get benefit3 => 'CV\'lerinizi bulutta saklayın';
+
+  @override
+  String get benefit4 => 'İstediğiniz zaman düzenleyin';
+
+  @override
+  String get createProfessionalCVs =>
+      'Profesyonel CV\'ler oluşturun, düzenleyin ve paylaşın.';
+
+  @override
+  String get easyCV => 'Kolay CV Oluşturma';
+
+  @override
+  String get easyCVDesc => 'Dakikalar içinde profesyonel CV\'ler';
+
+  @override
+  String get cloudStorageTitle => 'Bulut Depolama';
+
+  @override
+  String get cloudStorageDesc => 'CV\'lerinize her yerden erişin';
+
+  @override
+  String get pdfExportTitle => 'PDF Dışa Aktarma';
+
+  @override
+  String get pdfExportDesc => 'Tek tıkla PDF olarak indirin';
+
+  @override
+  String get subscriptionFreeDesc => 'Temel özellikler ile başlayın';
+
+  @override
+  String get subscriptionProDesc => 'Profesyonel CV\'ler için ideal';
+
+  @override
+  String get subscriptionPremiumDesc => 'Tüm özelliklere sınırsız erişim';
+
+  @override
+  String get feature1CV => '1 CV oluşturma';
+
+  @override
+  String get feature5CV => '5 CV oluşturma';
+
+  @override
+  String get featureUnlimitedCV => 'Sınırsız CV';
+
+  @override
+  String get featureBasicTemplates => 'Temel şablonlar';
+
+  @override
+  String get featureAllTemplates => 'Tüm şablonlar';
+
+  @override
+  String get featureCloudStorage => 'Bulut depolama';
+
+  @override
+  String get featurePreview => 'Önizleme';
+
+  @override
+  String get featurePdfExport => 'PDF dışa aktarma';
+
+  @override
+  String get featureHtmlExport => 'HTML dışa aktarma';
+
+  @override
+  String get featureJsonExport => 'JSON dışa aktarma';
+
+  @override
+  String get featureCustomTemplates => 'Özel şablonlar';
+
+  @override
+  String get featurePrioritySupport => 'Öncelikli destek';
+
+  @override
+  String get authErrorAccountCreationFailed => 'Hesap oluşturulamadı';
+
+  @override
+  String get authErrorLoginFailed => 'Giriş yapılamadı';
+
+  @override
+  String get authErrorEmailInUse => 'Bu e-posta adresi zaten kullanımda';
+
+  @override
+  String get authErrorInvalidEmail => 'Geçersiz e-posta adresi';
+
+  @override
+  String get authErrorOperationNotAllowed => 'Bu işlem şu anda kullanılamıyor';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Şifre çok zayıf. En az 6 karakter kullanın';
+
+  @override
+  String get authErrorUserDisabled => 'Bu hesap devre dışı bırakılmış';
+
+  @override
+  String get authErrorUserNotFound =>
+      'Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı';
+
+  @override
+  String get authErrorWrongPassword => 'Yanlış şifre';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Çok fazla deneme. Lütfen daha sonra tekrar deneyin';
+
+  @override
+  String get authErrorInvalidCredential => 'E-posta veya şifre hatalı';
+
+  @override
+  String get authErrorGeneric => 'Bir hata oluştu';
+
+  @override
+  String get planFree => 'Ücretsiz';
+
+  @override
+  String get planPro => 'Pro';
+
+  @override
+  String get planPremium => 'Premium';
+
+  @override
+  String get themeBlue => 'Mavi';
+
+  @override
+  String get themeGreen => 'Yeşil';
+
+  @override
+  String get themePurple => 'Mor';
+
+  @override
+  String get themeOrange => 'Turuncu';
+
+  @override
+  String get themeDark => 'Karanlık';
+
+  @override
+  String featureRequiresPlan(Object plan) {
+    return 'Bu özellik $plan planı gerektirir';
+  }
+
+  @override
+  String get upgradeForMore => 'Daha fazla özellik için planınızı yükseltin.';
+
+  @override
+  String get viewPlansButton => 'Planları Görüntüle';
+
+  @override
+  String get upgradeButton => 'Yükselt';
+
+  @override
+  String get proFeature => 'Pro özellik';
+
+  @override
+  String get premiumFeature => 'Premium Özellik';
+
+  @override
+  String get upgradeToUse => 'Bu özelliği kullanmak için planınızı yükseltin.';
+
+  @override
+  String get featureNotAvailable => 'Bu özellik mevcut değil.';
+
+  @override
+  String get upgradeToPro => 'Bu özelliği kullanmak için Pro plana yükseltin.';
+
+  @override
+  String get upgradeToPremium =>
+      'Bu özelliği kullanmak için Premium plana yükseltin.';
+
+  @override
+  String get featureIncluded => 'Bu özellik planınıza dahildir.';
+
+  @override
+  String get lockedPdfExport => 'PDF dışa aktarma';
+
+  @override
+  String get lockedHtmlExport => 'HTML dışa aktarma';
+
+  @override
+  String get lockedPremiumTemplates => 'Premium şablonlar';
+
+  @override
+  String get lockedMultipleCVs => 'Birden fazla CV';
+
+  @override
+  String get lockedJsonExport => 'JSON dışa aktarma';
+
+  @override
+  String get lockedCustomTemplates => 'Özel şablonlar';
+
+  @override
+  String get lockedUnlimitedCV => 'Sınırsız CV';
+
+  @override
+  String get unlimitedCVMessage => 'Sınırsız CV oluşturabilirsiniz';
+
+  @override
+  String remainingCVMessage(Object count) {
+    return '$count CV daha oluşturabilirsiniz';
+  }
 }

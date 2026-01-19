@@ -23,7 +23,9 @@ import '../widgets/cv_preview_section.dart';
 
 /// Main CV Builder page with responsive layout and step-by-step navigation
 class CVBuilderPage extends ConsumerWidget {
-  const CVBuilderPage({super.key});
+  final String? cvId;
+
+  const CVBuilderPage({super.key, this.cvId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

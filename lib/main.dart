@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
+import 'firebase_options.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'core/providers/language_provider.dart';
 import 'core/providers/theme_provider.dart';
-import 'features/cv_builder/presentation/pages/cv_builder_page.dart';
+import 'features/auth/presentation/widgets/auth_wrapper.dart';
+import 'features/dashboard/presentation/pages/dashboard_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const ProviderScope(child: CVMakerApp()));
 }
 
@@ -49,7 +57,7 @@ class CVMakerApp extends ConsumerWidget {
           const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
         ],
       ),
-      home: const CVBuilderPage(),
+      home: const AuthWrapper(requireAuth: true, child: DashboardPage()),
     );
   }
 }

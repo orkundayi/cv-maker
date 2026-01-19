@@ -1549,6 +1549,972 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description is too short (minimum 50 characters)'**
   String get descriptionTooShort;
+
+  /// No description provided for @myAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'My Account'**
+  String get myAccount;
+
+  /// No description provided for @user.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
+  /// No description provided for @activeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Member'**
+  String get activeMember;
+
+  /// No description provided for @userLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load user information'**
+  String get userLoadError;
+
+  /// No description provided for @subscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get subscription;
+
+  /// No description provided for @plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan;
+
+  /// No description provided for @upgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get upgrade;
+
+  /// No description provided for @cvLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'CV Limit'**
+  String get cvLimit;
+
+  /// No description provided for @unlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get unlimited;
+
+  /// No description provided for @pdfExport.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Export'**
+  String get pdfExport;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @customizeAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize app appearance'**
+  String get customizeAppearance;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select language preference'**
+  String get selectLanguage;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @appDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Designed for creating professional CVs.'**
+  String get appDescription;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// No description provided for @signOutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to sign out from your account?'**
+  String get signOutConfirm;
+
+  /// No description provided for @myCVs.
+  ///
+  /// In en, this message translates to:
+  /// **'My CVs'**
+  String get myCVs;
+
+  /// No description provided for @newCV.
+  ///
+  /// In en, this message translates to:
+  /// **'New CV'**
+  String get newCV;
+
+  /// No description provided for @createCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Create CV'**
+  String get createCV;
+
+  /// No description provided for @noCVsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No CVs yet'**
+  String get noCVsYet;
+
+  /// No description provided for @startCreatingCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Start creating your first professional CV'**
+  String get startCreatingCV;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get errorOccurred;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @hello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello'**
+  String get hello;
+
+  /// No description provided for @cvLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached your CV creation limit. Upgrade your plan to create more CVs.'**
+  String get cvLimitReached;
+
+  /// No description provided for @viewPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans'**
+  String get viewPlans;
+
+  /// No description provided for @deleteCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete CV'**
+  String get deleteCV;
+
+  /// No description provided for @deleteCVConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this CV? This action cannot be undone.'**
+  String get deleteCVConfirm;
+
+  /// No description provided for @cvDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'CV deleted successfully'**
+  String get cvDeleted;
+
+  /// No description provided for @cvDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete CV'**
+  String get cvDeleteFailed;
+
+  /// No description provided for @cvCreationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create CV'**
+  String get cvCreationFailed;
+
+  /// No description provided for @cvDuplicated.
+  ///
+  /// In en, this message translates to:
+  /// **'CV duplicated successfully'**
+  String get cvDuplicated;
+
+  /// No description provided for @cvDuplicateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not duplicate CV'**
+  String get cvDuplicateFailed;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
+  /// No description provided for @plans.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get plans;
+
+  /// No description provided for @professionalizeYourCVs.
+  ///
+  /// In en, this message translates to:
+  /// **'Professionalize Your CVs'**
+  String get professionalizeYourCVs;
+
+  /// No description provided for @choosePlanForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the plan that suits your needs'**
+  String get choosePlanForYou;
+
+  /// No description provided for @mostPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Popular'**
+  String get mostPopular;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
+  /// No description provided for @perMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/month'**
+  String get perMonth;
+
+  /// No description provided for @currentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Plan'**
+  String get currentPlan;
+
+  /// No description provided for @startFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Free'**
+  String get startFree;
+
+  /// No description provided for @selectPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Plan'**
+  String get selectPlan;
+
+  /// No description provided for @paymentIntegrationSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment integration coming soon. All features are currently active for demo purposes.'**
+  String get paymentIntegrationSoon;
+
+  /// No description provided for @featureComparison.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature Comparison'**
+  String get featureComparison;
+
+  /// No description provided for @feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature'**
+  String get feature;
+
+  /// No description provided for @cvCount.
+  ///
+  /// In en, this message translates to:
+  /// **'CV Count'**
+  String get cvCount;
+
+  /// No description provided for @basicTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Templates'**
+  String get basicTemplates;
+
+  /// No description provided for @premiumTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Templates'**
+  String get premiumTemplates;
+
+  /// No description provided for @htmlExport.
+  ///
+  /// In en, this message translates to:
+  /// **'HTML Export'**
+  String get htmlExport;
+
+  /// No description provided for @jsonExport.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON Export'**
+  String get jsonExport;
+
+  /// No description provided for @cloudStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Storage'**
+  String get cloudStorage;
+
+  /// No description provided for @customTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Templates'**
+  String get customTemplates;
+
+  /// No description provided for @prioritySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority Support'**
+  String get prioritySupport;
+
+  /// No description provided for @editButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editButton;
+
+  /// No description provided for @copyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyButton;
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteButton;
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'days ago'**
+  String get daysAgo;
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'hours ago'**
+  String get hoursAgo;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes ago'**
+  String get minutesAgo;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @loginToAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to your account'**
+  String get loginToAccount;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordRequired;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get invalidEmail;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgotPassword;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get noAccount;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @passwordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Reset'**
+  String get passwordReset;
+
+  /// No description provided for @passwordResetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we will send you a password reset link.'**
+  String get passwordResetDescription;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @passwordResetSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset email sent'**
+  String get passwordResetSent;
+
+  /// No description provided for @passwordResetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send email'**
+  String get passwordResetFailed;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @saveToCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your CVs to the cloud'**
+  String get saveToCloud;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @fullNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name is required'**
+  String get fullNameRequired;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @confirmPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password confirmation is required'**
+  String get confirmPasswordRequired;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordStrengthWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get passwordStrengthWeak;
+
+  /// No description provided for @passwordStrengthMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get passwordStrengthMedium;
+
+  /// No description provided for @passwordStrengthGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get passwordStrengthGood;
+
+  /// No description provided for @passwordStrengthStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get passwordStrengthStrong;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @loginAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginAction;
+
+  /// No description provided for @joinUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Us'**
+  String get joinUs;
+
+  /// No description provided for @joinUsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a free account and start creating professional CVs.'**
+  String get joinUsDescription;
+
+  /// No description provided for @benefit1.
+  ///
+  /// In en, this message translates to:
+  /// **'Create 1 CV with free account'**
+  String get benefit1;
+
+  /// No description provided for @benefit2.
+  ///
+  /// In en, this message translates to:
+  /// **'Access professional templates'**
+  String get benefit2;
+
+  /// No description provided for @benefit3.
+  ///
+  /// In en, this message translates to:
+  /// **'Store your CVs in the cloud'**
+  String get benefit3;
+
+  /// No description provided for @benefit4.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit anytime you want'**
+  String get benefit4;
+
+  /// No description provided for @createProfessionalCVs.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, edit and share professional CVs.'**
+  String get createProfessionalCVs;
+
+  /// No description provided for @easyCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy CV Creation'**
+  String get easyCV;
+
+  /// No description provided for @easyCVDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional CVs in minutes'**
+  String get easyCVDesc;
+
+  /// No description provided for @cloudStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Storage'**
+  String get cloudStorageTitle;
+
+  /// No description provided for @cloudStorageDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Access your CVs from anywhere'**
+  String get cloudStorageDesc;
+
+  /// No description provided for @pdfExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Export'**
+  String get pdfExportTitle;
+
+  /// No description provided for @pdfExportDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Download as PDF with one click'**
+  String get pdfExportDesc;
+
+  /// No description provided for @subscriptionFreeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with basic features'**
+  String get subscriptionFreeDesc;
+
+  /// No description provided for @subscriptionProDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal for professional CVs'**
+  String get subscriptionProDesc;
+
+  /// No description provided for @subscriptionPremiumDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited access to all features'**
+  String get subscriptionPremiumDesc;
+
+  /// No description provided for @feature1CV.
+  ///
+  /// In en, this message translates to:
+  /// **'1 CV creation'**
+  String get feature1CV;
+
+  /// No description provided for @feature5CV.
+  ///
+  /// In en, this message translates to:
+  /// **'5 CV creation'**
+  String get feature5CV;
+
+  /// No description provided for @featureUnlimitedCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited CVs'**
+  String get featureUnlimitedCV;
+
+  /// No description provided for @featureBasicTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic templates'**
+  String get featureBasicTemplates;
+
+  /// No description provided for @featureAllTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'All templates'**
+  String get featureAllTemplates;
+
+  /// No description provided for @featureCloudStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud storage'**
+  String get featureCloudStorage;
+
+  /// No description provided for @featurePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get featurePreview;
+
+  /// No description provided for @featurePdfExport.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export'**
+  String get featurePdfExport;
+
+  /// No description provided for @featureHtmlExport.
+  ///
+  /// In en, this message translates to:
+  /// **'HTML export'**
+  String get featureHtmlExport;
+
+  /// No description provided for @featureJsonExport.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON export'**
+  String get featureJsonExport;
+
+  /// No description provided for @featureCustomTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom templates'**
+  String get featureCustomTemplates;
+
+  /// No description provided for @featurePrioritySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority support'**
+  String get featurePrioritySupport;
+
+  /// No description provided for @authErrorAccountCreationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Account creation failed'**
+  String get authErrorAccountCreationFailed;
+
+  /// No description provided for @authErrorLoginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed'**
+  String get authErrorLoginFailed;
+
+  /// No description provided for @authErrorEmailInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This email address is already in use'**
+  String get authErrorEmailInUse;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorOperationNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This operation is not available'**
+  String get authErrorOperationNotAllowed;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak. Use at least 6 characters'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been disabled'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No user found with this email address'**
+  String get authErrorUserNotFound;
+
+  /// No description provided for @authErrorWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password'**
+  String get authErrorWrongPassword;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorInvalidCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password'**
+  String get authErrorInvalidCredential;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get authErrorGeneric;
+
+  /// No description provided for @planFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get planFree;
+
+  /// No description provided for @planPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get planPro;
+
+  /// No description provided for @planPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium'**
+  String get planPremium;
+
+  /// No description provided for @themeBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get themeBlue;
+
+  /// No description provided for @themeGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get themeGreen;
+
+  /// No description provided for @themePurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get themePurple;
+
+  /// No description provided for @themeOrange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get themeOrange;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @featureRequiresPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature requires {plan} plan'**
+  String featureRequiresPlan(Object plan);
+
+  /// No description provided for @upgradeForMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade your plan for more features.'**
+  String get upgradeForMore;
+
+  /// No description provided for @viewPlansButton.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans'**
+  String get viewPlansButton;
+
+  /// No description provided for @upgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get upgradeButton;
+
+  /// No description provided for @proFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro feature'**
+  String get proFeature;
+
+  /// No description provided for @premiumFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Feature'**
+  String get premiumFeature;
+
+  /// No description provided for @upgradeToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade your plan to use this feature.'**
+  String get upgradeToUse;
+
+  /// No description provided for @featureNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is not available.'**
+  String get featureNotAvailable;
+
+  /// No description provided for @upgradeToPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro plan to use this feature.'**
+  String get upgradeToPro;
+
+  /// No description provided for @upgradeToPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium plan to use this feature.'**
+  String get upgradeToPremium;
+
+  /// No description provided for @featureIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is included in your plan.'**
+  String get featureIncluded;
+
+  /// No description provided for @lockedPdfExport.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export'**
+  String get lockedPdfExport;
+
+  /// No description provided for @lockedHtmlExport.
+  ///
+  /// In en, this message translates to:
+  /// **'HTML export'**
+  String get lockedHtmlExport;
+
+  /// No description provided for @lockedPremiumTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium templates'**
+  String get lockedPremiumTemplates;
+
+  /// No description provided for @lockedMultipleCVs.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple CVs'**
+  String get lockedMultipleCVs;
+
+  /// No description provided for @lockedJsonExport.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON export'**
+  String get lockedJsonExport;
+
+  /// No description provided for @lockedCustomTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom templates'**
+  String get lockedCustomTemplates;
+
+  /// No description provided for @lockedUnlimitedCV.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited CV'**
+  String get lockedUnlimitedCV;
+
+  /// No description provided for @unlimitedCVMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create unlimited CVs'**
+  String get unlimitedCVMessage;
+
+  /// No description provided for @remainingCVMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create {count} more CVs'**
+  String remainingCVMessage(Object count);
 }
 
 class _AppLocalizationsDelegate

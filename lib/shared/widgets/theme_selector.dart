@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/theme/theme_data.dart';
+import '../../../core/utils/theme_helper.dart';
 import '../../../core/extensions/theme_extensions.dart';
 import '../../../core/constants/app_constants.dart';
 
@@ -64,7 +65,7 @@ class ThemeSelector extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppConstants.spacingS),
                       Text(
-                        themeType.name,
+                        ThemeHelper.getThemeName(context, themeType),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: isSelected
                               ? FontWeight.w600

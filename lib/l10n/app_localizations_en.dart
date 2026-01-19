@@ -765,4 +765,499 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get descriptionTooShort =>
       'Description is too short (minimum 50 characters)';
+
+  @override
+  String get myAccount => 'My Account';
+
+  @override
+  String get user => 'User';
+
+  @override
+  String get activeMember => 'Active Member';
+
+  @override
+  String get userLoadError => 'Could not load user information';
+
+  @override
+  String get subscription => 'Subscription';
+
+  @override
+  String get plan => 'Plan';
+
+  @override
+  String get upgrade => 'Upgrade';
+
+  @override
+  String get cvLimit => 'CV Limit';
+
+  @override
+  String get unlimited => 'Unlimited';
+
+  @override
+  String get pdfExport => 'PDF Export';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get customizeAppearance => 'Customize app appearance';
+
+  @override
+  String get selectLanguage => 'Select language preference';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get appDescription => 'Designed for creating professional CVs.';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get signOutConfirm => 'Do you want to sign out from your account?';
+
+  @override
+  String get myCVs => 'My CVs';
+
+  @override
+  String get newCV => 'New CV';
+
+  @override
+  String get createCV => 'Create CV';
+
+  @override
+  String get noCVsYet => 'No CVs yet';
+
+  @override
+  String get startCreatingCV => 'Start creating your first professional CV';
+
+  @override
+  String get errorOccurred => 'An error occurred';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get hello => 'Hello';
+
+  @override
+  String get cvLimitReached =>
+      'You have reached your CV creation limit. Upgrade your plan to create more CVs.';
+
+  @override
+  String get viewPlans => 'View Plans';
+
+  @override
+  String get deleteCV => 'Delete CV';
+
+  @override
+  String get deleteCVConfirm =>
+      'Are you sure you want to delete this CV? This action cannot be undone.';
+
+  @override
+  String get cvDeleted => 'CV deleted successfully';
+
+  @override
+  String get cvDeleteFailed => 'Could not delete CV';
+
+  @override
+  String get cvCreationFailed => 'Could not create CV';
+
+  @override
+  String get cvDuplicated => 'CV duplicated successfully';
+
+  @override
+  String get cvDuplicateFailed => 'Could not duplicate CV';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get plans => 'Plans';
+
+  @override
+  String get professionalizeYourCVs => 'Professionalize Your CVs';
+
+  @override
+  String get choosePlanForYou => 'Choose the plan that suits your needs';
+
+  @override
+  String get mostPopular => 'Most Popular';
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get perMonth => '/month';
+
+  @override
+  String get currentPlan => 'Current Plan';
+
+  @override
+  String get startFree => 'Start Free';
+
+  @override
+  String get selectPlan => 'Select Plan';
+
+  @override
+  String get paymentIntegrationSoon =>
+      'Payment integration coming soon. All features are currently active for demo purposes.';
+
+  @override
+  String get featureComparison => 'Feature Comparison';
+
+  @override
+  String get feature => 'Feature';
+
+  @override
+  String get cvCount => 'CV Count';
+
+  @override
+  String get basicTemplates => 'Basic Templates';
+
+  @override
+  String get premiumTemplates => 'Premium Templates';
+
+  @override
+  String get htmlExport => 'HTML Export';
+
+  @override
+  String get jsonExport => 'JSON Export';
+
+  @override
+  String get cloudStorage => 'Cloud Storage';
+
+  @override
+  String get customTemplates => 'Custom Templates';
+
+  @override
+  String get prioritySupport => 'Priority Support';
+
+  @override
+  String get editButton => 'Edit';
+
+  @override
+  String get copyButton => 'Copy';
+
+  @override
+  String get deleteButton => 'Delete';
+
+  @override
+  String get daysAgo => 'days ago';
+
+  @override
+  String get hoursAgo => 'hours ago';
+
+  @override
+  String get minutesAgo => 'minutes ago';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String get loginToAccount => 'Login to your account';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get invalidEmail => 'Enter a valid email address';
+
+  @override
+  String get forgotPassword => 'Forgot Password';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get noAccount => 'Don\'t have an account?';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get passwordReset => 'Password Reset';
+
+  @override
+  String get passwordResetDescription =>
+      'Enter your email address and we will send you a password reset link.';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get passwordResetSent => 'Password reset email sent';
+
+  @override
+  String get passwordResetFailed => 'Failed to send email';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get saveToCloud => 'Save your CVs to the cloud';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get fullNameRequired => 'Full name is required';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get confirmPasswordRequired => 'Password confirmation is required';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters';
+
+  @override
+  String get passwordStrengthWeak => 'Weak';
+
+  @override
+  String get passwordStrengthMedium => 'Medium';
+
+  @override
+  String get passwordStrengthGood => 'Good';
+
+  @override
+  String get passwordStrengthStrong => 'Strong';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get loginAction => 'Login';
+
+  @override
+  String get joinUs => 'Join Us';
+
+  @override
+  String get joinUsDescription =>
+      'Create a free account and start creating professional CVs.';
+
+  @override
+  String get benefit1 => 'Create 1 CV with free account';
+
+  @override
+  String get benefit2 => 'Access professional templates';
+
+  @override
+  String get benefit3 => 'Store your CVs in the cloud';
+
+  @override
+  String get benefit4 => 'Edit anytime you want';
+
+  @override
+  String get createProfessionalCVs =>
+      'Create, edit and share professional CVs.';
+
+  @override
+  String get easyCV => 'Easy CV Creation';
+
+  @override
+  String get easyCVDesc => 'Professional CVs in minutes';
+
+  @override
+  String get cloudStorageTitle => 'Cloud Storage';
+
+  @override
+  String get cloudStorageDesc => 'Access your CVs from anywhere';
+
+  @override
+  String get pdfExportTitle => 'PDF Export';
+
+  @override
+  String get pdfExportDesc => 'Download as PDF with one click';
+
+  @override
+  String get subscriptionFreeDesc => 'Start with basic features';
+
+  @override
+  String get subscriptionProDesc => 'Ideal for professional CVs';
+
+  @override
+  String get subscriptionPremiumDesc => 'Unlimited access to all features';
+
+  @override
+  String get feature1CV => '1 CV creation';
+
+  @override
+  String get feature5CV => '5 CV creation';
+
+  @override
+  String get featureUnlimitedCV => 'Unlimited CVs';
+
+  @override
+  String get featureBasicTemplates => 'Basic templates';
+
+  @override
+  String get featureAllTemplates => 'All templates';
+
+  @override
+  String get featureCloudStorage => 'Cloud storage';
+
+  @override
+  String get featurePreview => 'Preview';
+
+  @override
+  String get featurePdfExport => 'PDF export';
+
+  @override
+  String get featureHtmlExport => 'HTML export';
+
+  @override
+  String get featureJsonExport => 'JSON export';
+
+  @override
+  String get featureCustomTemplates => 'Custom templates';
+
+  @override
+  String get featurePrioritySupport => 'Priority support';
+
+  @override
+  String get authErrorAccountCreationFailed => 'Account creation failed';
+
+  @override
+  String get authErrorLoginFailed => 'Login failed';
+
+  @override
+  String get authErrorEmailInUse => 'This email address is already in use';
+
+  @override
+  String get authErrorInvalidEmail => 'Invalid email address';
+
+  @override
+  String get authErrorOperationNotAllowed => 'This operation is not available';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Password is too weak. Use at least 6 characters';
+
+  @override
+  String get authErrorUserDisabled => 'This account has been disabled';
+
+  @override
+  String get authErrorUserNotFound => 'No user found with this email address';
+
+  @override
+  String get authErrorWrongPassword => 'Wrong password';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Too many attempts. Please try again later';
+
+  @override
+  String get authErrorInvalidCredential => 'Invalid email or password';
+
+  @override
+  String get authErrorGeneric => 'An error occurred';
+
+  @override
+  String get planFree => 'Free';
+
+  @override
+  String get planPro => 'Pro';
+
+  @override
+  String get planPremium => 'Premium';
+
+  @override
+  String get themeBlue => 'Blue';
+
+  @override
+  String get themeGreen => 'Green';
+
+  @override
+  String get themePurple => 'Purple';
+
+  @override
+  String get themeOrange => 'Orange';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String featureRequiresPlan(Object plan) {
+    return 'This feature requires $plan plan';
+  }
+
+  @override
+  String get upgradeForMore => 'Upgrade your plan for more features.';
+
+  @override
+  String get viewPlansButton => 'View Plans';
+
+  @override
+  String get upgradeButton => 'Upgrade';
+
+  @override
+  String get proFeature => 'Pro feature';
+
+  @override
+  String get premiumFeature => 'Premium Feature';
+
+  @override
+  String get upgradeToUse => 'Upgrade your plan to use this feature.';
+
+  @override
+  String get featureNotAvailable => 'This feature is not available.';
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro plan to use this feature.';
+
+  @override
+  String get upgradeToPremium => 'Upgrade to Premium plan to use this feature.';
+
+  @override
+  String get featureIncluded => 'This feature is included in your plan.';
+
+  @override
+  String get lockedPdfExport => 'PDF export';
+
+  @override
+  String get lockedHtmlExport => 'HTML export';
+
+  @override
+  String get lockedPremiumTemplates => 'Premium templates';
+
+  @override
+  String get lockedMultipleCVs => 'Multiple CVs';
+
+  @override
+  String get lockedJsonExport => 'JSON export';
+
+  @override
+  String get lockedCustomTemplates => 'Custom templates';
+
+  @override
+  String get lockedUnlimitedCV => 'Unlimited CV';
+
+  @override
+  String get unlimitedCVMessage => 'You can create unlimited CVs';
+
+  @override
+  String remainingCVMessage(Object count) {
+    return 'You can create $count more CVs';
+  }
 }

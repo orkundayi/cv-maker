@@ -270,19 +270,4 @@ extension AppThemeTypeExtension on AppThemeType {
         return AppColorScheme.darkTheme;
     }
   }
-
-  String get name {
-    switch (this) {
-      case AppThemeType.defaultBlue:
-        return 'Mavi';
-      case AppThemeType.green:
-        return 'Yeşil';
-      case AppThemeType.purple:
-        return 'Mor';
-      case AppThemeType.orange:
-        return 'Turuncu';
-      case AppThemeType.dark:
-        return 'Karanlık';
-    }
-  }
 }
