@@ -51,6 +51,7 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
   void _deleteSkill(String id) {
     ref.read(cvDataProvider.notifier).removeSkill(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingSkill?.id == id) {
       _resetForm();
     }
@@ -68,17 +69,23 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
 
     if (_editingSkill != null) {
       ref.read(cvDataProvider.notifier).updateSkill(skill);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.educationUpdatedSuccessfully),
+          content: Text(
+            AppLocalizations.of(context)!.educationUpdatedSuccessfully,
+          ),
           backgroundColor: ref.colors.success,
         ),
       );
     } else {
       ref.read(cvDataProvider.notifier).addSkill(skill);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.educationAddedSuccessfully),
+          content: Text(
+            AppLocalizations.of(context)!.educationAddedSuccessfully,
+          ),
           backgroundColor: ref.colors.success,
         ),
       );
@@ -105,7 +112,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -123,7 +132,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingSkill != null ? ref.colors.primary : ref.colors.border,
+                color: _editingSkill != null
+                    ? ref.colors.primary
+                    : ref.colors.border,
                 width: _editingSkill != null ? 2 : 1,
               ),
             ),
@@ -138,14 +149,22 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       Row(
                         children: [
                           if (_editingSkill != null) ...[
-                            Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
+                            Icon(
+                              PhosphorIcons.pencilSimple(),
+                              color: ref.colors.primary,
+                              size: 20,
+                            ),
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
-                            _editingSkill != null ? l10n.editSkill : l10n.addSkill,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                            _editingSkill != null
+                                ? l10n.editSkill
+                                : l10n.addSkill,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: ref.colors.primary,
+                                ),
                           ),
                         ],
                       ),
@@ -154,7 +173,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
                           label: Text(l10n.cancel),
-                          style: TextButton.styleFrom(foregroundColor: ref.colors.error),
+                          style: TextButton.styleFrom(
+                            foregroundColor: ref.colors.error,
+                          ),
                         ),
                     ],
                   ),
@@ -189,7 +210,8 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                           children: SkillLevel.values.map((level) {
                             final isSelected = level == _selectedLevel;
                             return GestureDetector(
-                              onTap: () => setState(() => _selectedLevel = level),
+                              onTap: () =>
+                                  setState(() => _selectedLevel = level),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 padding: EdgeInsets.symmetric(
@@ -197,10 +219,14 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                   vertical: isMobile ? 8 : 10,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: isSelected ? _getLevelColor(level).withOpacity(0.15) : Colors.transparent,
+                                  color: isSelected
+                                      ? _getLevelColor(level).withOpacity(0.15)
+                                      : Colors.transparent,
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: isSelected ? _getLevelColor(level) : Theme.of(context).dividerColor,
+                                    color: isSelected
+                                        ? _getLevelColor(level)
+                                        : Theme.of(context).dividerColor,
                                     width: isSelected ? 2 : 1,
                                   ),
                                 ),
@@ -211,12 +237,19 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                     const SizedBox(width: 8),
                                     Text(
                                       _localizeSkillLevel(context, level),
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: isSelected
-                                            ? _getLevelColor(level)
-                                            : Theme.of(context).textTheme.bodyMedium?.color,
-                                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: isSelected
+                                                ? _getLevelColor(level)
+                                                : Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium?.color,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.normal,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -239,15 +272,25 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                       children: SkillCategory.values.map((category) {
                         final isSelected = category == _selectedCategory;
                         return GestureDetector(
-                          onTap: () => setState(() => _selectedCategory = category),
+                          onTap: () =>
+                              setState(() => _selectedCategory = category),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
-                            padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 12, vertical: isMobile ? 6 : 8),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isMobile ? 10 : 12,
+                              vertical: isMobile ? 6 : 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.15) : Colors.transparent,
+                              color: isSelected
+                                  ? Theme.of(
+                                      context,
+                                    ).primaryColor.withOpacity(0.15)
+                                  : Colors.transparent,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).dividerColor,
+                                color: isSelected
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).dividerColor,
                                 width: isSelected ? 2 : 1,
                               ),
                             ),
@@ -259,17 +302,24 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                                   size: 16,
                                   color: isSelected
                                       ? Theme.of(context).primaryColor
-                                      : Theme.of(context).iconTheme.color?.withOpacity(0.7),
+                                      : Theme.of(
+                                          context,
+                                        ).iconTheme.color?.withOpacity(0.7),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
                                   _localizeSkillCategory(context, category),
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: isSelected
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context).textTheme.bodySmall?.color,
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: isSelected
+                                            ? Theme.of(context).primaryColor
+                                            : Theme.of(
+                                                context,
+                                              ).textTheme.bodySmall?.color,
+                                        fontWeight: isSelected
+                                            ? FontWeight.w600
+                                            : FontWeight.normal,
+                                      ),
                                 ),
                               ],
                             ),
@@ -285,11 +335,21 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: _saveSkill,
-                      icon: Icon(_editingSkill != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                      label: Text(_editingSkill != null ? l10n.editSkill : l10n.addSkill),
+                      icon: Icon(
+                        _editingSkill != null
+                            ? PhosphorIcons.check()
+                            : PhosphorIcons.plus(),
+                      ),
+                      label: Text(
+                        _editingSkill != null ? l10n.editSkill : l10n.addSkill,
+                      ),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                        backgroundColor: _editingSkill != null ? ref.colors.success : null,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppConstants.spacingM,
+                        ),
+                        backgroundColor: _editingSkill != null
+                            ? ref.colors.success
+                            : null,
                       ),
                     ),
                   ),
@@ -307,19 +367,25 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
               children: [
                 Text(
                   '${l10n.skills} (${skills.length})',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${skills.length} ${AppLocalizations.of(context)!.skills.toLowerCase()}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -331,16 +397,24 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.lightning(), size: 64, color: ref.colors.grey400),
+                  Icon(
+                    PhosphorIcons.lightning(),
+                    size: 64,
+                    color: ref.colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.skillsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: ref.colors.grey600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -376,7 +450,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: index < dots
-                ? (isSelected ? _getLevelColor(level) : Theme.of(context).primaryColor)
+                ? (isSelected
+                      ? _getLevelColor(level)
+                      : Theme.of(context).primaryColor)
                 : Theme.of(context).dividerColor,
           ),
         );
@@ -457,7 +533,11 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
               // Category Header
               Row(
                 children: [
-                  Icon(_getCategoryIcon(entry.key), size: 18, color: Theme.of(context).primaryColor),
+                  Icon(
+                    _getCategoryIcon(entry.key),
+                    size: 18,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     entry.key.displayName,
@@ -468,7 +548,10 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -488,7 +571,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
               // Skills in this category
               if (isMobile)
                 // Mobile: Single column
-                Column(children: entry.value.map(_buildModernSkillCard).toList())
+                Column(
+                  children: entry.value.map(_buildModernSkillCard).toList(),
+                )
               else
                 // Desktop: Grid layout
                 Wrap(
@@ -497,7 +582,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   children: entry.value
                       .map(
                         (skill) => SizedBox(
-                          width: (MediaQuery.of(context).size.width - 80) / 2 - AppConstants.spacingM,
+                          width:
+                              (MediaQuery.of(context).size.width - 80) / 2 -
+                              AppConstants.spacingM,
                           child: _buildModernSkillCard(skill),
                         ),
                       )
@@ -518,11 +605,21 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))],
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withOpacity(0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+        padding: EdgeInsets.all(
+          isMobile ? AppConstants.spacingM : AppConstants.spacingL,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -531,7 +628,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                 Expanded(
                   child: Text(
                     skill.name,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 Row(
@@ -546,7 +645,11 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                     ),
                     IconButton(
                       onPressed: () => _deleteSkill(skill.id),
-                      icon: Icon(PhosphorIcons.trash(), size: 18, color: ref.colors.error),
+                      icon: Icon(
+                        PhosphorIcons.trash(),
+                        size: 18,
+                        color: ref.colors.error,
+                      ),
                       iconSize: 18,
                       visualDensity: VisualDensity.compact,
                       tooltip: AppLocalizations.of(context)!.delete,
@@ -563,9 +666,10 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
               children: [
                 Text(
                   _localizeSkillLevel(context, skill.level),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: _getLevelColor(skill.level), fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: _getLevelColor(skill.level),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -591,7 +695,9 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                 Text(
                   '${(_getLevelPercentage(skill.level) * 100).round()}%',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                    color: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.color?.withOpacity(0.7),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -630,7 +736,10 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
           ),
           content: Text(AppLocalizations.of(context)!.clearSkillsConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(AppLocalizations.of(context)!.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearSkills();
@@ -643,7 +752,10 @@ class _SkillsSectionState extends ConsumerState<SkillsSection> {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(AppLocalizations.of(context)!.clearAllSkills),
             ),
           ],

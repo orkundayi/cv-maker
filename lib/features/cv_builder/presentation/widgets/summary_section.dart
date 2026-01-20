@@ -36,6 +36,7 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
 
   void _updateSummary() {
     ref.read(cvDataProvider.notifier).updateSummary(_summaryController.text);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     setState(() {}); // Trigger rebuild to update character count
   }
 
@@ -57,7 +58,9 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -79,13 +82,18 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.lightbulb_outline, color: colors.info, size: 20),
+                      Icon(
+                        Icons.lightbulb_outline,
+                        color: colors.info,
+                        size: 20,
+                      ),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
                         l10n.writingTips,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: colors.info, fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: colors.info,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
@@ -95,27 +103,37 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                     children: [
                       Text(
                         l10n.keepItConcise,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.highlightKeyStrengths,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.mentionCareerGoals,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.useActionWords,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         l10n.tailorToRole,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.info),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: colors.info),
                       ),
                     ],
                   ),
@@ -177,7 +195,8 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                         children: [
                           Text(
                             '${l10n.characterCount}: $charCount/500',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.textSecondary),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: colors.textSecondary),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -186,13 +205,17 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                             ),
                             decoration: BoxDecoration(
                               color: statusBgColor,
-                              borderRadius: BorderRadius.circular(AppConstants.radiusS),
+                              borderRadius: BorderRadius.circular(
+                                AppConstants.radiusS,
+                              ),
                             ),
                             child: Text(
                               statusText,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                           ),
                         ],
@@ -223,20 +246,27 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.tips_and_updates_outlined, color: ref.colors.success, size: 20),
+                      Icon(
+                        Icons.tips_and_updates_outlined,
+                        color: ref.colors.success,
+                        size: 20,
+                      ),
                       const SizedBox(width: AppConstants.spacingS),
                       Text(
                         l10n.proTips,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: colors.success, fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: colors.success,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.summaryGrabAttention,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colors.success),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: colors.success),
                   ),
                 ],
               ),
@@ -262,17 +292,26 @@ class _SummarySectionState extends ConsumerState<SummarySection> {
           ),
           content: Text(l10n.clearSummaryConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearSummary();
                 _summaryController.clear();
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(l10n.summaryCleared), backgroundColor: ref.colors.success));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.summaryCleared),
+                    backgroundColor: ref.colors.success,
+                  ),
+                );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(l10n.clear),
             ),
           ],

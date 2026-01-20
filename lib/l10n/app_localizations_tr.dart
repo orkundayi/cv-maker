@@ -1265,4 +1265,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String remainingCVMessage(Object count) {
     return '$count CV daha oluşturabilirsiniz';
   }
+
+  @override
+  String get saveToCloudButton => 'Kaydet';
+
+  @override
+  String get saving => 'Kaydediliyor...';
+
+  @override
+  String get cvSavedToCloud => 'CV buluta başarıyla kaydedildi!';
+
+  @override
+  String get cvSaveFailed => 'CV kaydedilemedi';
+
+  @override
+  String get unsavedChanges => 'Kaydedilmemiş değişiklikler var';
+
+  @override
+  String get generatingPreview => 'Önizleme oluşturuluyor...';
 }

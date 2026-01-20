@@ -1,9 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/cv_data.dart';
 
+/// CV save state enum
+enum CVSaveState { idle, saving, success, error }
+
+/// CV dirty state - tracks unsaved changes
+final cvIsDirtyProvider = StateProvider<bool>((ref) => false);
+
+/// CV save state provider
+final cvSaveStateProvider = StateProvider<CVSaveState>(
+  (ref) => CVSaveState.idle,
+);
+
+/// Current CV ID provider - set when entering CV builder
+final currentCVIdProvider = StateProvider<String?>((ref) => null);
+
 /// CV data state provider
 class CVDataNotifier extends StateNotifier<CVData> {
   CVDataNotifier() : super(CVData.empty());
+
+  /// Load complete CV data (for loading from Firebase)
+  set loadCV(CVData cvData) {
+    state = cvData;
+  }
 
   /// Update personal information
   void updatePersonalInfo(PersonalInfo personalInfo) {
@@ -35,7 +54,8 @@ class CVDataNotifier extends StateNotifier<CVData> {
       linkedIn: linkedIn,
       github: github,
       website: website,
-      profileImagePath: currentInfo.profileImagePath, // Preserve existing profile image
+      profileImagePath:
+          currentInfo.profileImagePath, // Preserve existing profile image
     );
     state = state.copyWith(personalInfo: updatedInfo);
   }

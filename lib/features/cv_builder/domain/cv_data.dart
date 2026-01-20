@@ -262,22 +262,10 @@ class CVData {
   /// Check if CV has meaningful content
   bool get hasContent {
     // Check if personal info has basic required fields
-    final hasBasicInfo =
-        personalInfo.firstName.isNotEmpty &&
+    // This is enough to show the preview - other sections are optional
+    return personalInfo.firstName.isNotEmpty &&
         personalInfo.lastName.isNotEmpty &&
         personalInfo.email.isNotEmpty;
-
-    // Check if any other section has content
-    final hasOtherContent =
-        workExperiences.isNotEmpty ||
-        educations.isNotEmpty ||
-        skills.isNotEmpty ||
-        projects.isNotEmpty ||
-        languages.isNotEmpty ||
-        certificates.isNotEmpty ||
-        (summary != null && summary!.isNotEmpty);
-
-    return hasBasicInfo && hasOtherContent;
   }
 }
 

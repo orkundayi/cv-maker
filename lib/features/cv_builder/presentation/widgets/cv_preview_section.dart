@@ -607,6 +607,30 @@ class _CVPreviewSectionState extends ConsumerState<CVPreviewSection> {
                   maxPageWidth: screenWidth,
                   pdfFileName:
                       'cv_${cvData.personalInfo.lastName.toLowerCase()}_preview',
+                  // Loading indicator for better UX during PDF generation
+                  loadingWidget: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.generatingPreview,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),

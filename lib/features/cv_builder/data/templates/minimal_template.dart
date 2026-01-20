@@ -212,26 +212,43 @@ class MinimalTemplate extends CVTemplate {
                 ),
               ),
               pw.SizedBox(height: 6),
-              // Contact info
+              // Contact info - only show items that have content
               pw.Wrap(
                 spacing: 15,
                 runSpacing: 5,
                 children: [
-                  _contactItem(cvData.personalInfo.email, fonts.regularFont!),
-                  _contactItem(cvData.personalInfo.phone, fonts.regularFont!),
-                  if (cvData.personalInfo.city != null)
+                  if (cvData.personalInfo.email.isNotEmpty)
+                    _contactItem(cvData.personalInfo.email, fonts.regularFont!),
+                  if (cvData.personalInfo.phone.isNotEmpty)
+                    _contactItem(cvData.personalInfo.phone, fonts.regularFont!),
+                  // Address - only show if city or country exists
+                  if ((cvData.personalInfo.city != null &&
+                          cvData.personalInfo.city!.isNotEmpty) ||
+                      (cvData.personalInfo.country != null &&
+                          cvData.personalInfo.country!.isNotEmpty))
                     _contactItem(
-                      '${cvData.personalInfo.city}, ${cvData.personalInfo.country}',
+                      [
+                        cvData.personalInfo.city,
+                        cvData.personalInfo.country,
+                      ].where((e) => e != null && e.isNotEmpty).join(', '),
                       fonts.regularFont!,
                     ),
-                  if (cvData.personalInfo.linkedIn != null)
+                  if (cvData.personalInfo.linkedIn != null &&
+                      cvData.personalInfo.linkedIn!.isNotEmpty)
                     _contactItem(
                       cvData.personalInfo.linkedIn!,
                       fonts.regularFont!,
                     ),
-                  if (cvData.personalInfo.github != null)
+                  if (cvData.personalInfo.github != null &&
+                      cvData.personalInfo.github!.isNotEmpty)
                     _contactItem(
                       cvData.personalInfo.github!,
+                      fonts.regularFont!,
+                    ),
+                  if (cvData.personalInfo.website != null &&
+                      cvData.personalInfo.website!.isNotEmpty)
+                    _contactItem(
+                      cvData.personalInfo.website!,
                       fonts.regularFont!,
                     ),
                 ],
@@ -333,7 +350,7 @@ class MinimalTemplate extends CVTemplate {
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
-                '${exp.jobTitle} at ${exp.company}',
+                '${exp.jobTitle} | ${exp.company}',
                 style: pw.TextStyle(
                   font: fonts.mediumFont ?? fonts.boldFont,
                   fontSize: 10,
@@ -622,7 +639,7 @@ class MinimalTemplate extends CVTemplate {
           ),
           if (cert.expiryDate != null)
             pw.Text(
-              'Expires: ${_formatMonthYear(cert.expiryDate!)}',
+              '${TemplateLocalizations.translate('expires', locale)}: ${_formatMonthYear(cert.expiryDate!)}',
               style: pw.TextStyle(
                 font: fonts.lightFont,
                 fontSize: 8,
@@ -631,7 +648,7 @@ class MinimalTemplate extends CVTemplate {
             ),
           if (cert.credentialId != null)
             pw.Text(
-              'ID: ${cert.credentialId}',
+              '${TemplateLocalizations.translate('credentialId', locale)}: ${cert.credentialId}',
               style: pw.TextStyle(
                 font: fonts.lightFont,
                 fontSize: 8,

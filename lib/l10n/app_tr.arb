@@ -406,5 +406,11 @@
     "lockedCustomTemplates": "Özel şablonlar",
     "lockedUnlimitedCV": "Sınırsız CV",
     "unlimitedCVMessage": "Sınırsız CV oluşturabilirsiniz",
-    "remainingCVMessage": "{count} CV daha oluşturabilirsiniz"
+    "remainingCVMessage": "{count} CV daha oluşturabilirsiniz",
+    "saveToCloudButton": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "cvSavedToCloud": "CV buluta başarıyla kaydedildi!",
+    "cvSaveFailed": "CV kaydedilemedi",
+    "unsavedChanges": "Kaydedilmemiş değişiklikler var",
+    "generatingPreview": "Önizleme oluşturuluyor..."
 }

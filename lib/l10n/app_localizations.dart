@@ -2521,6 +2521,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can create {count} more CVs'**
   String remainingCVMessage(Object count);
+
+  /// No description provided for @saveToCloudButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveToCloudButton;
+
+  /// No description provided for @saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get saving;
+
+  /// No description provided for @cvSavedToCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'CV saved to cloud successfully!'**
+  String get cvSavedToCloud;
+
+  /// No description provided for @cvSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save CV'**
+  String get cvSaveFailed;
+
+  /// No description provided for @unsavedChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes'**
+  String get unsavedChanges;
+
+  /// No description provided for @generatingPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating preview...'**
+  String get generatingPreview;
 }
 
 class _AppLocalizationsDelegate

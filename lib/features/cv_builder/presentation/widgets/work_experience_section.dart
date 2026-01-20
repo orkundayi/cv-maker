@@ -92,6 +92,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
 
   void _deleteExperience(String id) {
     ref.read(cvDataProvider.notifier).removeWorkExperience(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingExperience?.id == id) {
       _resetForm();
     }
@@ -255,6 +256,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       }
 
       ref.read(cvDataProvider.notifier).addWorkExperience(experience);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       _resetForm();
 
       final l10n = AppLocalizations.of(context)!;
@@ -293,6 +295,7 @@ class _WorkExperienceSectionState extends ConsumerState<WorkExperienceSection> {
       }
 
       ref.read(cvDataProvider.notifier).updateWorkExperience(experience);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       _resetForm();
 
       final l10n = AppLocalizations.of(context)!;

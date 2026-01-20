@@ -406,5 +406,11 @@
     "lockedCustomTemplates": "Custom templates",
     "lockedUnlimitedCV": "Unlimited CV",
     "unlimitedCVMessage": "You can create unlimited CVs",
-    "remainingCVMessage": "You can create {count} more CVs"
+    "remainingCVMessage": "You can create {count} more CVs",
+    "saveToCloudButton": "Save",
+    "saving": "Saving...",
+    "cvSavedToCloud": "CV saved to cloud successfully!",
+    "cvSaveFailed": "Failed to save CV",
+    "unsavedChanges": "You have unsaved changes",
+    "generatingPreview": "Generating preview..."
 }

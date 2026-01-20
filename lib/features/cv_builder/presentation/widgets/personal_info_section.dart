@@ -20,7 +20,8 @@ class PersonalInfoSection extends ConsumerStatefulWidget {
   const PersonalInfoSection({super.key});
 
   @override
-  ConsumerState<PersonalInfoSection> createState() => _PersonalInfoSectionState();
+  ConsumerState<PersonalInfoSection> createState() =>
+      _PersonalInfoSectionState();
 }
 
 class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
@@ -68,10 +69,16 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _phoneController = TextEditingController(text: personalInfo.phone);
 
     _cityController = TextEditingController(text: personalInfo.city ?? '');
-    _countryController = TextEditingController(text: personalInfo.country ?? '');
-    _linkedInController = TextEditingController(text: personalInfo.linkedIn ?? '');
+    _countryController = TextEditingController(
+      text: personalInfo.country ?? '',
+    );
+    _linkedInController = TextEditingController(
+      text: personalInfo.linkedIn ?? '',
+    );
     _githubController = TextEditingController(text: personalInfo.github ?? '');
-    _websiteController = TextEditingController(text: personalInfo.website ?? '');
+    _websiteController = TextEditingController(
+      text: personalInfo.website ?? '',
+    );
 
     // Initialize focus nodes
     _firstNameFocusNode = FocusNode();
@@ -167,6 +174,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     try {
       final currentCVData = ref.read(cvDataProvider);
       await CVStorageService.saveCVData(currentCVData);
+
+      // Mark as dirty for Firebase sync
+      ref.read(cvIsDirtyProvider.notifier).state = true;
+
       if (kDebugMode) {
         print('💾 Profile image saved to local storage');
       }
@@ -195,15 +206,26 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               phone: _phoneController.text,
 
               city: _cityController.text.isEmpty ? null : _cityController.text,
-              country: _countryController.text.isEmpty ? null : _countryController.text,
-              linkedIn: _linkedInController.text.isEmpty ? null : _linkedInController.text,
-              github: _githubController.text.isEmpty ? null : _githubController.text,
-              website: _websiteController.text.isEmpty ? null : _websiteController.text,
+              country: _countryController.text.isEmpty
+                  ? null
+                  : _countryController.text,
+              linkedIn: _linkedInController.text.isEmpty
+                  ? null
+                  : _linkedInController.text,
+              github: _githubController.text.isEmpty
+                  ? null
+                  : _githubController.text,
+              website: _websiteController.text.isEmpty
+                  ? null
+                  : _websiteController.text,
             );
 
         // Local storage'a kaydet
         final currentCVData = ref.read(cvDataProvider);
         await CVStorageService.saveCVData(currentCVData);
+
+        // Mark as dirty for Firebase sync
+        ref.read(cvIsDirtyProvider.notifier).state = true;
 
         if (kDebugMode) {
           print('💾 Text fields updated and saved to local storage');
@@ -239,7 +261,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -279,13 +303,18 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       children: [
         Text(
           l10n.profilePicture,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingM),
         Row(
           children: [
             // Profile Image Preview - Ayrı widget olarak
-            _ProfileImageWidget(key: _profileImageKey, onImageSelected: _onImageSelected),
+            _ProfileImageWidget(
+              key: _profileImageKey,
+              onImageSelected: _onImageSelected,
+            ),
             const SizedBox(width: AppConstants.spacingL),
             // Upload Button
             Expanded(
@@ -300,7 +329,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.optionalPhotoHint,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ref.colors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -318,7 +349,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       children: [
         Text(
           l10n.basicInformation,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveGrid(
@@ -378,7 +411,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       children: [
         Text(
           l10n.contactInformation,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveGrid(
@@ -395,7 +430,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   if (value == null || value.isEmpty) {
                     return l10n.emailRequired;
                   }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                  if (!RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                  ).hasMatch(value)) {
                     return l10n.emailInvalid;
                   }
                   return null;
@@ -476,12 +513,16 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       children: [
         Text(
           l10n.professionalLinks,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppConstants.spacingS),
         Text(
           l10n.professionalLinksHint,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
         ),
         const SizedBox(height: AppConstants.spacingM),
         ResponsiveFormField(
@@ -541,7 +582,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       if (kDebugMode) {
         print('📱 Image picker açılıyor...');
       }
-      final imageFile = await ImageUploadService.pickImage(maxSizeBytes: AppConstants.maxImageSizeBytes);
+      final imageFile = await ImageUploadService.pickImage(
+        maxSizeBytes: AppConstants.maxImageSizeBytes,
+      );
 
       if (imageFile != null) {
         if (kDebugMode) {
@@ -552,7 +595,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         if (kDebugMode) {
           print('🗜️ Image sıkıştırılıyor...');
         }
-        final compressedFile = await ImageUploadService.compressImage(imageFile);
+        final compressedFile = await ImageUploadService.compressImage(
+          imageFile,
+        );
         if (kDebugMode) {
           print('✅ Image sıkıştırıldı: ${compressedFile.size} bytes');
         }
@@ -561,7 +606,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         if (kDebugMode) {
           print('🔄 Base64\'e çevriliyor...');
         }
-        final base64Image = await ImageUploadService.imageToBase64(compressedFile);
+        final base64Image = await ImageUploadService.imageToBase64(
+          compressedFile,
+        );
         if (kDebugMode) {
           print('✅ Base64 hazır, uzunluk: ${base64Image.length}');
         }
@@ -574,9 +621,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
         if (mounted) {
           final l10n = AppLocalizations.of(context)!;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(l10n.profilePhotoUploaded), backgroundColor: ref.colors.success));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.profilePhotoUploaded),
+              backgroundColor: ref.colors.success,
+            ),
+          );
           if (kDebugMode) {
             print('🎉 Success message gösterildi');
           }
@@ -590,9 +640,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       if (kDebugMode) print('💥 Hata oluştu: $e');
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.imageUploadFailed), backgroundColor: ref.colors.error));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.imageUploadFailed),
+            backgroundColor: ref.colors.error,
+          ),
+        );
       }
     }
     if (kDebugMode) print('🏁 _selectProfileImage tamamlandı');
@@ -606,7 +659,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         title: Text(l10n.clearPersonalInformation),
         content: Text(l10n.clearPersonalInfoConfirm),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -641,9 +697,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     // Show feedback
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.personalInfoCleared), backgroundColor: ref.colors.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.personalInfoCleared),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     }
   }
 }
@@ -655,7 +714,8 @@ class _ProfileImageWidget extends ConsumerStatefulWidget {
   const _ProfileImageWidget({super.key, required this.onImageSelected});
 
   @override
-  ConsumerState<_ProfileImageWidget> createState() => _ProfileImageWidgetState();
+  ConsumerState<_ProfileImageWidget> createState() =>
+      _ProfileImageWidgetState();
 }
 
 class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
@@ -666,7 +726,10 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
     super.initState();
     // Initialize with current provider state
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentImage = ref.read(cvDataProvider).personalInfo.profileImagePath;
+      final currentImage = ref
+          .read(cvDataProvider)
+          .personalInfo
+          .profileImagePath;
       if (currentImage != null) {
         setState(() {
           _localProfileImage = currentImage;
@@ -694,7 +757,11 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
                 height: 100,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Icon(PhosphorIcons.user(), size: 40, color: ref.colors.grey400);
+                  return Icon(
+                    PhosphorIcons.user(),
+                    size: 40,
+                    color: ref.colors.grey400,
+                  );
                 },
               )
             : Icon(PhosphorIcons.user(), size: 40, color: ref.colors.grey400),
@@ -705,7 +772,9 @@ class _ProfileImageWidgetState extends ConsumerState<_ProfileImageWidget> {
   // Method to update image (called from parent)
   void updateImage(String base64Image) {
     if (kDebugMode) {
-      print('🖼️ _ProfileImageWidget.updateImage çağrıldı: ${base64Image.length} chars');
+      print(
+        '🖼️ _ProfileImageWidget.updateImage çağrıldı: ${base64Image.length} chars',
+      );
     }
     setState(() {
       _localProfileImage = base64Image.isEmpty ? null : base64Image;

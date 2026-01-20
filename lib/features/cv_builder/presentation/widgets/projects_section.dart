@@ -93,6 +93,7 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
   void _deleteProject(String id) {
     ref.read(cvDataProvider.notifier).removeProject(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingProject?.id == id) {
       _resetForm();
     }
@@ -105,9 +106,12 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
   void _selectEndDate() {
     if (_startDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
     _showDateSelector(context, false);
@@ -116,7 +120,10 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
   void _showDateSelector(BuildContext context, bool isStartDate) {
     final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
-    final years = List.generate(currentYear - 1949 + 50, (index) => 1950 + index);
+    final years = List.generate(
+      currentYear - 1949 + 50,
+      (index) => 1950 + index,
+    );
     final months = [
       l10n.january,
       l10n.february,
@@ -132,8 +139,12 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       l10n.december,
     ];
 
-    int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
-    int selectedMonth = isStartDate ? (_startDate?.month ?? 1) : (_endDate?.month ?? 1);
+    int selectedYear = isStartDate
+        ? (_startDate?.year ?? currentYear)
+        : (_endDate?.year ?? currentYear);
+    int selectedMonth = isStartDate
+        ? (_startDate?.month ?? 1)
+        : (_endDate?.month ?? 1);
 
     showDialog(
       context: context,
@@ -147,8 +158,18 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
-                items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
+                decoration: InputDecoration(
+                  labelText: l10n.year,
+                  border: const OutlineInputBorder(),
+                ),
+                items: years
+                    .map(
+                      (year) => DropdownMenuItem(
+                        value: year,
+                        child: Text(year.toString()),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
                 },
@@ -157,11 +178,19 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: l10n.month,
+                  border: const OutlineInputBorder(),
+                ),
                 items: months
                     .asMap()
                     .entries
-                    .map((entry) => DropdownMenuItem(value: entry.key + 1, child: Text(entry.value)))
+                    .map(
+                      (entry) => DropdownMenuItem(
+                        value: entry.key + 1,
+                        child: Text(entry.value),
+                      ),
+                    )
                     .toList(),
                 onChanged: (month) {
                   if (month != null) selectedMonth = month;
@@ -171,7 +200,10 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -204,17 +236,23 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
     if (_startDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
     if (!_isOngoing && _endDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectEndDateOrMarkCurrent),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
@@ -224,9 +262,17 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       description: _descriptionController.text.trim(),
       technologies: _technologiesController.text.trim().isEmpty
           ? []
-          : _technologiesController.text.trim().split(',').map((e) => e.trim()).toList(),
-      url: _urlController.text.trim().isEmpty ? null : _urlController.text.trim(),
-      githubUrl: _githubUrlController.text.trim().isEmpty ? null : _githubUrlController.text.trim(),
+          : _technologiesController.text
+                .trim()
+                .split(',')
+                .map((e) => e.trim())
+                .toList(),
+      url: _urlController.text.trim().isEmpty
+          ? null
+          : _urlController.text.trim(),
+      githubUrl: _githubUrlController.text.trim().isEmpty
+          ? null
+          : _githubUrlController.text.trim(),
       startDate: _startDate!,
       endDate: _isOngoing ? null : _endDate,
       isOngoing: _isOngoing,
@@ -235,13 +281,21 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
     if (_editingProject != null) {
       final l10n = AppLocalizations.of(context)!;
       ref.read(cvDataProvider.notifier).updateProject(project);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.projects), backgroundColor: ref.colors.success));
+      ref.read(cvIsDirtyProvider.notifier).state = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.projects),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     } else {
       ref.read(cvDataProvider.notifier).addProject(project);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.projects), backgroundColor: ref.colors.success),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.projects),
+          backgroundColor: ref.colors.success,
+        ),
       );
     }
 
@@ -265,7 +319,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -283,7 +339,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                   : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingProject != null ? ref.colors.primary : ref.colors.border,
+                color: _editingProject != null
+                    ? ref.colors.primary
+                    : ref.colors.border,
                 width: _editingProject != null ? 2 : 1,
               ),
             ),
@@ -299,14 +357,22 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                         Row(
                           children: [
                             if (_editingProject != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
+                              Icon(
+                                PhosphorIcons.pencilSimple(),
+                                color: ref.colors.primary,
+                                size: 20,
+                              ),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingProject != null ? l10n.editProject : l10n.addProject,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                              _editingProject != null
+                                  ? l10n.editProject
+                                  : l10n.addProject,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: ref.colors.primary,
+                                  ),
                             ),
                           ],
                         ),
@@ -315,7 +381,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
+                            style: TextButton.styleFrom(
+                              foregroundColor: ref.colors.error,
+                            ),
                           ),
                       ],
                     ),
@@ -433,7 +501,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                           label: l10n.endDate,
                           child: _isOngoing
                               ? CustomTextFormField(
-                                  controller: TextEditingController(text: l10n.currentlyWorking),
+                                  controller: TextEditingController(
+                                    text: l10n.currentlyWorking,
+                                  ),
                                   enabled: false,
                                 )
                               : InkWell(
@@ -477,11 +547,23 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: _saveProject,
-                        icon: Icon(_editingProject != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingProject != null ? l10n.editProject : l10n.addProject),
+                        icon: Icon(
+                          _editingProject != null
+                              ? PhosphorIcons.check()
+                              : PhosphorIcons.plus(),
+                        ),
+                        label: Text(
+                          _editingProject != null
+                              ? l10n.editProject
+                              : l10n.addProject,
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingProject != null ? ref.colors.success : null,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppConstants.spacingM,
+                          ),
+                          backgroundColor: _editingProject != null
+                              ? ref.colors.success
+                              : null,
                         ),
                       ),
                     ),
@@ -508,21 +590,27 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     const SizedBox(width: 8),
                     Text(
                       l10n.portfolioProjects,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${projects.length}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -533,16 +621,24 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.folder(), size: 64, color: ref.colors.grey400),
+                  Icon(
+                    PhosphorIcons.folder(),
+                    size: 64,
+                    color: ref.colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.projectsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: ref.colors.grey600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -567,7 +663,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
         children: projects
             .map(
               (project) => SizedBox(
-                width: (MediaQuery.of(context).size.width - 120) / 2 - AppConstants.spacingL,
+                width:
+                    (MediaQuery.of(context).size.width - 120) / 2 -
+                    AppConstants.spacingL,
                 child: _buildModernProjectCard(project),
               ),
             )
@@ -585,15 +683,25 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.5)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withOpacity(0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header section
           Container(
-            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            padding: EdgeInsets.all(
+              isMobile ? AppConstants.spacingM : AppConstants.spacingL,
+            ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -603,7 +711,10 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -631,7 +742,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                         ),
                         IconButton(
                           onPressed: () => _deleteProject(project.id),
-                          icon: Icon(PhosphorIcons.trash(), size: 20, color: ref.colors.error),
+                          icon: Icon(
+                            PhosphorIcons.trash(),
+                            size: 20,
+                            color: ref.colors.error,
+                          ),
                           iconSize: 20,
                           visualDensity: VisualDensity.compact,
                           tooltip: AppLocalizations.of(context)!.delete,
@@ -647,7 +762,10 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: project.isOngoing
                             ? ref.colors.success.withOpacity(0.1)
@@ -666,17 +784,22 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: project.isOngoing ? ref.colors.success : ref.colors.info,
+                              color: project.isOngoing
+                                  ? ref.colors.success
+                                  : ref.colors.info,
                               shape: BoxShape.circle,
                             ),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             project.isOngoing ? 'In Progress' : 'Completed',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: project.isOngoing ? ref.colors.success : ref.colors.info,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: project.isOngoing
+                                      ? ref.colors.success
+                                      : ref.colors.info,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ],
                       ),
@@ -686,9 +809,14 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
                     ...[
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceVariant.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -697,15 +825,25 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             Icon(
                               PhosphorIcons.calendar(),
                               size: 12,
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.color?.withOpacity(0.7),
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              _formatProjectDate(project.startDate, project.endDate),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                                fontWeight: FontWeight.w500,
+                              _formatProjectDate(
+                                project.startDate,
+                                project.endDate,
                               ),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withOpacity(0.7),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                             ),
                           ],
                         ),
@@ -719,7 +857,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
 
           // Content section
           Padding(
-            padding: EdgeInsets.all(isMobile ? AppConstants.spacingM : AppConstants.spacingL),
+            padding: EdgeInsets.all(
+              isMobile ? AppConstants.spacingM : AppConstants.spacingL,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -727,7 +867,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 if (project.description.isNotEmpty) ...[
                   Text(
                     project.description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(height: 1.5),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -738,7 +880,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 if (techList.isNotEmpty) ...[
                   Text(
                     'Technologies:',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Wrap(
@@ -747,18 +891,28 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                     children: techList
                         .map(
                           (tech) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withOpacity(0.1),
+                              color: Theme.of(
+                                context,
+                              ).primaryColor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                              border: Border.all(
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withOpacity(0.2),
+                              ),
                             ),
                             child: Text(
                               tech,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                             ),
                           ),
                         )
@@ -774,14 +928,18 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                       if (project.url != null) ...[
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: _isLaunchingUrl ? null : () => _launchUrl(project.url!),
+                            onPressed: _isLaunchingUrl
+                                ? null
+                                : () => _launchUrl(project.url!),
                             icon: _isLaunchingUrl
                                 ? const SizedBox(
                                     width: 16,
                                     height: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
                                     ),
                                   )
                                 : Icon(PhosphorIcons.globe(), size: 16),
@@ -793,26 +951,36 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).primaryColor,
                               foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12, horizontal: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: EdgeInsets.symmetric(
+                                vertical: isMobile ? 8 : 12,
+                                horizontal: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ],
 
-                      if (project.url != null && project.githubUrl != null) const SizedBox(width: 8),
+                      if (project.url != null && project.githubUrl != null)
+                        const SizedBox(width: 8),
 
                       if (project.githubUrl != null) ...[
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: _isLaunchingUrl ? null : () => _launchUrl(project.githubUrl!),
+                            onPressed: _isLaunchingUrl
+                                ? null
+                                : () => _launchUrl(project.githubUrl!),
                             icon: _isLaunchingUrl
                                 ? SizedBox(
                                     width: 16,
                                     height: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Theme.of(context).primaryColor,
+                                      ),
                                     ),
                                   )
                                 : Icon(PhosphorIcons.githubLogo(), size: 16),
@@ -822,8 +990,13 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                                   : AppLocalizations.of(context)!.github,
                             ),
                             style: OutlinedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12, horizontal: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: EdgeInsets.symmetric(
+                                vertical: isMobile ? 8 : 12,
+                                horizontal: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
@@ -858,7 +1031,20 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
   }
 
   String _getMonthName(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[month - 1];
   }
 
@@ -887,7 +1073,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
         }
       } catch (pluginError) {
         // If url_launcher fails, provide helpful message
-        throw Exception('Unable to open URL. Please copy and open manually: $formattedUrl');
+        throw Exception(
+          'Unable to open URL. Please copy and open manually: $formattedUrl',
+        );
       }
 
       // Show success feedback
@@ -896,7 +1084,11 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
           SnackBar(
             content: Row(
               children: [
-                Icon(PhosphorIcons.checkCircle(), color: Colors.white, size: 20),
+                Icon(
+                  PhosphorIcons.checkCircle(),
+                  color: Colors.white,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 const Text('Opening in browser...'),
               ],
@@ -904,7 +1096,9 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
             backgroundColor: ref.colors.success,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       } else {
@@ -915,12 +1109,16 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 children: [
                   Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
+                  Expanded(
+                    child: Text(AppLocalizations.of(context)!.linkOpenError),
+                  ),
                 ],
               ),
               backgroundColor: ref.colors.error,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           );
         }
@@ -933,12 +1131,16 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
               children: [
                 Icon(PhosphorIcons.warning(), color: Colors.white, size: 20),
                 const SizedBox(width: 8),
-                Expanded(child: Text(AppLocalizations.of(context)!.linkOpenError)),
+                Expanded(
+                  child: Text(AppLocalizations.of(context)!.linkOpenError),
+                ),
               ],
             ),
             backgroundColor: ref.colors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       }
@@ -965,7 +1167,10 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
           ),
           content: Text(AppLocalizations.of(context)!.clearProjectsConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(AppLocalizations.of(context)!.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearProjects();
@@ -973,12 +1178,17 @@ class _ProjectsSectionState extends ConsumerState<ProjectsSection> {
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.projectsCleared),
+                    content: Text(
+                      AppLocalizations.of(context)!.projectsCleared,
+                    ),
                     backgroundColor: ref.colors.success,
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(AppLocalizations.of(context)!.clear),
             ),
           ],

@@ -1263,4 +1263,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String remainingCVMessage(Object count) {
     return 'You can create $count more CVs';
   }
+
+  @override
+  String get saveToCloudButton => 'Save';
+
+  @override
+  String get saving => 'Saving...';
+
+  @override
+  String get cvSavedToCloud => 'CV saved to cloud successfully!';
+
+  @override
+  String get cvSaveFailed => 'Failed to save CV';
+
+  @override
+  String get unsavedChanges => 'You have unsaved changes';
+
+  @override
+  String get generatingPreview => 'Generating preview...';
 }

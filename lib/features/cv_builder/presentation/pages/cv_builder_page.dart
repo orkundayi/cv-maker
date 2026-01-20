@@ -9,6 +9,9 @@ import '../../../../core/utils/responsive_utils.dart';
 import '../../../../core/providers/language_provider.dart';
 import '../../../../shared/widgets/responsive_layout.dart';
 import '../../../../shared/widgets/theme_selector.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../data/services/firestore_cv_service.dart';
+import '../../domain/cv_data.dart';
 import '../providers/cv_provider.dart';
 import '../widgets/cv_section_navigation.dart';
 import '../widgets/personal_info_section.dart';
@@ -22,35 +25,207 @@ import '../widgets/projects_section.dart';
 import '../widgets/cv_preview_section.dart';
 
 /// Main CV Builder page with responsive layout and step-by-step navigation
-class CVBuilderPage extends ConsumerWidget {
+class CVBuilderPage extends ConsumerStatefulWidget {
   final String? cvId;
 
   const CVBuilderPage({super.key, this.cvId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CVBuilderPage> createState() => _CVBuilderPageState();
+}
+
+class _CVBuilderPageState extends ConsumerState<CVBuilderPage> {
+  final FirestoreCVService _cvService = FirestoreCVService();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the current CV ID and load data when entering the page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.cvId != null) {
+        ref.read(currentCVIdProvider.notifier).state = widget.cvId;
+        ref.read(cvSaveStateProvider.notifier).state = CVSaveState.idle;
+        _loadCVData();
+      }
+    });
+  }
+
+  Future<void> _loadCVData() async {
+    final cvId = widget.cvId;
+    if (cvId == null) return;
+
+    final authState = ref.read(authStateProvider);
+    final userId = authState.maybeWhen(
+      data: (user) => user?.uid,
+      orElse: () => null,
+    );
+
+    if (userId == null) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final cvData = await _cvService.loadCVData(userId, cvId);
+
+      if (cvData != null && mounted) {
+        // Load data into provider
+        ref.read(cvDataProvider.notifier).cvData = cvData;
+        // Reset dirty state after loading
+        ref.read(cvIsDirtyProvider.notifier).state = false;
+      }
+    } catch (e) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.cvSaveFailed}: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _saveToFirebase() async {
+    final l10n = AppLocalizations.of(context)!;
+    final cvId = ref.read(currentCVIdProvider);
+
+    if (cvId == null) return;
+
+    final authState = ref.read(authStateProvider);
+    final userId = authState.maybeWhen(
+      data: (user) => user?.uid,
+      orElse: () => null,
+    );
+
+    if (userId == null) return;
+
+    // Set saving state
+    ref.read(cvSaveStateProvider.notifier).state = CVSaveState.saving;
+
+    try {
+      final cvData = ref.read(cvDataProvider);
+
+      // Update the CV with current ID before saving
+      final cvToSave = CVData(
+        id: cvId,
+        personalInfo: cvData.personalInfo,
+        workExperiences: cvData.workExperiences,
+        educations: cvData.educations,
+        skills: cvData.skills,
+        languages: cvData.languages,
+        certificates: cvData.certificates,
+        projects: cvData.projects,
+        summary: cvData.summary,
+        createdAt: cvData.createdAt,
+      );
+
+      await _cvService.saveCVData(userId, cvToSave);
+
+      // Set success state
+      ref.read(cvSaveStateProvider.notifier).state = CVSaveState.success;
+      ref.read(cvIsDirtyProvider.notifier).state = false;
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(
+                  PhosphorIconsRegular.check,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Text(l10n.cvSavedToCloud),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConstants.radiusM),
+            ),
+          ),
+        );
+      }
+
+      // Reset to idle after 2 seconds
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) {
+        ref.read(cvSaveStateProvider.notifier).state = CVSaveState.idle;
+      }
+    } catch (e) {
+      // Set error state
+      ref.read(cvSaveStateProvider.notifier).state = CVSaveState.error;
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(
+                  PhosphorIconsRegular.warning,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text('${l10n.cvSaveFailed}: $e')),
+              ],
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConstants.radiusM),
+            ),
+          ),
+        );
+      }
+
+      // Reset to idle after 3 seconds
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) {
+        ref.read(cvSaveStateProvider.notifier).state = CVSaveState.idle;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentSection = ref.watch(currentSectionProvider);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: _buildAppBar(context, ref, l10n),
-      body: ResponsiveUtils.isMobile(context)
-          ? _buildMobileLayout(context, ref, currentSection)
-          : _buildDesktopLayout(context, ref, currentSection),
-      bottomNavigationBar: ResponsiveUtils.isMobile(context)
-          ? _buildMobileNavigation(context, ref, currentSection)
+      appBar: _buildAppBar(context, l10n),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ResponsiveUtils.isMobile(context)
+          ? _buildMobileLayout(context, currentSection)
+          : _buildDesktopLayout(context, currentSection),
+      bottomNavigationBar: ResponsiveUtils.isMobile(context) && !_isLoading
+          ? _buildMobileNavigation(context, currentSection)
           : null,
     );
   }
 
   PreferredSizeWidget _buildAppBar(
     BuildContext context,
-    WidgetRef ref,
     AppLocalizations l10n,
   ) {
     final languageNotifier = ref.read(languageProvider.notifier);
     final currentLocale = ref.watch(languageProvider);
     final colors = ref.colors;
+    final isDirty = ref.watch(cvIsDirtyProvider);
+    final saveState = ref.watch(cvSaveStateProvider);
 
     return AppBar(
       title: Row(
@@ -67,6 +242,11 @@ class CVBuilderPage extends ConsumerWidget {
         ],
       ),
       actions: [
+        // Save to Cloud Button
+        _buildSaveButton(context, l10n, isDirty, saveState),
+
+        const SizedBox(width: 8),
+
         // Language Toggle Button
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -118,21 +298,94 @@ class CVBuilderPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMobileLayout(
+  Widget _buildSaveButton(
     BuildContext context,
-    WidgetRef ref,
-    CVSection currentSection,
+    AppLocalizations l10n,
+    bool isDirty,
+    CVSaveState saveState,
   ) {
-    return ResponsiveLayout(
-      child: _buildCurrentSection(context, ref, currentSection),
+    final colors = ref.colors;
+
+    // Determine button appearance based on state
+    final bool isLoading = saveState == CVSaveState.saving;
+    final bool isSuccess = saveState == CVSaveState.success;
+    final bool isError = saveState == CVSaveState.error;
+    final bool canSave = isDirty && !isLoading;
+
+    Color buttonColor;
+    Color textColor;
+    IconData icon;
+    String label;
+
+    if (isLoading) {
+      buttonColor = colors.primary.withOpacity(0.7);
+      textColor = Colors.white;
+      icon = PhosphorIconsRegular.cloudArrowUp;
+      label = l10n.saving;
+    } else if (isSuccess) {
+      buttonColor = Colors.green;
+      textColor = Colors.white;
+      icon = PhosphorIconsRegular.check;
+      label = l10n.saveToCloudButton;
+    } else if (isError) {
+      buttonColor = Theme.of(context).colorScheme.error;
+      textColor = Colors.white;
+      icon = PhosphorIconsRegular.warning;
+      label = l10n.saveToCloudButton;
+    } else if (isDirty) {
+      buttonColor = colors.primary;
+      textColor = Colors.white;
+      icon = PhosphorIconsRegular.cloudArrowUp;
+      label = l10n.saveToCloudButton;
+    } else {
+      buttonColor = colors.grey300;
+      textColor = colors.grey500;
+      icon = PhosphorIconsRegular.cloud;
+      label = l10n.saveToCloudButton;
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: ElevatedButton.icon(
+          onPressed: canSave ? _saveToFirebase : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: buttonColor,
+            foregroundColor: textColor,
+            disabledBackgroundColor: colors.grey200,
+            disabledForegroundColor: colors.grey400,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          icon: isLoading
+              ? SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(textColor),
+                  ),
+                )
+              : Icon(icon, size: 18),
+          label: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildDesktopLayout(
-    BuildContext context,
-    WidgetRef ref,
-    CVSection currentSection,
-  ) {
+  Widget _buildMobileLayout(BuildContext context, CVSection currentSection) {
+    return ResponsiveLayout(
+      child: _buildCurrentSection(context, currentSection),
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context, CVSection currentSection) {
     final colors = ref.colors;
     return Row(
       children: [
@@ -153,18 +406,14 @@ class CVBuilderPage extends ConsumerWidget {
         // Main Content Area
         Expanded(
           child: ResponsiveLayout(
-            child: _buildCurrentSection(context, ref, currentSection),
+            child: _buildCurrentSection(context, currentSection),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildCurrentSection(
-    BuildContext context,
-    WidgetRef ref,
-    CVSection currentSection,
-  ) {
+  Widget _buildCurrentSection(BuildContext context, CVSection currentSection) {
     switch (currentSection) {
       case CVSection.personalInfo:
         return const PersonalInfoSection();
@@ -189,7 +438,6 @@ class CVBuilderPage extends ConsumerWidget {
 
   Widget? _buildMobileNavigation(
     BuildContext context,
-    WidgetRef ref,
     CVSection currentSection,
   ) {
     const sections = CVSection.values;

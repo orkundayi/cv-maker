@@ -141,47 +141,59 @@ class ModernTemplate extends CVTemplate {
         ),
         pw.SizedBox(height: 12),
 
-        _sidebarItem(
-          TemplateLocalizations.translate('address', locale),
-          '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
-          fonts.regularFont!,
-          _colors.textLight,
-        ),
-        _sidebarItem(
-          TemplateLocalizations.translate('phoneNumber', locale),
-          cvData.personalInfo.phone,
-          fonts.regularFont!,
-          _colors.textLight,
-        ),
-        _sidebarItem(
-          TemplateLocalizations.translate('email', locale),
-          cvData.personalInfo.email,
-          fonts.regularFont!,
-          _colors.textLight,
-        ),
-        _sidebarItem(
-          'Location',
-          '${cvData.personalInfo.city ?? ''}, ${cvData.personalInfo.country ?? ''}',
-          fonts.regularFont!,
-          _colors.textLight,
-        ),
-        if (cvData.personalInfo.github != null)
+        // Address - only show if city or country exists
+        if ((cvData.personalInfo.city != null &&
+                cvData.personalInfo.city!.isNotEmpty) ||
+            (cvData.personalInfo.country != null &&
+                cvData.personalInfo.country!.isNotEmpty))
+          _sidebarItem(
+            TemplateLocalizations.translate('address', locale),
+            [
+              cvData.personalInfo.city,
+              cvData.personalInfo.country,
+            ].where((e) => e != null && e.isNotEmpty).join(', '),
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
+        // Phone - only show if not empty
+        if (cvData.personalInfo.phone.isNotEmpty)
+          _sidebarItem(
+            TemplateLocalizations.translate('phoneNumber', locale),
+            cvData.personalInfo.phone,
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
+        // Email - only show if not empty
+        if (cvData.personalInfo.email.isNotEmpty)
+          _sidebarItem(
+            TemplateLocalizations.translate('email', locale),
+            cvData.personalInfo.email,
+            fonts.regularFont!,
+            _colors.textLight,
+          ),
+        // GitHub - only show if exists
+        if (cvData.personalInfo.github != null &&
+            cvData.personalInfo.github!.isNotEmpty)
           _sidebarItem(
             TemplateLocalizations.translate('github', locale),
             cvData.personalInfo.github!,
             fonts.regularFont!,
             _colors.textLight,
           ),
-        if (cvData.personalInfo.linkedIn != null)
+        // LinkedIn - only show if exists
+        if (cvData.personalInfo.linkedIn != null &&
+            cvData.personalInfo.linkedIn!.isNotEmpty)
           _sidebarItem(
             TemplateLocalizations.translate('linkedIn', locale),
             cvData.personalInfo.linkedIn!,
             fonts.regularFont!,
             _colors.textLight,
           ),
-        if (cvData.personalInfo.website != null)
+        // Website - only show if exists
+        if (cvData.personalInfo.website != null &&
+            cvData.personalInfo.website!.isNotEmpty)
           _sidebarItem(
-            'Website',
+            TemplateLocalizations.translate('website', locale),
             cvData.personalInfo.website!,
             fonts.regularFont!,
             _colors.textLight,
@@ -344,6 +356,7 @@ class ModernTemplate extends CVTemplate {
               fonts.regularFont!,
               fonts.mediumFont!,
               _colors.text,
+              locale,
             ),
           ),
         ],
@@ -509,9 +522,9 @@ class ModernTemplate extends CVTemplate {
           ),
           pw.Container(
             margin: const pw.EdgeInsets.only(top: 3),
-            height: 1,
-            width: 40,
-            color: color,
+            height: 1.5,
+            width: double.infinity, // Full width like the name header
+            color: color.shade(0.3), // Slightly lighter for sections
           ),
         ],
       ),
@@ -716,6 +729,7 @@ class ModernTemplate extends CVTemplate {
     pw.Font regularFont,
     pw.Font mediumFont,
     PdfColor textDark,
+    String locale,
   ) {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 9),
@@ -753,7 +767,7 @@ class ModernTemplate extends CVTemplate {
           ),
           if (cert.expiryDate != null)
             pw.Text(
-              'Expires: ${_formatMonthYear(cert.expiryDate!)}',
+              '${TemplateLocalizations.translate('expires', locale)}: ${_formatMonthYear(cert.expiryDate!)}',
               style: pw.TextStyle(
                 font: regularFont,
                 fontSize: 8,
@@ -762,7 +776,7 @@ class ModernTemplate extends CVTemplate {
             ),
           if (cert.credentialId != null)
             pw.Text(
-              'ID: ${cert.credentialId}',
+              '${TemplateLocalizations.translate('credentialId', locale)}: ${cert.credentialId}',
               style: pw.TextStyle(
                 font: regularFont,
                 fontSize: 8,

@@ -46,12 +46,14 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
       _editingLanguage = language;
       _languageNameController.text = language.name;
       _selectedLevel = language.level;
-      _descriptionController.clear(); // Languages don't have description in model
+      _descriptionController
+          .clear(); // Languages don't have description in model
     });
   }
 
   void _deleteLanguage(String id) {
     ref.read(cvDataProvider.notifier).removeLanguage(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingLanguage?.id == id) {
       _resetForm();
     }
@@ -68,13 +70,21 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
 
     if (_editingLanguage != null) {
       ref.read(cvDataProvider.notifier).updateLanguage(language);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Language updated successfully!'), backgroundColor: ref.colors.success),
+        SnackBar(
+          content: const Text('Language updated successfully!'),
+          backgroundColor: ref.colors.success,
+        ),
       );
     } else {
       ref.read(cvDataProvider.notifier).addLanguage(language);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Language added successfully!'), backgroundColor: ref.colors.success),
+        SnackBar(
+          content: const Text('Language added successfully!'),
+          backgroundColor: ref.colors.success,
+        ),
       );
     }
 
@@ -99,7 +109,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -117,7 +129,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                   : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingLanguage != null ? ref.colors.primary : ref.colors.border,
+                color: _editingLanguage != null
+                    ? ref.colors.primary
+                    : ref.colors.border,
                 width: _editingLanguage != null ? 2 : 1,
               ),
             ),
@@ -132,14 +146,22 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                       Row(
                         children: [
                           if (_editingLanguage != null) ...[
-                            Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
+                            Icon(
+                              PhosphorIcons.pencilSimple(),
+                              color: ref.colors.primary,
+                              size: 20,
+                            ),
                             const SizedBox(width: AppConstants.spacingS),
                           ],
                           Text(
-                            _editingLanguage != null ? l10n.editLanguage : l10n.addLanguage,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                            _editingLanguage != null
+                                ? l10n.editLanguage
+                                : l10n.addLanguage,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: ref.colors.primary,
+                                ),
                           ),
                         ],
                       ),
@@ -148,7 +170,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                           onPressed: _resetForm,
                           icon: Icon(PhosphorIcons.x()),
                           label: Text(l10n.cancel),
-                          style: TextButton.styleFrom(foregroundColor: ref.colors.error),
+                          style: TextButton.styleFrom(
+                            foregroundColor: ref.colors.error,
+                          ),
                         ),
                     ],
                   ),
@@ -183,7 +207,8 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                               children: LanguageLevel.values.map((level) {
                                 final isSelected = level == _selectedLevel;
                                 return GestureDetector(
-                                  onTap: () => setState(() => _selectedLevel = level),
+                                  onTap: () =>
+                                      setState(() => _selectedLevel = level),
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     padding: EdgeInsets.symmetric(
@@ -191,10 +216,16 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                                       vertical: isMobile ? 8 : 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: isSelected ? _getLevelColor(level).withOpacity(0.15) : Colors.transparent,
+                                      color: isSelected
+                                          ? _getLevelColor(
+                                              level,
+                                            ).withOpacity(0.15)
+                                          : Colors.transparent,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                        color: isSelected ? _getLevelColor(level) : Theme.of(context).dividerColor,
+                                        color: isSelected
+                                            ? _getLevelColor(level)
+                                            : Theme.of(context).dividerColor,
                                         width: isSelected ? 2 : 1,
                                       ),
                                     ),
@@ -204,13 +235,24 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                                         _buildLevelIndicator(level, isSelected),
                                         const SizedBox(width: 8),
                                         Text(
-                                          _localizeLanguageLevel(context, level),
-                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color: isSelected
-                                                ? _getLevelColor(level)
-                                                : Theme.of(context).textTheme.bodyMedium?.color,
-                                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                          _localizeLanguageLevel(
+                                            context,
+                                            level,
                                           ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: isSelected
+                                                    ? _getLevelColor(level)
+                                                    : Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium
+                                                          ?.color,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -230,11 +272,23 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: _saveLanguage,
-                      icon: Icon(_editingLanguage != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                      label: Text(_editingLanguage != null ? l10n.editLanguage : l10n.addLanguage),
+                      icon: Icon(
+                        _editingLanguage != null
+                            ? PhosphorIcons.check()
+                            : PhosphorIcons.plus(),
+                      ),
+                      label: Text(
+                        _editingLanguage != null
+                            ? l10n.editLanguage
+                            : l10n.addLanguage,
+                      ),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                        backgroundColor: _editingLanguage != null ? ref.colors.success : null,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppConstants.spacingM,
+                        ),
+                        backgroundColor: _editingLanguage != null
+                            ? ref.colors.success
+                            : null,
                       ),
                     ),
                   ),
@@ -249,7 +303,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
           if (languages.isNotEmpty) ...[
             Text(
               '${l10n.languages} (${languages.length})',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppConstants.spacingM),
             ...languages.map(_buildLanguageCard),
@@ -257,16 +313,24 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.translate(), size: 64, color: ref.colors.grey400),
+                  Icon(
+                    PhosphorIcons.translate(),
+                    size: 64,
+                    color: ref.colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.languagesDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: ref.colors.grey600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -293,9 +357,11 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                     children: [
                       Text(
                         language.name,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: ref.colors.primary,
+                            ),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Row(
@@ -303,15 +369,19 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                           Container(
                             width: 8,
                             height: 8,
-                            decoration: BoxDecoration(color: _getLevelColor(language.level), shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: _getLevelColor(language.level),
+                              shape: BoxShape.circle,
+                            ),
                           ),
                           const SizedBox(width: 6),
                           Text(
                             _localizeLanguageLevel(context, language.level),
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: ref.colors.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  color: ref.colors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ],
                       ),
@@ -322,12 +392,18 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
                   children: [
                     IconButton(
                       onPressed: () => _editLanguage(language),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary),
+                      icon: Icon(
+                        PhosphorIcons.pencilSimple(),
+                        color: ref.colors.primary,
+                      ),
                       tooltip: 'Edit',
                     ),
                     IconButton(
                       onPressed: () => _deleteLanguage(language.id),
-                      icon: Icon(PhosphorIcons.trash(), color: ref.colors.error),
+                      icon: Icon(
+                        PhosphorIcons.trash(),
+                        color: ref.colors.error,
+                      ),
                       tooltip: 'Delete',
                     ),
                   ],
@@ -338,7 +414,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
             LinearProgressIndicator(
               value: _getLevelPercentage(language.level),
               backgroundColor: ref.colors.grey200,
-              valueColor: AlwaysStoppedAnimation<Color>(_getLevelColor(language.level)),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                _getLevelColor(language.level),
+              ),
             ),
           ],
         ),
@@ -392,7 +470,9 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: index < dots
-                ? (isSelected ? _getLevelColor(level) : Theme.of(context).primaryColor)
+                ? (isSelected
+                      ? _getLevelColor(level)
+                      : Theme.of(context).primaryColor)
                 : Theme.of(context).dividerColor,
           ),
         );
@@ -442,21 +522,34 @@ class _LanguagesSectionState extends ConsumerState<LanguagesSection> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Row(
-            children: [Icon(PhosphorIcons.warning(), size: 24), const SizedBox(width: 8), Text(l10n.clearAllLanguages)],
+            children: [
+              Icon(PhosphorIcons.warning(), size: 24),
+              const SizedBox(width: 8),
+              Text(l10n.clearAllLanguages),
+            ],
           ),
           content: Text(l10n.clearLanguagesConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearLanguages();
                 Navigator.of(context).pop();
                 _resetForm();
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(l10n.languagesCleared), backgroundColor: ref.colors.success));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.languagesCleared),
+                    backgroundColor: ref.colors.success,
+                  ),
+                );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(l10n.clear),
             ),
           ],

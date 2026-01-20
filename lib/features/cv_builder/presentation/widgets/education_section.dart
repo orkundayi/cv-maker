@@ -126,6 +126,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   void _deleteEducation(String id) {
     ref.read(cvDataProvider.notifier).removeEducation(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingEducation?.id == id) {
       _resetForm();
     }
@@ -138,9 +139,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   void _selectEndDate() {
     if (_startDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
     _showDateSelector(context, false);
@@ -151,16 +155,22 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
     if (!_isCurrentlyStudying && _endDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectEndDateOrMarkCurrent),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
@@ -168,24 +178,38 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       id: _editingEducation?.id,
       degree: _degreeController.text.trim(),
       institution: _institutionController.text.trim(),
-      location: _locationController.text.trim().isEmpty ? null : _locationController.text.trim(),
+      location: _locationController.text.trim().isEmpty
+          ? null
+          : _locationController.text.trim(),
       startDate: _startDate!,
       endDate: _isCurrentlyStudying ? null : _endDate,
       isCurrentStudy: _isCurrentlyStudying,
-      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
-      gpa: _gpaController.text.trim().isEmpty ? null : double.tryParse(_gpaController.text.trim()),
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
+      gpa: _gpaController.text.trim().isEmpty
+          ? null
+          : double.tryParse(_gpaController.text.trim()),
     );
 
     if (_editingEducation != null) {
       ref.read(cvDataProvider.notifier).updateEducation(education);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: ref.colors.success));
+      ref.read(cvIsDirtyProvider.notifier).state = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.educationUpdatedSuccessfully),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     } else {
       ref.read(cvDataProvider.notifier).addEducation(education);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.educationAddedSuccessfully), backgroundColor: ref.colors.success));
+      ref.read(cvIsDirtyProvider.notifier).state = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.educationAddedSuccessfully),
+          backgroundColor: ref.colors.success,
+        ),
+      );
     }
 
     _resetForm();
@@ -196,17 +220,23 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
     if (_startDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectStartDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectStartDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
     if (!_isCurrentlyStudying && _endDate == null) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.pleaseSelectEndDateOrMarkCurrent), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.pleaseSelectEndDateOrMarkCurrent),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
@@ -214,19 +244,29 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       id: _editingEducation!.id,
       degree: _degreeController.text.trim(),
       institution: _institutionController.text.trim(),
-      location: _locationController.text.trim().isEmpty ? null : _locationController.text.trim(),
+      location: _locationController.text.trim().isEmpty
+          ? null
+          : _locationController.text.trim(),
       startDate: _startDate!,
       endDate: _isCurrentlyStudying ? null : _endDate,
       isCurrentStudy: _isCurrentlyStudying,
-      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
-      gpa: _gpaController.text.trim().isEmpty ? null : double.tryParse(_gpaController.text.trim()),
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
+      gpa: _gpaController.text.trim().isEmpty
+          ? null
+          : double.tryParse(_gpaController.text.trim()),
     );
 
     ref.read(cvDataProvider.notifier).updateEducation(education);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.educationUpdatedSuccessfully), backgroundColor: ref.colors.success));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.educationUpdatedSuccessfully),
+        backgroundColor: ref.colors.success,
+      ),
+    );
 
     _resetForm();
   }
@@ -234,7 +274,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   void _showDateSelector(BuildContext context, bool isStartDate) {
     final l10n = AppLocalizations.of(context)!;
     final currentYear = DateTime.now().year;
-    final years = List.generate(currentYear - 1949, (index) => currentYear - index);
+    final years = List.generate(
+      currentYear - 1949,
+      (index) => currentYear - index,
+    );
     final months = [
       l10n.january,
       l10n.february,
@@ -250,8 +293,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       l10n.december,
     ];
 
-    int selectedYear = isStartDate ? (_startDate?.year ?? currentYear) : (_endDate?.year ?? currentYear);
-    int selectedMonth = isStartDate ? (_startDate?.month ?? 1) : (_endDate?.month ?? 1);
+    int selectedYear = isStartDate
+        ? (_startDate?.year ?? currentYear)
+        : (_endDate?.year ?? currentYear);
+    int selectedMonth = isStartDate
+        ? (_startDate?.month ?? 1)
+        : (_endDate?.month ?? 1);
 
     showDialog(
       context: context,
@@ -265,8 +312,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
-                items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
+                decoration: InputDecoration(
+                  labelText: l10n.year,
+                  border: const OutlineInputBorder(),
+                ),
+                items: years
+                    .map(
+                      (year) => DropdownMenuItem(
+                        value: year,
+                        child: Text(year.toString()),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
                 },
@@ -275,11 +332,19 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: l10n.month,
+                  border: const OutlineInputBorder(),
+                ),
                 items: months
                     .asMap()
                     .entries
-                    .map((entry) => DropdownMenuItem(value: entry.key + 1, child: Text(entry.value)))
+                    .map(
+                      (entry) => DropdownMenuItem(
+                        value: entry.key + 1,
+                        child: Text(entry.value),
+                      ),
+                    )
                     .toList(),
                 onChanged: (month) {
                   if (month != null) selectedMonth = month;
@@ -289,7 +354,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -334,7 +402,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -352,7 +422,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   : ref.colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingEducation != null ? ref.colors.primary : ref.colors.border,
+                color: _editingEducation != null
+                    ? ref.colors.primary
+                    : ref.colors.border,
                 width: _editingEducation != null ? 2 : 1,
               ),
             ),
@@ -368,14 +440,22 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                         Row(
                           children: [
                             if (_editingEducation != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary, size: 20),
+                              Icon(
+                                PhosphorIcons.pencilSimple(),
+                                color: ref.colors.primary,
+                                size: 20,
+                              ),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingEducation != null ? l10n.editEducation : l10n.addNewEducation,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                              _editingEducation != null
+                                  ? l10n.editEducation
+                                  : l10n.addNewEducation,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: ref.colors.primary,
+                                  ),
                             ),
                           ],
                         ),
@@ -384,7 +464,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: ref.colors.error),
+                            style: TextButton.styleFrom(
+                              foregroundColor: ref.colors.error,
+                            ),
                           ),
                       ],
                     ),
@@ -495,7 +577,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                           child: _isCurrentlyStudying
                               ? CustomTextFormField(
                                   controller: _endDateController,
-                                  hint: AppLocalizations.of(context)!.currentlyWorking,
+                                  hint: AppLocalizations.of(
+                                    context,
+                                  )!.currentlyWorking,
                                   enabled: false,
                                 )
                               : GestureDetector(
@@ -546,12 +630,26 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: _editingEducation != null ? _updateEducation : _saveEducation,
-                        icon: Icon(_editingEducation != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingEducation != null ? l10n.editEducation : l10n.addEducation),
+                        onPressed: _editingEducation != null
+                            ? _updateEducation
+                            : _saveEducation,
+                        icon: Icon(
+                          _editingEducation != null
+                              ? PhosphorIcons.check()
+                              : PhosphorIcons.plus(),
+                        ),
+                        label: Text(
+                          _editingEducation != null
+                              ? l10n.editEducation
+                              : l10n.addEducation,
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingEducation != null ? ref.colors.success : null,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppConstants.spacingM,
+                          ),
+                          backgroundColor: _editingEducation != null
+                              ? ref.colors.success
+                              : null,
                         ),
                       ),
                     ),
@@ -567,7 +665,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           if (educations.isNotEmpty) ...[
             Text(
               '${l10n.education} (${educations.length})',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppConstants.spacingM),
             ...educations.map(_buildEducationCard),
@@ -575,16 +675,24 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.graduationCap(), size: 64, color: ref.colors.grey400),
+                  Icon(
+                    PhosphorIcons.graduationCap(),
+                    size: 64,
+                    color: ref.colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     l10n.educationDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: ref.colors.grey600),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: ref.colors.grey600,
+                    ),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     l10n.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: ref.colors.grey500),
                   ),
                 ],
               ),
@@ -611,16 +719,19 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     children: [
                       Text(
                         education.degree,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: ref.colors.primary,
+                            ),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         education.institution,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: ref.colors.textSecondary, fontWeight: FontWeight.w500),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: ref.colors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
@@ -629,12 +740,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   children: [
                     IconButton(
                       onPressed: () => _editEducation(education),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary),
+                      icon: Icon(
+                        PhosphorIcons.pencilSimple(),
+                        color: ref.colors.primary,
+                      ),
                       tooltip: AppLocalizations.of(context)!.edit,
                     ),
                     IconButton(
                       onPressed: () => _deleteEducation(education.id),
-                      icon: Icon(PhosphorIcons.trash(), color: ref.colors.error),
+                      icon: Icon(
+                        PhosphorIcons.trash(),
+                        color: ref.colors.error,
+                      ),
                       tooltip: AppLocalizations.of(context)!.delete,
                     ),
                   ],
@@ -644,13 +761,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             const SizedBox(height: AppConstants.spacingS),
             Text(
               '${education.startDate.year}-${education.startDate.month.toString().padLeft(2, '0')} - ${education.endDate != null ? '${education.endDate!.year}-${education.endDate!.month.toString().padLeft(2, '0')}' : AppLocalizations.of(context)!.currentlyWorking}',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary, fontStyle: FontStyle.italic),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: ref.colors.textSecondary,
+                fontStyle: FontStyle.italic,
+              ),
             ),
             const SizedBox(height: AppConstants.spacingM),
-            if (education.description != null && education.description!.isNotEmpty)
-              Text(education.description!, style: Theme.of(context).textTheme.bodyMedium),
+            if (education.description != null &&
+                education.description!.isNotEmpty)
+              Text(
+                education.description!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
           ],
         ),
       ),
@@ -671,7 +793,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           ),
           content: Text(AppLocalizations.of(context)!.clearEducationConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(AppLocalizations.of(context)!.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearEducations();
@@ -679,12 +804,17 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.educationCleared),
+                    content: Text(
+                      AppLocalizations.of(context)!.educationCleared,
+                    ),
                     backgroundColor: ref.colors.success,
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(AppLocalizations.of(context)!.clear),
             ),
           ],

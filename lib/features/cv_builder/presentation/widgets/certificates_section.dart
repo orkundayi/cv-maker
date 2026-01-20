@@ -16,7 +16,8 @@ class CertificatesSection extends ConsumerStatefulWidget {
   const CertificatesSection({super.key});
 
   @override
-  ConsumerState<CertificatesSection> createState() => _CertificatesSectionState();
+  ConsumerState<CertificatesSection> createState() =>
+      _CertificatesSectionState();
 }
 
 class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
@@ -85,6 +86,7 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
 
   void _deleteCertificate(String id) {
     ref.read(cvDataProvider.notifier).removeCertificate(id);
+    ref.read(cvIsDirtyProvider.notifier).state = true;
     if (_editingCertificate?.id == id) {
       _resetForm();
     }
@@ -97,7 +99,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
   void _selectExpiryDate() {
     if (_issueDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Please select issue date first'), backgroundColor: ref.colors.warning),
+        SnackBar(
+          content: const Text('Please select issue date first'),
+          backgroundColor: ref.colors.warning,
+        ),
       );
       return;
     }
@@ -108,7 +113,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     final l10n = AppLocalizations.of(context)!;
     // Generate years from 1950 to current year + 50 (reasonable range)
     final currentYear = DateTime.now().year;
-    final years = List.generate(currentYear - 1949 + 50, (index) => 1950 + index);
+    final years = List.generate(
+      currentYear - 1949 + 50,
+      (index) => 1950 + index,
+    );
     final months = [
       l10n.january,
       l10n.february,
@@ -127,7 +135,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     int selectedYear = isIssueDate
         ? (_issueDate?.year ?? DateTime.now().year)
         : (_expiryDate?.year ?? DateTime.now().year);
-    int selectedMonth = isIssueDate ? (_issueDate?.month ?? 1) : (_expiryDate?.month ?? 1);
+    int selectedMonth = isIssueDate
+        ? (_issueDate?.month ?? 1)
+        : (_expiryDate?.month ?? 1);
 
     showDialog(
       context: context,
@@ -141,8 +151,18 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               // Year dropdown
               DropdownButtonFormField<int>(
                 value: selectedYear,
-                decoration: InputDecoration(labelText: l10n.year, border: const OutlineInputBorder()),
-                items: years.map((year) => DropdownMenuItem(value: year, child: Text(year.toString()))).toList(),
+                decoration: InputDecoration(
+                  labelText: l10n.year,
+                  border: const OutlineInputBorder(),
+                ),
+                items: years
+                    .map(
+                      (year) => DropdownMenuItem(
+                        value: year,
+                        child: Text(year.toString()),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (year) {
                   if (year != null) selectedYear = year;
                 },
@@ -151,11 +171,19 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               // Month dropdown
               DropdownButtonFormField<int>(
                 value: selectedMonth,
-                decoration: InputDecoration(labelText: l10n.month, border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: l10n.month,
+                  border: const OutlineInputBorder(),
+                ),
                 items: months
                     .asMap()
                     .entries
-                    .map((entry) => DropdownMenuItem(value: entry.key + 1, child: Text(entry.value)))
+                    .map(
+                      (entry) => DropdownMenuItem(
+                        value: entry.key + 1,
+                        child: Text(entry.value),
+                      ),
+                    )
                     .toList(),
                 onChanged: (month) {
                   if (month != null) selectedMonth = month;
@@ -165,7 +193,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
           ElevatedButton(
             onPressed: () {
               final selectedDate = DateTime(selectedYear, selectedMonth, 1);
@@ -174,7 +205,8 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                 setState(() {
                   _issueDate = selectedDate;
                   // Only reset expiry date if it's before issue date (basic validation)
-                  if (_expiryDate != null && _expiryDate!.isBefore(selectedDate)) {
+                  if (_expiryDate != null &&
+                      _expiryDate!.isBefore(selectedDate)) {
                     _expiryDate = null;
                   }
                 });
@@ -198,25 +230,34 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_issueDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.selectIssueDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.selectIssueDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
     if (_hasExpiryDate && _expiryDate == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.selectExpiryDate), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.selectExpiryDate),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
     // Only validate that expiry date is not before issue date
     // Allow old certificates and future expiry dates
     if (_expiryDate != null && _expiryDate!.isBefore(_issueDate!)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.expiryBeforeIssueError), backgroundColor: ref.colors.error));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.expiryBeforeIssueError),
+          backgroundColor: ref.colors.error,
+        ),
+      );
       return;
     }
 
@@ -226,19 +267,31 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
       issuer: _issuerController.text.trim(),
       issueDate: _issueDate!,
       expiryDate: _hasExpiryDate ? _expiryDate : null,
-      credentialId: _credentialIdController.text.trim().isEmpty ? null : _credentialIdController.text.trim(),
-      url: _urlController.text.trim().isEmpty ? null : _urlController.text.trim(),
+      credentialId: _credentialIdController.text.trim().isEmpty
+          ? null
+          : _credentialIdController.text.trim(),
+      url: _urlController.text.trim().isEmpty
+          ? null
+          : _urlController.text.trim(),
     );
 
     if (_editingCertificate != null) {
       ref.read(cvDataProvider.notifier).updateCertificate(certificate);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Certificate updated successfully!'), backgroundColor: ref.colors.success),
+        SnackBar(
+          content: const Text('Certificate updated successfully!'),
+          backgroundColor: ref.colors.success,
+        ),
       );
     } else {
       ref.read(cvDataProvider.notifier).addCertificate(certificate);
+      ref.read(cvIsDirtyProvider.notifier).state = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: const Text('Certificate added successfully!'), backgroundColor: ref.colors.success),
+        SnackBar(
+          content: const Text('Certificate added successfully!'),
+          backgroundColor: ref.colors.success,
+        ),
       );
     }
 
@@ -263,7 +316,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ]
@@ -281,7 +336,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                   : colors.surfaceVariant.withOpacity(0.3),
               borderRadius: BorderRadius.circular(AppConstants.radiusM),
               border: Border.all(
-                color: _editingCertificate != null ? colors.primary : colors.border,
+                color: _editingCertificate != null
+                    ? colors.primary
+                    : colors.border,
                 width: _editingCertificate != null ? 2 : 1,
               ),
             ),
@@ -297,14 +354,22 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                         Row(
                           children: [
                             if (_editingCertificate != null) ...[
-                              Icon(PhosphorIcons.pencilSimple(), color: colors.primary, size: 20),
+                              Icon(
+                                PhosphorIcons.pencilSimple(),
+                                color: colors.primary,
+                                size: 20,
+                              ),
                               const SizedBox(width: AppConstants.spacingS),
                             ],
                             Text(
-                              _editingCertificate != null ? l10n.editCertificate : l10n.addCertificate,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: colors.primary),
+                              _editingCertificate != null
+                                  ? l10n.editCertificate
+                                  : l10n.addCertificate,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colors.primary,
+                                  ),
                             ),
                           ],
                         ),
@@ -313,7 +378,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                             onPressed: _resetForm,
                             icon: Icon(PhosphorIcons.x()),
                             label: Text(l10n.cancel),
-                            style: TextButton.styleFrom(foregroundColor: colors.error),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colors.error,
+                            ),
                           ),
                       ],
                     ),
@@ -404,7 +471,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                                   ),
                                 )
                               : CustomTextFormField(
-                                  controller: TextEditingController(text: l10n.noExpiry),
+                                  controller: TextEditingController(
+                                    text: l10n.noExpiry,
+                                  ),
                                   enabled: false,
                                 ),
                         ),
@@ -427,7 +496,12 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                             });
                           },
                         ),
-                        Expanded(child: Text(l10n.certificateHasExpiry, softWrap: true)),
+                        Expanded(
+                          child: Text(
+                            l10n.certificateHasExpiry,
+                            softWrap: true,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: AppConstants.spacingL),
@@ -467,11 +541,23 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: _saveCertificate,
-                        icon: Icon(_editingCertificate != null ? PhosphorIcons.check() : PhosphorIcons.plus()),
-                        label: Text(_editingCertificate != null ? l10n.editCertificate : l10n.addCertificate),
+                        icon: Icon(
+                          _editingCertificate != null
+                              ? PhosphorIcons.check()
+                              : PhosphorIcons.plus(),
+                        ),
+                        label: Text(
+                          _editingCertificate != null
+                              ? l10n.editCertificate
+                              : l10n.addCertificate,
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: AppConstants.spacingM),
-                          backgroundColor: _editingCertificate != null ? colors.success : null,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppConstants.spacingM,
+                          ),
+                          backgroundColor: _editingCertificate != null
+                              ? colors.success
+                              : null,
                         ),
                       ),
                     ),
@@ -487,7 +573,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
           if (certificates.isNotEmpty) ...[
             Text(
               '${AppLocalizations.of(context)!.certificates} (${certificates.length})',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: AppConstants.spacingM),
             ...certificates.map(_buildCertificateCard),
@@ -495,16 +583,24 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
             Center(
               child: Column(
                 children: [
-                  Icon(PhosphorIcons.certificate(), size: 64, color: colors.grey400),
+                  Icon(
+                    PhosphorIcons.certificate(),
+                    size: 64,
+                    color: colors.grey400,
+                  ),
                   const SizedBox(height: AppConstants.spacingM),
                   Text(
                     AppLocalizations.of(context)!.certificationsDescription,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colors.grey600),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: colors.grey600),
                   ),
                   const SizedBox(height: AppConstants.spacingS),
                   Text(
                     AppLocalizations.of(context)!.getStarted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.grey500),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: colors.grey500),
                   ),
                 ],
               ),
@@ -516,7 +612,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
   }
 
   Widget _buildCertificateCard(Certificate certificate) {
-    final isExpired = certificate.expiryDate != null && certificate.expiryDate!.isBefore(DateTime.now());
+    final isExpired =
+        certificate.expiryDate != null &&
+        certificate.expiryDate!.isBefore(DateTime.now());
     final isExpiringSoon =
         certificate.expiryDate != null &&
         certificate.expiryDate!.isAfter(DateTime.now()) &&
@@ -537,16 +635,19 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                     children: [
                       Text(
                         certificate.name,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: ref.colors.primary),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: ref.colors.primary,
+                            ),
                       ),
                       const SizedBox(height: AppConstants.spacingXs),
                       Text(
                         certificate.issuer,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleSmall?.copyWith(color: ref.colors.textSecondary, fontWeight: FontWeight.w500),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: ref.colors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
@@ -555,7 +656,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                   children: [
                     IconButton(
                       onPressed: () => _editCertificate(certificate),
-                      icon: Icon(PhosphorIcons.pencilSimple(), color: ref.colors.primary),
+                      icon: Icon(
+                        PhosphorIcons.pencilSimple(),
+                        color: ref.colors.primary,
+                      ),
                       tooltip: 'Edit',
                     ),
                     IconButton(
@@ -570,13 +674,18 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
             const SizedBox(height: AppConstants.spacingS),
             Row(
               children: [
-                Icon(PhosphorIcons.calendar(), size: 16, color: ref.colors.textSecondary),
+                Icon(
+                  PhosphorIcons.calendar(),
+                  size: 16,
+                  color: ref.colors.textSecondary,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   '${AppLocalizations.of(context)!.issueDate}: ${certificate.issueDate.year}-${certificate.issueDate.month.toString().padLeft(2, '0')}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary, fontStyle: FontStyle.italic),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: ref.colors.textSecondary,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
                 if (certificate.expiryDate != null) ...[
                   const SizedBox(width: AppConstants.spacingL),
@@ -585,7 +694,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                     size: 16,
                     color: isExpired
                         ? ref.colors.error
-                        : (isExpiringSoon ? ref.colors.warning : ref.colors.textSecondary),
+                        : (isExpiringSoon
+                              ? ref.colors.warning
+                              : ref.colors.textSecondary),
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -593,7 +704,9 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: isExpired
                           ? ref.colors.error
-                          : (isExpiringSoon ? ref.colors.warning : ref.colors.textSecondary),
+                          : (isExpiringSoon
+                                ? ref.colors.warning
+                                : ref.colors.textSecondary),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -604,11 +717,17 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               const SizedBox(height: AppConstants.spacingS),
               Row(
                 children: [
-                  Icon(PhosphorIcons.identificationCard(), size: 16, color: ref.colors.textSecondary),
+                  Icon(
+                    PhosphorIcons.identificationCard(),
+                    size: 16,
+                    color: ref.colors.textSecondary,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'ID: ${certificate.credentialId}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: ref.colors.textSecondary),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: ref.colors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -617,7 +736,11 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
               const SizedBox(height: AppConstants.spacingS),
               Row(
                 children: [
-                  Icon(PhosphorIcons.link(), size: 16, color: ref.colors.primary),
+                  Icon(
+                    PhosphorIcons.link(),
+                    size: 16,
+                    color: ref.colors.primary,
+                  ),
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
@@ -626,9 +749,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                     },
                     child: Text(
                       AppLocalizations.of(context)!.verifyCertificate,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: ref.colors.primary, decoration: TextDecoration.underline),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: ref.colors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
@@ -654,7 +778,10 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
           ),
           content: Text(AppLocalizations.of(context)!.clearCertificatesConfirm),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(AppLocalizations.of(context)!.cancel)),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(AppLocalizations.of(context)!.cancel),
+            ),
             ElevatedButton(
               onPressed: () {
                 ref.read(cvDataProvider.notifier).clearCertificates();
@@ -662,12 +789,17 @@ class _CertificatesSectionState extends ConsumerState<CertificatesSection> {
                 _resetForm();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.certificatesCleared),
+                    content: Text(
+                      AppLocalizations.of(context)!.certificatesCleared,
+                    ),
                     backgroundColor: ref.colors.success,
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
               child: Text(AppLocalizations.of(context)!.clear),
             ),
           ],
