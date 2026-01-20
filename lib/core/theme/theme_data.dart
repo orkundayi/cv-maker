@@ -214,8 +214,8 @@ class AppColorScheme {
     borderError: Color(0xFFEF4444),
   );
 
-  /// Dark theme
-  static const darkTheme = AppColorScheme(
+  /// Dark Blue theme
+  static const darkBlueTheme = AppColorScheme(
     primary: Color(0xFF3B82F6),
     primaryDark: Color(0xFF1D4ED8),
     primaryLight: Color(0xFF60A5FA),
@@ -244,15 +244,123 @@ class AppColorScheme {
     textPrimary: Color(0xFFFFFFFF),
     textSecondary: Color(0xFFD1D5DB),
     textTertiary: Color(0xFF9CA3AF),
-    textOnPrimary: Color(0xFF1F2937),
+    textOnPrimary: Color(0xFFFFFFFF),
     border: Color(0xFF4B5563),
     borderFocus: Color(0xFF3B82F6),
+    borderError: Color(0xFFEF4444),
+  );
+
+  /// Dark Green theme
+  static const darkGreenTheme = AppColorScheme(
+    primary: Color(0xFF10B981),
+    primaryDark: Color(0xFF059669),
+    primaryLight: Color(0xFF34D399),
+    secondary: Color(0xFF9CA3AF),
+    secondaryDark: Color(0xFF6B7280),
+    secondaryLight: Color(0xFFD1D5DB),
+    white: Color(0xFF1F2937),
+    black: Color(0xFFFFFFFF),
+    grey50: Color(0xFF1F2937),
+    grey100: Color(0xFF374151),
+    grey200: Color(0xFF4B5563),
+    grey300: Color(0xFF6B7280),
+    grey400: Color(0xFF9CA3AF),
+    grey500: Color(0xFFD1D5DB),
+    grey600: Color(0xFFE5E7EB),
+    grey700: Color(0xFFF3F4F6),
+    grey800: Color(0xFFF9FAFB),
+    grey900: Color(0xFFFFFFFF),
+    success: Color(0xFF10B981),
+    warning: Color(0xFFF59E0B),
+    error: Color(0xFFEF4444),
+    info: Color(0xFF3B82F6),
+    background: Color(0xFF111827),
+    surface: Color(0xFF1F2937),
+    surfaceVariant: Color(0xFF374151),
+    textPrimary: Color(0xFFFFFFFF),
+    textSecondary: Color(0xFFD1D5DB),
+    textTertiary: Color(0xFF9CA3AF),
+    textOnPrimary: Color(0xFFFFFFFF),
+    border: Color(0xFF4B5563),
+    borderFocus: Color(0xFF10B981),
+    borderError: Color(0xFFEF4444),
+  );
+
+  /// Dark Purple theme
+  static const darkPurpleTheme = AppColorScheme(
+    primary: Color(0xFF8B5CF6),
+    primaryDark: Color(0xFF7C3AED),
+    primaryLight: Color(0xFFA78BFA),
+    secondary: Color(0xFF9CA3AF),
+    secondaryDark: Color(0xFF6B7280),
+    secondaryLight: Color(0xFFD1D5DB),
+    white: Color(0xFF1F2937),
+    black: Color(0xFFFFFFFF),
+    grey50: Color(0xFF1F2937),
+    grey100: Color(0xFF374151),
+    grey200: Color(0xFF4B5563),
+    grey300: Color(0xFF6B7280),
+    grey400: Color(0xFF9CA3AF),
+    grey500: Color(0xFFD1D5DB),
+    grey600: Color(0xFFE5E7EB),
+    grey700: Color(0xFFF3F4F6),
+    grey800: Color(0xFFF9FAFB),
+    grey900: Color(0xFFFFFFFF),
+    success: Color(0xFF10B981),
+    warning: Color(0xFFF59E0B),
+    error: Color(0xFFEF4444),
+    info: Color(0xFF3B82F6),
+    background: Color(0xFF111827),
+    surface: Color(0xFF1F2937),
+    surfaceVariant: Color(0xFF374151),
+    textPrimary: Color(0xFFFFFFFF),
+    textSecondary: Color(0xFFD1D5DB),
+    textTertiary: Color(0xFF9CA3AF),
+    textOnPrimary: Color(0xFFFFFFFF),
+    border: Color(0xFF4B5563),
+    borderFocus: Color(0xFF8B5CF6),
+    borderError: Color(0xFFEF4444),
+  );
+
+  /// Dark Orange theme
+  static const darkOrangeTheme = AppColorScheme(
+    primary: Color(0xFFF97316),
+    primaryDark: Color(0xFFEA580C),
+    primaryLight: Color(0xFFFB923C),
+    secondary: Color(0xFF9CA3AF),
+    secondaryDark: Color(0xFF6B7280),
+    secondaryLight: Color(0xFFD1D5DB),
+    white: Color(0xFF1F2937),
+    black: Color(0xFFFFFFFF),
+    grey50: Color(0xFF1F2937),
+    grey100: Color(0xFF374151),
+    grey200: Color(0xFF4B5563),
+    grey300: Color(0xFF6B7280),
+    grey400: Color(0xFF9CA3AF),
+    grey500: Color(0xFFD1D5DB),
+    grey600: Color(0xFFE5E7EB),
+    grey700: Color(0xFFF3F4F6),
+    grey800: Color(0xFFF9FAFB),
+    grey900: Color(0xFFFFFFFF),
+    success: Color(0xFF10B981),
+    warning: Color(0xFFF59E0B),
+    error: Color(0xFFEF4444),
+    info: Color(0xFF3B82F6),
+    background: Color(0xFF111827),
+    surface: Color(0xFF1F2937),
+    surfaceVariant: Color(0xFF374151),
+    textPrimary: Color(0xFFFFFFFF),
+    textSecondary: Color(0xFFD1D5DB),
+    textTertiary: Color(0xFF9CA3AF),
+    textOnPrimary: Color(0xFFFFFFFF),
+    border: Color(0xFF4B5563),
+    borderFocus: Color(0xFFF97316),
     borderError: Color(0xFFEF4444),
   );
 }
 
 /// Theme types enum
-enum AppThemeType { defaultBlue, green, purple, orange, dark }
+enum AppThemeType { defaultBlue, green, purple, orange }
 
 /// Extension to get color scheme from theme type
 extension AppThemeTypeExtension on AppThemeType {
@@ -266,8 +374,19 @@ extension AppThemeTypeExtension on AppThemeType {
         return AppColorScheme.purpleTheme;
       case AppThemeType.orange:
         return AppColorScheme.orangeTheme;
-      case AppThemeType.dark:
-        return AppColorScheme.darkTheme;
+    }
+  }
+
+  AppColorScheme get darkColorScheme {
+    switch (this) {
+      case AppThemeType.defaultBlue:
+        return AppColorScheme.darkBlueTheme;
+      case AppThemeType.green:
+        return AppColorScheme.darkGreenTheme;
+      case AppThemeType.purple:
+        return AppColorScheme.darkPurpleTheme;
+      case AppThemeType.orange:
+        return AppColorScheme.darkOrangeTheme;
     }
   }
 }

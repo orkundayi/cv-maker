@@ -25,61 +25,50 @@ class PricingPage extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.primary.withValues(alpha: 0.08),
-              theme.colorScheme.surface,
-              theme.colorScheme.primary.withValues(alpha: 0.03),
-            ],
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? 48.0 : AppConstants.spacingL,
+            vertical: AppConstants.spacingL,
           ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 48.0 : AppConstants.spacingL,
-              vertical: AppConstants.spacingL,
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: AppConstants.spacingL),
+          child: Column(
+            children: [
+              const SizedBox(height: AppConstants.spacingL),
 
-                // Header with gradient text effect
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [
-                      theme.colorScheme.onSurface,
-                      theme.colorScheme.primary,
-                    ],
-                  ).createShader(bounds),
-                  child: Text(
-                    AppLocalizations.of(context)!.professionalizeYourCVs,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: AppConstants.spacingS),
-                Text(
-                  AppLocalizations.of(context)!.choosePlanForYou,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              // Header with gradient text effect
+              ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [
+                    theme.colorScheme.onSurface,
+                    theme.colorScheme.primary,
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  AppLocalizations.of(context)!.professionalizeYourCVs,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppConstants.spacingXxl),
+              ),
+              const SizedBox(height: AppConstants.spacingS),
+              Text(
+                AppLocalizations.of(context)!.choosePlanForYou,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppConstants.spacingXxl),
 
-                // Plans
-                if (isDesktop)
-                  Row(
+              // Plans
+              if (isDesktop)
+                IntrinsicHeight(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _PlanCard(
                         plan: SubscriptionPlan.free,
@@ -100,36 +89,36 @@ class PricingPage extends ConsumerWidget {
                         isCurrentPlan: currentPlan == SubscriptionPlan.premium,
                       ),
                     ],
-                  )
-                else
-                  Column(
-                    children: [
-                      _PlanCard(
-                        plan: SubscriptionPlan.pro,
-                        isCurrentPlan: currentPlan == SubscriptionPlan.pro,
-                        isPopular: true,
-                      ),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _PlanCard(
-                        plan: SubscriptionPlan.free,
-                        isCurrentPlan: currentPlan == SubscriptionPlan.free,
-                      ),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _PlanCard(
-                        plan: SubscriptionPlan.premium,
-                        isCurrentPlan: currentPlan == SubscriptionPlan.premium,
-                      ),
-                    ],
                   ),
+                )
+              else
+                Column(
+                  children: [
+                    _PlanCard(
+                      plan: SubscriptionPlan.free,
+                      isCurrentPlan: currentPlan == SubscriptionPlan.free,
+                    ),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _PlanCard(
+                      plan: SubscriptionPlan.pro,
+                      isCurrentPlan: currentPlan == SubscriptionPlan.pro,
+                      isPopular: true,
+                    ),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _PlanCard(
+                      plan: SubscriptionPlan.premium,
+                      isCurrentPlan: currentPlan == SubscriptionPlan.premium,
+                    ),
+                  ],
+                ),
 
-                const SizedBox(height: AppConstants.spacingXxl),
+              const SizedBox(height: AppConstants.spacingXxl),
 
-                // Feature comparison
-                const _FeatureComparisonTable(),
+              // Feature comparison
+              const _FeatureComparisonTable(),
 
-                const SizedBox(height: AppConstants.spacingXxl),
-              ],
-            ),
+              const SizedBox(height: AppConstants.spacingXxl),
+            ],
           ),
         ),
       ),
@@ -235,232 +224,231 @@ class _PlanCardState extends State<_PlanCard> {
                   ),
                 ),
 
-              Container(
-                padding: const EdgeInsets.all(28),
-                decoration: widget.isPopular
-                    ? BoxDecoration(
-                        color: theme.colorScheme.surface,
-                        borderRadius: BorderRadius.circular(20),
-                      )
-                    : null,
-                margin: widget.isPopular
-                    ? const EdgeInsets.fromLTRB(4, 0, 4, 4)
-                    : null,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Plan icon and name
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            gradient: planColors.gradient,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: planColors.primary.withValues(
-                                  alpha: 0.3,
-                                ),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            planColors.icon,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              SubscriptionHelper.getDisplayName(
-                                context,
-                                widget.plan,
-                              ),
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              SubscriptionHelper.getDescription(
-                                context,
-                                widget.plan,
-                              ),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.6,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Price
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        if (widget.plan.monthlyPrice > 0)
-                          Text(
-                            '₺',
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: planColors.primary,
-                            ),
-                          ),
-                        Text(
-                          widget.plan.monthlyPrice == 0
-                              ? l10n.free
-                              : '${widget.plan.monthlyPrice.toInt()}',
-                          style: theme.textTheme.displaySmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: widget.plan.monthlyPrice == 0
-                                ? theme.colorScheme.onSurface
-                                : planColors.primary,
-                          ),
-                        ),
-                        if (widget.plan.monthlyPrice > 0) ...[
-                          const SizedBox(width: 4),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Text(
-                              '/${l10n.perMonth.replaceAll('/', '')}',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Divider
-                    Container(
-                      height: 1,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            planColors.primary.withValues(alpha: 0.3),
-                            planColors.primary.withValues(alpha: 0.1),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Features
-                    ...SubscriptionHelper.getFeatures(context, widget.plan).map(
-                      (feature) => Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: planColors.primary.withValues(
-                                  alpha: 0.15,
-                                ),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Icon(
-                                PhosphorIconsBold.check,
-                                color: planColors.primary,
-                                size: 14,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                feature,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.8,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Action button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: widget.isCurrentPlan
-                          ? OutlinedButton(
-                              onPressed: null,
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                side: BorderSide(
-                                  color: theme.colorScheme.outline.withValues(
-                                    alpha: 0.3,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                l10n.currentPlan,
-                                style: TextStyle(
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : ElevatedButton(
-                              onPressed: () =>
-                                  _onSelectPlan(context, widget.plan),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: widget.isPopular
-                                    ? theme.colorScheme.primary
-                                    : planColors.primary.withValues(alpha: 0.1),
-                                foregroundColor: widget.isPopular
-                                    ? Colors.white
-                                    : planColors.primary,
-                                elevation: widget.isPopular ? 4 : 0,
-                                shadowColor: widget.isPopular
-                                    ? planColors.primary.withValues(alpha: 0.4)
-                                    : Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              child: Text(
-                                widget.plan == SubscriptionPlan.free
-                                    ? l10n.startFree
-                                    : l10n.selectPlan,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
+              // Use Expanded only in desktop mode (inside IntrinsicHeight/Row)
+              // Use flexible container in mobile mode (inside Column)
+              _buildCardContent(context, theme, l10n, planColors, isDesktop),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildCardContent(
+    BuildContext context,
+    ThemeData theme,
+    AppLocalizations l10n,
+    _PlanColors planColors,
+    bool isDesktop,
+  ) {
+    final content = Container(
+      padding: const EdgeInsets.all(28),
+      decoration: widget.isPopular
+          ? BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+            )
+          : null,
+      margin: widget.isPopular ? const EdgeInsets.fromLTRB(4, 0, 4, 4) : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: isDesktop ? MainAxisSize.max : MainAxisSize.min,
+        children: [
+          // Plan icon and name
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: planColors.gradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: planColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Icon(planColors.icon, color: Colors.white, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    SubscriptionHelper.getDisplayName(context, widget.plan),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    SubscriptionHelper.getDescription(context, widget.plan),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Price
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              if (widget.plan.monthlyPrice > 0)
+                Text(
+                  '₺',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: planColors.primary,
+                  ),
+                ),
+              Text(
+                widget.plan.monthlyPrice == 0
+                    ? l10n.free
+                    : '${widget.plan.monthlyPrice.toInt()}',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: widget.plan.monthlyPrice == 0
+                      ? theme.colorScheme.onSurface
+                      : planColors.primary,
+                ),
+              ),
+              if (widget.plan.monthlyPrice > 0) ...[
+                const SizedBox(width: 4),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    '/${l10n.perMonth.replaceAll('/', '')}',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Divider
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  planColors.primary.withValues(alpha: 0.3),
+                  planColors.primary.withValues(alpha: 0.1),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Features
+          ...SubscriptionHelper.getFeatures(context, widget.plan).map(
+            (feature) => Padding(
+              padding: const EdgeInsets.only(bottom: 14),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: planColors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Icon(
+                      PhosphorIconsBold.check,
+                      color: planColors.primary,
+                      size: 14,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      feature,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.8,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Spacer only for desktop mode
+          if (isDesktop) const Spacer(),
+          if (!isDesktop) const SizedBox(height: 20),
+
+          // Action button
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: widget.isCurrentPlan
+                ? OutlinedButton(
+                    onPressed: null,
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      side: BorderSide(
+                        color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.currentPlan,
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () => _onSelectPlan(context, widget.plan),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: widget.isPopular
+                          ? theme.colorScheme.primary
+                          : planColors.primary.withValues(alpha: 0.1),
+                      foregroundColor: widget.isPopular
+                          ? Colors.white
+                          : planColors.primary,
+                      elevation: widget.isPopular ? 4 : 0,
+                      shadowColor: widget.isPopular
+                          ? planColors.primary.withValues(alpha: 0.4)
+                          : Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: Text(
+                      widget.plan == SubscriptionPlan.free
+                          ? l10n.startFree
+                          : l10n.selectPlan,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+
+    // Return Expanded only in desktop mode
+    if (isDesktop) {
+      return Expanded(child: content);
+    }
+    return content;
   }
 
   _PlanColors _getPlanColors(SubscriptionPlan plan, ThemeData theme) {

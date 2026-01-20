@@ -17,8 +17,6 @@ class ThemeHelper {
         return l10n.themePurple;
       case AppThemeType.orange:
         return l10n.themeOrange;
-      case AppThemeType.dark:
-        return l10n.themeDark;
     }
   }
 }

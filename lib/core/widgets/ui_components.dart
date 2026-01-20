@@ -46,44 +46,6 @@ class GlassCard extends StatelessWidget {
   }
 }
 
-/// Gradient background wrapper
-class GradientBackground extends StatelessWidget {
-  final Widget child;
-  final List<Color>? colors;
-  final AlignmentGeometry begin;
-  final AlignmentGeometry end;
-
-  const GradientBackground({
-    super.key,
-    required this.child,
-    this.colors,
-    this.begin = Alignment.topLeft,
-    this.end = Alignment.bottomRight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: begin,
-          end: end,
-          colors:
-              colors ??
-              [
-                theme.colorScheme.primary.withValues(alpha: 0.05),
-                theme.colorScheme.secondary.withValues(alpha: 0.02),
-                theme.colorScheme.surface,
-              ],
-        ),
-      ),
-      child: child,
-    );
-  }
-}
-
 /// Animated elevated button with loading state
 class AnimatedButton extends StatefulWidget {
   final String text;
@@ -224,6 +186,9 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextCapitalization textCapitalization;
   final Widget? suffixIcon;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
 
   const CustomTextField({
     super.key,
@@ -236,6 +201,9 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.textCapitalization = TextCapitalization.none,
     this.suffixIcon,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -243,52 +211,88 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  FocusNode? _internalFocusNode;
   bool _isFocused = false;
+
+  FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode!;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.focusNode == null) {
+      _internalFocusNode = FocusNode();
+    }
+    _focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void didUpdateWidget(CustomTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.focusNode != oldWidget.focusNode) {
+      oldWidget.focusNode?.removeListener(_onFocusChanged);
+      _internalFocusNode?.dispose();
+      _internalFocusNode = null;
+
+      if (widget.focusNode == null) {
+        _internalFocusNode = FocusNode();
+      }
+      _focusNode.addListener(_onFocusChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusChanged);
+    _internalFocusNode?.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChanged() {
+    setState(() => _isFocused = _focusNode.hasFocus);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Focus(
-      onFocusChange: (focused) {
-        setState(() => _isFocused = focused);
-      },
-      child: AnimatedContainer(
-        duration: AppConstants.animationFast,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppConstants.radiusM),
-          boxShadow: _isFocused
-              ? [
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
+    return AnimatedContainer(
+      duration: AppConstants.animationFast,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppConstants.radiusM),
+        boxShadow: _isFocused
+            ? [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      child: TextFormField(
+        controller: widget.controller,
+        focusNode: _focusNode,
+        obscureText: widget.obscureText,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        validator: widget.validator,
+        textCapitalization: widget.textCapitalization,
+        style: theme.textTheme.bodyLarge,
+        decoration: InputDecoration(
+          labelText: widget.label,
+          hintText: widget.hint,
+          prefixIcon: widget.prefixIcon != null
+              ? Icon(
+                  widget.prefixIcon,
+                  color: _isFocused
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                )
               : null,
-        ),
-        child: TextFormField(
-          controller: widget.controller,
-          obscureText: widget.obscureText,
-          keyboardType: widget.keyboardType,
-          validator: widget.validator,
-          textCapitalization: widget.textCapitalization,
-          style: theme.textTheme.bodyLarge,
-          decoration: InputDecoration(
-            labelText: widget.label,
-            hintText: widget.hint,
-            prefixIcon: widget.prefixIcon != null
-                ? Icon(
-                    widget.prefixIcon,
-                    color: _isFocused
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  )
-                : null,
-            suffixIcon: widget.suffixIcon,
-            filled: true,
-            fillColor: theme.colorScheme.surface,
-          ),
+          suffixIcon: widget.suffixIcon,
+          filled: true,
+          fillColor: theme.colorScheme.surface,
         ),
       ),
     );

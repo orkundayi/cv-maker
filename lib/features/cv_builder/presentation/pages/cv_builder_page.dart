@@ -361,7 +361,7 @@ class CVBuilderPage extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.gotIt),
+            child: Text(l10n.ok),
           ),
         ],
       ),

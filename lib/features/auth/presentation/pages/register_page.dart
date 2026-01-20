@@ -6,6 +6,7 @@ import '../../../../core/utils/auth_error_helper.dart';
 import '../../../../core/widgets/ui_components.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
+import 'login_page.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 
 /// Modern registration page with split layout for desktop
@@ -23,6 +24,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
@@ -64,6 +68,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -149,12 +156,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
     });
 
     return Scaffold(
-      body: GradientBackground(
-        child: SafeArea(
-          child: isDesktop
-              ? _buildDesktopLayout(theme)
-              : _buildMobileLayout(theme),
-        ),
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: isDesktop
+            ? _buildDesktopLayout(theme)
+            : _buildMobileLayout(theme),
       ),
     );
   }
@@ -162,20 +168,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   Widget _buildDesktopLayout(ThemeData theme) {
     return Row(
       children: [
-        // Left side - Registration form
-        Expanded(
-          flex: 4,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppConstants.spacingXxl),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 450),
-                child: _buildRegisterForm(theme),
-              ),
-            ),
-          ),
-        ),
-        // Right side - Branding
+        // Left side - Branding
         Expanded(
           flex: 5,
           child: Container(
@@ -246,6 +239,19 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             ),
           ),
         ),
+        // Right side - Registration form
+        Expanded(
+          flex: 4,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppConstants.spacingXxl),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 450),
+                child: _buildRegisterForm(theme),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -253,7 +259,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   Widget _buildBenefitItem(ThemeData theme, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: theme.colorScheme.onPrimary, size: 24),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.onPrimary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(AppConstants.radiusM),
+          ),
+          child: Icon(icon, color: theme.colorScheme.onPrimary, size: 24),
+        ),
         const SizedBox(width: AppConstants.spacingM),
         Text(
           text,
@@ -266,29 +279,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   }
 
   Widget _buildMobileLayout(ThemeData theme) {
-    return Column(
-      children: [
-        // Back button
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(AppConstants.spacingS),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(PhosphorIconsRegular.arrowLeft),
-            ),
-          ),
-        ),
-        // Form
-        Expanded(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppConstants.spacingL),
-              child: _buildRegisterForm(theme),
-            ),
-          ),
-        ),
-      ],
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppConstants.spacingL),
+        child: _buildRegisterForm(theme),
+      ),
     );
   }
 
@@ -339,6 +334,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                   label: AppLocalizations.of(context)!.fullName,
                   prefixIcon: PhosphorIconsRegular.user,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_emailFocusNode);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.fullNameRequired;
@@ -351,9 +350,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                 // Email field
                 CustomTextField(
                   controller: _emailController,
+                  focusNode: _emailFocusNode,
                   label: AppLocalizations.of(context)!.email,
                   prefixIcon: PhosphorIconsRegular.envelope,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.emailRequired;
@@ -369,9 +373,16 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                 // Password field
                 CustomTextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocusNode,
                   label: AppLocalizations.of(context)!.password,
                   prefixIcon: PhosphorIconsRegular.lock,
                   obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(
+                      context,
+                    ).requestFocus(_confirmPasswordFocusNode);
+                  },
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -428,9 +439,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                 // Confirm password field
                 CustomTextField(
                   controller: _confirmPasswordController,
+                  focusNode: _confirmPasswordFocusNode,
                   label: AppLocalizations.of(context)!.confirmPassword,
                   prefixIcon: PhosphorIconsRegular.lockKey,
                   obscureText: _obscureConfirmPassword,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _signUp(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureConfirmPassword
@@ -481,7 +495,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                       ),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
                       child: Text(
                         AppLocalizations.of(context)!.loginAction,
                         style: TextStyle(

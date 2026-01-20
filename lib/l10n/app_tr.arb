@@ -386,6 +386,7 @@
     "themePurple": "Mor",
     "themeOrange": "Turuncu",
     "themeDark": "Karanlık",
+    "darkMode": "Karanlık Mod",
     "featureRequiresPlan": "Bu özellik {plan} planı gerektirir",
     "upgradeForMore": "Daha fazla özellik için planınızı yükseltin.",
     "viewPlansButton": "Planları Görüntüle",

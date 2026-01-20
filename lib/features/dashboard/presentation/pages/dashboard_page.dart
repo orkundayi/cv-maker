@@ -278,7 +278,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
         // Sidebar with CV list
         _buildSidebar(theme),
         // Main content
-        Expanded(child: GradientBackground(child: _buildMainContent(theme))),
+        Expanded(
+          child: Container(
+            color: theme.colorScheme.surfaceContainerLowest,
+            child: _buildMainContent(theme),
+          ),
+        ),
       ],
     );
   }
@@ -800,7 +805,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   }
 
   Widget _buildMobileLayout(ThemeData theme) {
-    return GradientBackground(
+    return Container(
+      color: theme.colorScheme.surfaceContainerLowest,
       child: Column(
         children: [
           _buildMobileHeader(theme),

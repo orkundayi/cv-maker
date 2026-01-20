@@ -1199,6 +1199,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get themeDark => 'Karanlık';
 
   @override
+  String get darkMode => 'Karanlık Mod';
+
+  @override
   String featureRequiresPlan(Object plan) {
     return 'Bu özellik $plan planı gerektirir';
   }

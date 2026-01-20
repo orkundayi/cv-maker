@@ -7,8 +7,8 @@ import '../../../../core/utils/theme_helper.dart';
 import '../../../../core/widgets/ui_components.dart';
 import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/providers/language_provider.dart';
-import '../../../../core/theme/theme_data.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/theme_selector.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../subscription/presentation/providers/subscription_provider.dart';
 import '../../../subscription/presentation/pages/pricing_page.dart';
@@ -54,56 +54,55 @@ class _AccountPageState extends ConsumerState<AccountPage>
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: GradientBackground(
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: CustomScrollView(
-              slivers: [
-                // App Bar
-                SliverAppBar(
-                  floating: true,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  leading: IconButton(
-                    icon: const Icon(PhosphorIconsRegular.arrowLeft),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  title: Text(
-                    l10n.myAccount,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  centerTitle: true,
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: CustomScrollView(
+            slivers: [
+              // App Bar
+              SliverAppBar(
+                floating: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(PhosphorIconsRegular.arrowLeft),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                // Content
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isDesktop
-                        ? size.width * 0.15
-                        : AppConstants.spacingM,
-                    vertical: AppConstants.spacingM,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      _buildProfileCard(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _buildSubscriptionCard(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _buildThemeSection(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _buildLanguageSection(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _buildSupportCard(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingL),
-                      _buildLogoutSection(theme, l10n),
-                      const SizedBox(height: AppConstants.spacingXxl),
-                    ]),
+                title: Text(
+                  l10n.myAccount,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            ),
+                centerTitle: true,
+              ),
+              // Content
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isDesktop
+                      ? size.width * 0.15
+                      : AppConstants.spacingM,
+                  vertical: AppConstants.spacingM,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _buildProfileCard(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _buildSubscriptionCard(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _buildThemeSection(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _buildLanguageSection(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _buildSupportCard(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingL),
+                    _buildLogoutSection(theme, l10n),
+                    const SizedBox(height: AppConstants.spacingXxl),
+                  ]),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -333,83 +332,69 @@ class _AccountPageState extends ConsumerState<AccountPage>
 
   Widget _buildThemeSection(ThemeData theme, AppLocalizations l10n) {
     final currentTheme = ref.watch(themeProvider);
+    final isDarkMode = ref.watch(darkModeProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(title: l10n.theme, subtitle: l10n.customizeAppearance),
         const SizedBox(height: AppConstants.spacingS),
-        SizedBox(
-          height: 80,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: AppThemeType.values.map((themeType) {
-              final isSelected = themeType == currentTheme;
-              final colors = themeType.colorScheme;
-
-              return Padding(
-                padding: const EdgeInsets.only(right: AppConstants.spacingS),
-                child: GestureDetector(
-                  onTap: () {
-                    ref.read(themeProvider.notifier).theme = themeType;
-                  },
-                  child: AnimatedContainer(
-                    duration: AppConstants.animationFast,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(AppConstants.radiusL),
-                      border: Border.all(
-                        color: isSelected
-                            ? colors.primary
-                            : theme.colorScheme.outline.withValues(alpha: 0.2),
-                        width: isSelected ? 2 : 1,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: colors.primary.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [colors.primary, colors.primaryLight],
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          ThemeHelper.getThemeName(context, themeType),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: isSelected
-                                ? colors.primary
-                                : theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.6,
-                                  ),
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+        GlassCard(
+          padding: EdgeInsets.zero,
+          child: ListTile(
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                PhosphorIconsRegular.palette,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            title: Text(l10n.selectTheme),
+            subtitle: Text(
+              '${ThemeHelper.getThemeName(context, currentTheme)} • ${isDarkMode ? "Dark" : "Light"}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+            ),
+            trailing: Icon(
+              PhosphorIconsRegular.caretRight,
+              size: 20,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+            ),
+            onTap: () => _showThemeSelector(context, l10n),
           ),
         ),
       ],
+    );
+  }
+
+  void _showThemeSelector(BuildContext context, AppLocalizations l10n) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(
+              PhosphorIconsRegular.palette,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: AppConstants.spacingS),
+            Text(l10n.selectTheme),
+          ],
+        ),
+        content: const ThemeSelector(),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.close),
+          ),
+        ],
+      ),
     );
   }
 
@@ -565,27 +550,23 @@ class _AccountPageState extends ConsumerState<AccountPage>
   }
 
   Widget _buildLogoutSection(ThemeData theme, AppLocalizations l10n) {
-    return GlassCard(
-      padding: EdgeInsets.zero,
-      backgroundColor: theme.colorScheme.error.withValues(alpha: 0.02),
-      child: ListTile(
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.error.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: OutlinedButton.icon(
+        onPressed: _signOut,
+        icon: const Icon(PhosphorIconsRegular.signOut, size: 20),
+        label: Text(l10n.signOut),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: theme.colorScheme.error,
+          side: BorderSide(
+            color: theme.colorScheme.error.withValues(alpha: 0.5),
+            width: 1.5,
           ),
-          child: Icon(
-            PhosphorIconsRegular.signOut,
-            size: 20,
-            color: theme.colorScheme.error,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.radiusM),
           ),
         ),
-        title: Text(
-          l10n.signOut,
-          style: TextStyle(color: theme.colorScheme.error),
-        ),
-        onTap: _signOut,
       ),
     );
   }

@@ -386,6 +386,7 @@
     "themePurple": "Purple",
     "themeOrange": "Orange",
     "themeDark": "Dark",
+    "darkMode": "Dark Mode",
     "featureRequiresPlan": "This feature requires {plan} plan",
     "upgradeForMore": "Upgrade your plan for more features.",
     "viewPlansButton": "View Plans",

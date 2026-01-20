@@ -22,6 +22,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _passwordFocusNode = FocusNode();
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -60,6 +61,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
     _animationController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -204,12 +206,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
     });
 
     return Scaffold(
-      body: GradientBackground(
-        child: SafeArea(
-          child: isDesktop
-              ? _buildDesktopLayout(theme)
-              : _buildMobileLayout(theme),
-        ),
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      body: SafeArea(
+        child: isDesktop
+            ? _buildDesktopLayout(theme)
+            : _buildMobileLayout(theme),
       ),
     );
   }
@@ -391,6 +392,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   label: AppLocalizations.of(context)!.email,
                   prefixIcon: PhosphorIconsRegular.envelope,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.emailRequired;
@@ -406,9 +411,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 // Password field
                 CustomTextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocusNode,
                   label: AppLocalizations.of(context)!.password,
                   prefixIcon: PhosphorIconsRegular.lock,
                   obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _signInWithEmail(),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -468,7 +476,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const RegisterPage(),

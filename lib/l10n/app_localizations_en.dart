@@ -1198,6 +1198,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
+  String get darkMode => 'Dark Mode';
+
+  @override
   String featureRequiresPlan(Object plan) {
     return 'This feature requires $plan plan';
   }
